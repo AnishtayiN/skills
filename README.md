@@ -68,9 +68,9 @@ The installer will show:
   📦 Available Agents:
   ─────────────────────────────────────────────────────────────
 
-    [ ] 1) Claude Code          (Not Installed)
-    [ ] 2) Cursor AI            (Installed) [25/25 skills]
-    [ ] 3) Windsurf             (Not Installed)
+    [✓] 1) Claude Code          (Installed) [25/25 skills]
+    [ ] 2) Cursor AI            (Not Installed)
+    [✓] 3) Windsurf             (Installed) [25/25 skills]
     [ ] 4) Aider                (Not Installed)
     [ ] 5) Continue.dev         (Not Installed)
     [ ] 6) Hermes Agent         (Not Installed)
@@ -78,10 +78,17 @@ The installer will show:
   ─────────────────────────────────────────────────────────────
     7) Select All
     8) Deselect All
+
+  ─────────────────────────────────────────────────────────────
     9) Install Selected
+    10) Update Selected (reinstall with latest)
+    11) Uninstall Selected
     0) Exit
 
-  🔢 Enter command (1-9, 0): 
+  Selected: 2 agent(s)
+  Total Skills: 25
+
+  🔢 Enter command (1-11, 0): 
 ```
 
 **Commands:**
@@ -89,6 +96,8 @@ The installer will show:
 - Press `7` to select all agents
 - Press `8` to deselect all
 - Press `9` to install selected agents
+- Press `10` to update/reinstall selected agents
+- Press `11` to uninstall selected agents (with confirmation)
 - Press `0` to exit
 
 ### Command Line Mode
@@ -102,9 +111,28 @@ The installer will show:
 # Install for all agents
 ./install.sh --all
 
+# Uninstall specific agents
+./install.sh --uninstall claude
+./install.sh --uninstall claude cursor
+
+# Uninstall all agents
+./install.sh --uninstall all
+
+# Update specific agents
+./install.sh --update claude
+./install.sh --update all
+
 # Show help
 ./install.sh --help
 ```
+
+### Managing Installed Agents
+
+You can run the installer anytime to:
+- **Add new agents** — Select uninstalled agents and press 9
+- **Remove agents** — Select installed agents and press 11
+- **Update agents** — Select agents and press 10 to reinstall with latest
+- **Check status** — See which agents are installed with skill counts
 
 ---
 

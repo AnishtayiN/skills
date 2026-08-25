@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 🧠 Coding Agent Skill Library Installer
-# Interactive installer with agent detection and selection
+# Interactive installer with install/uninstall/update
 
 set -e
 
@@ -127,9 +127,13 @@ show_menu() {
     
     echo ""
     echo -e "${CYAN}  ─────────────────────────────────────────────────────────────${NC}"
-    echo -e "    ${MAGENTA}7)${NC} ${BOLD}Select All${NC} — Select all agents"
-    echo -e "    ${MAGENTA}8)${NC} ${BOLD}Deselect All${NC} — Clear selection"
-    echo -e "    ${GREEN}9)${NC} ${BOLD}Install Selected${NC} — Install chosen agents"
+    echo -e "    ${MAGENTA}7)${NC} ${BOLD}Select All${NC}"
+    echo -e "    ${MAGENTA}8)${NC} ${BOLD}Deselect All${NC}"
+    echo ""
+    echo -e "${CYAN}  ─────────────────────────────────────────────────────────────${NC}"
+    echo -e "    ${GREEN}9)${NC} ${BOLD}Install Selected${NC}"
+    echo -e "    ${YELLOW}10)${NC} ${BOLD}Update Selected${NC} ${CYAN}(reinstall with latest)${NC}"
+    echo -e "    ${RED}11)${NC} ${BOLD}Uninstall Selected${NC}"
     echo -e "    ${RED}0)${NC} Exit"
     echo ""
     echo -e "${CYAN}  ─────────────────────────────────────────────────────────────${NC}"
@@ -193,7 +197,8 @@ copy_all_skills() {
     cp "$NEW_SKILLS_DIR/SKILL-MATRIX.md" "$target/" 2>/dev/null || true
 }
 
-# Install functions
+# ===== INSTALL FUNCTIONS =====
+
 install_claude() {
     local target="${1:-.}"
     echo ""
@@ -318,7 +323,108 @@ EOF
     print_success "Installed $count skills for Hermes Agent"
 }
 
-# Install selected agents
+# ===== UNINSTALL FUNCTIONS =====
+
+uninstall_claude() {
+    local target="${1:-.}"
+    echo ""
+    echo -e "${RED}  🗑️  Uninstalling Claude Code...${NC}"
+    
+    if [ -d "$target/.claude" ]; then
+        rm -rf "$target/.claude"
+        print_success "Removed .claude directory"
+    fi
+    
+    if [ -f "$target/CLAUDE.md" ]; then
+        rm -f "$target/CLAUDE.md"
+        print_success "Removed CLAUDE.md"
+    fi
+    
+    print_success "Claude Code uninstalled"
+}
+
+uninstall_cursor() {
+    local target="${1:-.}"
+    echo ""
+    echo -e "${RED}  🗑️  Uninstalling Cursor AI...${NC}"
+    
+    if [ -d "$target/.cursor" ]; then
+        rm -rf "$target/.cursor"
+        print_success "Removed .cursor directory"
+    fi
+    
+    if [ -f "$target/.cursorrules" ]; then
+        rm -f "$target/.cursorrules"
+        print_success "Removed .cursorrules"
+    fi
+    
+    print_success "Cursor AI uninstalled"
+}
+
+uninstall_windsurf() {
+    local target="${1:-.}"
+    echo ""
+    echo -e "${RED}  🗑️  Uninstalling Windsurf...${NC}"
+    
+    if [ -d "$target/.windsurf" ]; then
+        rm -rf "$target/.windsurf"
+        print_success "Removed .windsurf directory"
+    fi
+    
+    if [ -f "$target/.windsurfrules" ]; then
+        rm -f "$target/.windsurfrules"
+        print_success "Removed .windsurfrules"
+    fi
+    
+    print_success "Windsurf uninstalled"
+}
+
+uninstall_aider() {
+    local target="${1:-.}"
+    echo ""
+    echo -e "${RED}  🗑️  Uninstalling Aider...${NC}"
+    
+    if [ -d "$target/.aider" ]; then
+        rm -rf "$target/.aider"
+        print_success "Removed .aider directory"
+    fi
+    
+    if [ -f "$target/.aider.conf.yml" ]; then
+        rm -f "$target/.aider.conf.yml"
+        print_success "Removed .aider.conf.yml"
+    fi
+    
+    print_success "Aider uninstalled"
+}
+
+uninstall_continue() {
+    local target="${1:-.}"
+    echo ""
+    echo -e "${RED}  🗑️  Uninstalling Continue.dev...${NC}"
+    
+    if [ -d "$target/.continue" ]; then
+        rm -rf "$target/.continue"
+        print_success "Removed .continue directory"
+    fi
+    
+    print_success "Continue.dev uninstalled"
+}
+
+uninstall_hermes() {
+    local target="${1:-.}"
+    echo ""
+    echo -e "${RED}  🗑️  Uninstalling Hermes Agent...${NC}"
+    
+    if [ -d "$target/.hermes" ]; then
+        rm -rf "$target/.hermes"
+        print_success "Removed .hermes directory"
+    fi
+    
+    print_success "Hermes Agent uninstalled"
+}
+
+# ===== ACTION FUNCTIONS =====
+
 install_selected() {
     local installed=0
     
@@ -333,7 +439,43 @@ install_selected() {
     if [ $installed -gt 0 ]; then
         print_success "Successfully installed $installed agent(s)"
     else
-        print_warning "No agents selected"
+        print_warning "No agents selected for installation"
+    fi
+}
+
+update_selected() {
+    local updated=0
+    
+    [ "${SELECTED[claude]:-0}" = "1" ] && install_claude "." && ((updated++))
+    [ "${SELECTED[cursor]:-0}" = "1" ] && install_cursor "." && ((updated++))
+    [ "${SELECTED[windsurf]:-0}" = "1" ] && install_windsurf "." && ((updated++))
+    [ "${SELECTED[aider]:-0}" = "1" ] && install_aider "." && ((updated++))
+    [ "${SELECTED[continue]:-0}" = "1" ] && install_continue "." && ((updated++))
+    [ "${SELECTED[hermes]:-0}" = "1" ] && install_hermes "." && ((updated++))
+    
+    echo ""
+    if [ $updated -gt 0 ]; then
+        print_success "Successfully updated $updated agent(s)"
+    else
+        print_warning "No agents selected for update"
+    fi
+}
+
+uninstall_selected() {
+    local uninstalled=0
+    
+    [ "${SELECTED[claude]:-0}" = "1" ] && uninstall_claude "." && ((uninstalled++))
+    [ "${SELECTED[cursor]:-0}" = "1" ] && uninstall_cursor "." && ((uninstalled++))
+    [ "${SELECTED[windsurf]:-0}" = "1" ] && uninstall_windsurf "." && ((uninstalled++))
+    [ "${SELECTED[aider]:-0}" = "1" ] && uninstall_aider "." && ((uninstalled++))
+    [ "${SELECTED[continue]:-0}" = "1" ] && uninstall_continue "." && ((uninstalled++))
+    [ "${SELECTED[hermes]:-0}" = "1" ] && uninstall_hermes "." && ((uninstalled++))
+    
+    echo ""
+    if [ $uninstalled -gt 0 ]; then
+        print_success "Successfully uninstalled $uninstalled agent(s)"
+    else
+        print_warning "No agents selected for uninstallation"
     fi
 }
 
@@ -348,21 +490,66 @@ parse_args() {
             --continue) SELECTED[continue]=1; shift ;;
             --hermes) SELECTED[hermes]=1; shift ;;
             --all) select_all; shift ;;
+            --uninstall)
+                # Parse next args as uninstall targets
+                shift
+                while [ $# -gt 0 ] && [[ ! "$1" =~ ^-- ]]; do
+                    case "$1" in
+                        claude) SELECTED[claude]=1 ;;
+                        cursor) SELECTED[cursor]=1 ;;
+                        windsurf) SELECTED[windsurf]=1 ;;
+                        aider) SELECTED[aider]=1 ;;
+                        continue) SELECTED[continue]=1 ;;
+                        hermes) SELECTED[hermes]=1 ;;
+                        all) select_all ;;
+                        *) print_error "Unknown agent: $1"; exit 1 ;;
+                    esac
+                    shift
+                done
+                uninstall_selected
+                exit 0
+                ;;
+            --update)
+                shift
+                while [ $# -gt 0 ] && [[ ! "$1" =~ ^-- ]]; do
+                    case "$1" in
+                        claude) SELECTED[claude]=1 ;;
+                        cursor) SELECTED[cursor]=1 ;;
+                        windsurf) SELECTED[windsurf]=1 ;;
+                        aider) SELECTED[aider]=1 ;;
+                        continue) SELECTED[continue]=1 ;;
+                        hermes) SELECTED[hermes]=1 ;;
+                        all) select_all ;;
+                        *) print_error "Unknown agent: $1"; exit 1 ;;
+                    esac
+                    shift
+                done
+                update_selected
+                exit 0
+                ;;
             --help|-h)
                 echo "Usage: ./install.sh [OPTIONS]"
                 echo ""
-                echo "Options:"
-                echo "  --claude      Install for Claude Code"
-                echo "  --cursor      Install for Cursor AI"
-                echo "  --windsurf    Install for Windsurf"
-                echo "  --aider       Install for Aider"
-                echo "  --continue    Install for Continue.dev"
-                echo "  --hermes      Install for Hermes Agent"
-                echo "  --all         Install for all agents"
-                echo "  --help        Show this help"
+                echo "Install Options:"
+                echo "  --claude              Install for Claude Code"
+                echo "  --cursor              Install for Cursor AI"
+                echo "  --windsurf            Install for Windsurf"
+                echo "  --aider               Install for Aider"
+                echo "  --continue            Install for Continue.dev"
+                echo "  --hermes              Install for Hermes Agent"
+                echo "  --all                 Install for all agents"
                 echo ""
-                echo "Interactive mode (no arguments):"
-                echo "  ./install.sh                    Start interactive menu"
+                echo "Uninstall Options:"
+                echo "  --uninstall claude    Uninstall Claude Code"
+                echo "  --uninstall cursor    Uninstall Cursor AI"
+                echo "  --uninstall all       Uninstall all agents"
+                echo ""
+                echo "Update Options:"
+                echo "  --update claude       Update Claude Code"
+                echo "  --update all          Update all agents"
+                echo ""
+                echo "Interactive Mode (no arguments):"
+                echo "  ./install.sh          Start interactive menu"
                 exit 0
                 ;;
             *) print_error "Unknown option: $1"; exit 1 ;;
@@ -384,7 +571,7 @@ main() {
         print_banner
         show_menu
         
-        read -p "  🔢 Enter command (1-9, 0): " choice
+        read -p "  🔢 Enter command (1-11, 0): " choice
         echo ""
         
         case "$choice" in
@@ -408,6 +595,19 @@ main() {
             9)
                 install_selected
                 ;;
+            10)
+                update_selected
+                ;;
+            11)
+                # Confirm uninstall
+                echo -e "${RED}  ⚠️  WARNING: This will remove selected agents!${NC}"
+                read -p "  Are you sure? (y/N): " confirm
+                if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+                    uninstall_selected
+                else
+                    echo -e "${YELLOW}  Cancelled${NC}"
+                fi
+                ;;
             0)
                 echo ""
                 echo -e "${GREEN}  👋 Goodbye!${NC}"
@@ -419,6 +619,9 @@ main() {
                 sleep 1
                 ;;
         esac
+        
+        echo ""
+        read -p "  ⏎ Press Enter to continue..."
     done
 }
 

@@ -703,10 +703,46 @@
                 <span class="command">git clone https://github.com/AnishtayiN/skills.git</span><br>
                 <span class="command">cd skills</span><br>
                 <span class="command">./install.sh</span><br><br>
-                <span class="comment"># Or install directly</span><br>
+                <span class="comment"># Install directly</span><br>
                 <span class="command">./install.sh --claude</span><br>
                 <span class="command">./install.sh --cursor</span><br>
-                <span class="command">./install.sh --all</span>
+                <span class="command">./install.sh --all</span><br><br>
+                <span class="comment"># Uninstall agents</span><br>
+                <span class="command">./install.sh --uninstall claude</span><br>
+                <span class="command">./install.sh --uninstall all</span><br><br>
+                <span class="comment"># Update agents</span><br>
+                <span class="command">./install.sh --update claude</span><br>
+                <span class="command">./install.sh --update all</span>
+            </div>
+            
+            <!-- Interactive Menu Preview -->
+            <div style="margin-top: 30px;">
+                <h3 style="color: var(--accent); margin-bottom: 15px;" data-en="🎮 Interactive Menu" data-fa="🎮 منوی تعاملی">🎮 Interactive Menu</h3>
+                <div class="code-block">
+                    <span class="comment">╔══════════════════════════════════════════════════════════════════╗</span><br>
+                    <span class="comment">║           🧠 Coding Agent Skill Library - v3.0.0              ║</span><br>
+                    <span class="comment">╚══════════════════════════════════════════════════════════════════╝</span><br><br>
+                    <span style="color: var(--accent);">📦 Available Agents:</span><br>
+                    <span class="comment">──────────────────────────────────────────────────────────────────</span><br><br>
+                    <span style="color: var(--green);">[✓]</span> <span style="color: var(--blue);">1)</span> Claude Code <span style="color: var(--green);">(Installed)</span> <span style="color: var(--yellow);">[25/25 skills]</span><br>
+                    <span style="color: var(--red);">[ ]</span> <span style="color: var(--blue);">2)</span> Cursor AI <span style="color: var(--red);">(Not Installed)</span><br>
+                    <span style="color: var(--green);">[✓]</span> <span style="color: var(--blue);">3)</span> Windsurf <span style="color: var(--green);">(Installed)</span> <span style="color: var(--yellow);">[25/25 skills]</span><br>
+                    <span style="color: var(--red);">[ ]</span> <span style="color: var(--blue);">4)</span> Aider <span style="color: var(--red);">(Not Installed)</span><br>
+                    <span style="color: var(--red);">[ ]</span> <span style="color: var(--blue);">5)</span> Continue.dev <span style="color: var(--red);">(Not Installed)</span><br>
+                    <span style="color: var(--red);">[ ]</span> <span style="color: var(--blue);">6)</span> Hermes Agent <span style="color: var(--red);">(Not Installed)</span><br><br>
+                    <span class="comment">──────────────────────────────────────────────────────────────────</span><br>
+                    <span style="color: var(--magenta);">7)</span> <span style="font-weight: bold;">Select All</span><br>
+                    <span style="color: var(--magenta);">8)</span> <span style="font-weight: bold;">Deselect All</span><br><br>
+                    <span class="comment">──────────────────────────────────────────────────────────────────</span><br>
+                    <span style="color: var(--green);">9)</span> <span style="font-weight: bold;">Install Selected</span><br>
+                    <span style="color: var(--yellow);">10)</span> <span style="font-weight: bold;">Update Selected</span> <span style="color: var(--cyan);">(reinstall with latest)</span><br>
+                    <span style="color: var(--red);">11)</span> <span style="font-weight: bold;">Uninstall Selected</span><br>
+                    <span style="color: var(--red);">0)</span> Exit<br><br>
+                    <span class="comment">──────────────────────────────────────────────────────────────────</span><br>
+                    <span style="color: var(--green);">Selected: 2 agent(s)</span><br>
+                    <span style="color: var(--blue);">Total Skills: 25</span><br><br>
+                    <span style="color: var(--cyan);">🔢 Enter command (1-11, 0):</span>
+                </div>
             </div>
         </div>
     </section>
