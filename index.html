@@ -145,6 +145,13 @@
         <h2 class="section-title" data-en="🚀 Installation" data-fa="🚀 نصب">🚀 Installation</h2>
         <p class="section-desc" data-en="Get started in 30 seconds." data-fa="در ۳۰ ثانیه شروع کن.">Get started in 30 seconds.</p>
 
+        <div style="margin-bottom: 24px;">
+            <h3 style="font-size: 1rem; margin-bottom: 8px; color: var(--accent);" data-en="⚡ One-Line Install" data-fa="⚡ نصب با یک دستور">⚡ One-Line Install</h3>
+            <div class="code">
+                <span class="g">bash &lt;(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh)</span>
+            </div>
+        </div>
+
         <div class="steps">
             <div class="step">
                 <div class="step-num">1</div>
@@ -170,17 +177,19 @@
         </div>
 
         <div class="code">
-            <span class="c"># Clone</span><br>
+            <span class="c"># One-line install</span><br>
+            <span class="g">bash &lt;(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh)</span><br><br>
+            <span class="c"># Or clone and install</span><br>
             <span class="g">git clone https://github.com/AnishtayiN/skills.git</span><br>
-            <span class="g">cd skills</span><br><br>
-            <span class="c"># Interactive install</span><br>
+            <span class="g">cd skills</span><br>
             <span class="g">./install.sh</span><br><br>
-            <span class="c"># Or install directly</span><br>
+            <span class="c"># Install directly</span><br>
             <span class="g">./install.sh --claude</span><br>
             <span class="g">./install.sh --cursor</span><br>
             <span class="g">./install.sh --all</span><br><br>
             <span class="c"># Uninstall</span><br>
-            <span class="g">./install.sh --uninstall claude</span><br><br>
+            <span class="g">./install.sh --uninstall claude</span><br>
+            <span class="g">./install.sh --uninstall all</span><br><br>
             <span class="c"># Update</span><br>
             <span class="g">./install.sh --update all</span>
         </div>

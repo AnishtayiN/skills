@@ -100,7 +100,13 @@ The installer will show:
 - Press `11` to uninstall selected agents (with confirmation)
 - Press `0` to exit
 
-### Command Line Mode
+### One-Line Install (Fastest)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh)
+```
+
+### CLI Mode
 
 ```bash
 # Install for specific agents
