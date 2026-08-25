@@ -103,7 +103,7 @@ The installer will show:
 ### One-Line Install (Fastest)
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/refs/heads/main/install.sh)
 ```
 
 ### CLI Mode
