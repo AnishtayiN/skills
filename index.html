@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Agent Skill Library | کتابخانه مهارت‌های اجنت کدنویسی</title>
+    <meta name="description" content="A professional skill library for autonomous coding agents | کتابخانه مهارت حرفه‌ای برای اجنت‌های کدنویسی مستقل">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #22d3ee;
+            --green: #22c55e;
+            --yellow: #eab308;
+            --red: #ef4444;
+            --orange: #f97316;
+            --purple: #a855f7;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--bg) 0%, #1a1a2e 100%);
+            padding: 60px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 5px;
+            background: var(--bg-card);
+            padding: 5px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+
+        /* Philosophy */
+        .philosophy {
+            padding: 60px 0;
+        }
+
+        .philosophy h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .philosophy-card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .philosophy-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .philosophy-card h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .philosophy-card p {
+            color: var(--text-muted);
+        }
+
+        /* Skills Section */
+        .skills {
+            padding: 60px 0;
+            background: var(--bg-card);
+        }
+
+        .skills h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+
+        .skill-category {
+            margin-bottom: 40px;
+        }
+
+        .skill-category h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .skill-table th {
+            background: var(--primary-dark);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .skill-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .skill-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .skill-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .priority-p0 { background: var(--red); color: white; }
+        .priority-p1 { background: var(--orange); color: white; }
+        .priority-p2 { background: var(--yellow); color: black; }
+        .priority-p3 { background: var(--green); color: white; }
+
+        /* Installation */
+        .installation {
+            padding: 60px 0;
+        }
+
+        .installation h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .install-step {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .install-step .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .install-step h3 {
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .install-step p {
+            color: var(--text-muted);
+        }
+
+        .code-block {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .command { color: var(--green); }
+
+        /* Routing */
+        .routing {
+            padding: 60px 0;
+            background: var(--bg-card);
+        }
+
+        .routing h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+
+        .routing-diagram {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            line-height: 2;
+            overflow-x: auto;
+        }
+
+        /* Stats */
+        .stats {
+            padding: 60px 0;
+        }
+
+        .stats h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .stat-card .stat-label {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] {
+            font-family: 'Segoe UI', Tahoma, 'Vazirmatn', sans-serif;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            header p { font-size: 1rem; }
+            .philosophy h2, .skills h2, .installation h2, .routing h2, .stats h2 {
+                font-size: 1.5rem;
+            }
+            .skill-table { font-size: 0.9rem; }
+            .skill-table th, .skill-table td { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('fa')">FA</button>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1 data-en="🧠 Coding Agent Skill Library" data-fa="🧠 کتابخانه مهارت‌های اجنت کدنویسی">🧠 Coding Agent Skill Library</h1>
+            <p data-en="A professional, verification-first, root-cause-driven skill library for autonomous coding agents." data-fa="کتابخانه مهارت حرفه‌ای با رویکرد اعتبارسنجی اول و عیب‌یابی ریشه‌ای برای اجنت‌های کدنویسی مستقل.">A professional, verification-first, root-cause-driven skill library for autonomous coding agents.</p>
+        </div>
+    </header>
+
+    <!-- Philosophy -->
+    <section class="philosophy">
+        <div class="container">
+            <h2 data-en="🎯 Philosophy" data-fa="🎯 فلسفه">🎯 Philosophy</h2>
+            <div class="philosophy-grid">
+                <div class="philosophy-card">
+                    <h3 data-en="🔍 Evidence First" data-fa="🔍 اول شواهد">🔍 Evidence First</h3>
+                    <p data-en="Never guess. Always verify. Read code before debugging. Understand before fixing." data-fa="هرگز حدس نزن. همیشه verify کن. کد رو قبل از عیب‌یابی بخون. قبل از تعمیر، درک کن.">Never guess. Always verify. Read code before debugging. Understand before fixing.</p>
+                </div>
+                <div class="philosophy-card">
+                    <h3 data-en="🎯 Minimal Fix" data-fa="🎯 تعمیر حداقلی">🎯 Minimal Fix</h3>
+                    <p data-en="Apply the smallest change that fixes the root cause. Don't rewrite what isn't broken." data-fa="کوچک‌ترین تغییری که root cause رو حل کنه رو اعمال کن. چیزی که خراب نیست رو بازنویسی نکن.">Apply the smallest change that fixes the root cause. Don't rewrite what isn't broken.</p>
+                </div>
+                <div class="philosophy-card">
+                    <h3 data-en="✅ Verification Required" data-fa="✅ اعتبارسنجی ضروری">✅ Verification Required</h3>
+                    <p data-en="Never claim success without proof. Run tests, check build, verify output. Always." data-fa="هرگز بدون اثبات ادعا نکن کار میکنه. تست اجرا کن، بیلد رو چک کن، خروجی رو verify کن. همیشه.">Never claim success without proof. Run tests, check build, verify output. Always.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="container">
+            <h2 data-en="📊 Statistics" data-fa="📊 آمار">📊 Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">25</div>
+                    <div class="stat-label" data-en="Skills" data-fa="مهارت">Skills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label" data-en="Categories" data-fa="دسته‌بندی">Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label" data-en="Priority Levels" data-fa="سطح اولویت">Priority Levels</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label" data-en="Supported Agents" data-fa="اجنت پشتیبانی شده">Supported Agents</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="skills">
+        <div class="container">
+            <h2 data-en="📋 Skills" data-fa="📋 مهارت‌ها">📋 Skills</h2>
+
+            <!-- Core Analysis -->
+            <div class="skill-category">
+                <h3 data-en="🔍 Core Analysis" data-fa="🔍 تحلیل پایه">🔍 Core Analysis</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>project-analysis</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Understand project structure" data-fa="درک ساختار پروژه">Understand project structure</td>
+                        </tr>
+                        <tr>
+                            <td>requirement-analysis</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Clarify user requirements" data-fa="روشن‌سازی نیازمندی‌های کاربر">Clarify user requirements</td>
+                        </tr>
+                        <tr>
+                            <td>task-planning</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Break work into steps" data-fa="تقسیم کار به مراحل">Break work into steps</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Core Coding -->
+            <div class="skill-category">
+                <h3 data-en="💻 Core Coding" data-fa="💻 کدنویسی پایه">💻 Core Coding</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>code-generation</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Write new code" data-fa="نوشتن کد جدید">Write new code</td>
+                        </tr>
+                        <tr>
+                            <td>code-editing</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Modify existing code" data-fa="ویرایش کد موجود">Modify existing code</td>
+                        </tr>
+                        <tr>
+                            <td>code-explanation</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Explain code" data-fa="توضیح کد">Explain code</td>
+                        </tr>
+                        <tr>
+                            <td>debugging</td>
+                            <td><span class="priority priority-p0">P0 ⭐</span></td>
+                            <td data-en="Find and fix bugs" data-fa="پیدا کردن و رفع باگ">Find and fix bugs</td>
+                        </tr>
+                        <tr>
+                            <td>refactoring</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Improve code structure" data-fa="بهبود ساختار کد">Improve code structure</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Quality -->
+            <div class="skill-category">
+                <h3 data-en="✅ Quality" data-fa="✅ کیفیت">✅ Quality</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>code-review</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Review code quality" data-fa="بررسی کیفیت کد">Review code quality</td>
+                        </tr>
+                        <tr>
+                            <td>testing</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Create and run tests" data-fa="ایجاد و اجرای تست">Create and run tests</td>
+                        </tr>
+                        <tr>
+                            <td>verification</td>
+                            <td><span class="priority priority-p0">P0 ⭐</span></td>
+                            <td data-en="Verify changes work" data-fa="اعتبارسنجی تغییرات">Verify changes work</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Architecture -->
+            <div class="skill-category">
+                <h3 data-en="🏗️ Architecture" data-fa="🏗️ معماری">🏗️ Architecture</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>system-design</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Design system architecture" data-fa="طراحی معماری سیستم">Design system architecture</td>
+                        </tr>
+                        <tr>
+                            <td>api-design</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Design APIs" data-fa="طراحی API">Design APIs</td>
+                        </tr>
+                        <tr>
+                            <td>database-design</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Design databases" data-fa="طراحی دیتابیس">Design databases</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DevOps -->
+            <div class="skill-category">
+                <h3 data-en="🚀 DevOps" data-fa="🚀 عملیات">🚀 DevOps</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>git-workflow</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Manage Git operations" data-fa="مدیریت عملیات گیت">Manage Git operations</td>
+                        </tr>
+                        <tr>
+                            <td>dockerization</td>
+                            <td><span class="priority priority-p3">P3</span></td>
+                            <td data-en="Docker configuration" data-fa="پیکربندی داکر">Docker configuration</td>
+                        </tr>
+                        <tr>
+                            <td>ci-cd</td>
+                            <td><span class="priority priority-p3">P3</span></td>
+                            <td data-en="CI/CD pipelines" data-fa="پایپ‌لاین‌های CI/CD">CI/CD pipelines</td>
+                        </tr>
+                        <tr>
+                            <td>deployment</td>
+                            <td><span class="priority priority-p3">P3</span></td>
+                            <td data-en="Deploy applications" data-fa="استقرار اپلیکیشن">Deploy applications</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Security & Performance -->
+            <div class="skill-category">
+                <h3 data-en="🔒 Security & Performance" data-fa="🔒 امنیت و عملکرد">🔒 Security & Performance</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>security-audit</td>
+                            <td><span class="priority priority-p0">P0 ⭐</span></td>
+                            <td data-en="Security review" data-fa="بررسی امنیت">Security review</td>
+                        </tr>
+                        <tr>
+                            <td>performance-analysis</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Performance optimization" data-fa="بهینه‌سازی عملکرد">Performance optimization</td>
+                        </tr>
+                        <tr>
+                            <td>concurrency-debugging</td>
+                            <td><span class="priority priority-p0">P0 ⭐</span></td>
+                            <td data-en="Debug concurrency issues" data-fa="عیب‌یابی مشکلات همزمانی">Debug concurrency issues</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- AI & Documentation -->
+            <div class="skill-category">
+                <h3 data-en="🤖 AI & Documentation" data-fa="🤖 هوش مصنوعی و مستندات">🤖 AI & Documentation</h3>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th data-en="Skill" data-fa="مهارت">Skill</th>
+                            <th data-en="Priority" data-fa="اولویت">Priority</th>
+                            <th data-en="Purpose" data-fa="هدف">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>agent-orchestration</td>
+                            <td><span class="priority priority-p2">P2</span></td>
+                            <td data-en="Multi-agent coordination" data-fa="هماهنگی چنداجنتی">Multi-agent coordination</td>
+                        </tr>
+                        <tr>
+                            <td>tool-management</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Tool call management" data-fa="مدیریت فراخوانی ابزار">Tool call management</td>
+                        </tr>
+                        <tr>
+                            <td>context-management</td>
+                            <td><span class="priority priority-p1">P1</span></td>
+                            <td data-en="Token management" data-fa="مدیریت توکن">Token management</td>
+                        </tr>
+                        <tr>
+                            <td>documentation</td>
+                            <td><span class="priority priority-p3">P3</span></td>
+                            <td data-en="Write documentation" data-fa="نوشتن مستندات">Write documentation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation -->
+    <section class="installation">
+        <div class="container">
+            <h2 data-en="🚀 Installation" data-fa="🚀 نصب">🚀 Installation</h2>
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="step-number">1</div>
+                    <h3 data-en="Clone" data-fa="کلون">Clone</h3>
+                    <p data-en="Clone the repository" data-fa="ریپو رو کلون کن">Clone the repository</p>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">2</div>
+                    <h3 data-en="Run Installer" data-fa="اجرای نصب‌کننده">Run Installer</h3>
+                    <p data-en="Run the interactive installer" data-fa="نصب‌کننده تعاملی رو اجرا کن">Run the interactive installer</p>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">3</div>
+                    <h3 data-en="Select Agents" data-fa="انتخاب اجنت‌ها">Select Agents</h3>
+                    <p data-en="Choose which agents to install" data-fa="انتخاب کن کدوم اجنت‌ها نصب بشن">Choose which agents to install</p>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">4</div>
+                    <h3 data-en="Done!" data-fa="تموم شد!">Done!</h3>
+                    <p data-en="Start using skills" data-fa="شروع به استفاده از مهارت‌ها کن">Start using skills</p>
+                </div>
+            </div>
+            <div class="code-block">
+                <span class="comment"># Clone and install</span><br>
+                <span class="command">git clone https://github.com/AnishtayiN/skills.git</span><br>
+                <span class="command">cd skills</span><br>
+                <span class="command">./install.sh</span><br><br>
+                <span class="comment"># Or install directly</span><br>
+                <span class="command">./install.sh --claude</span><br>
+                <span class="command">./install.sh --cursor</span><br>
+                <span class="command">./install.sh --all</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Routing -->
+    <section class="routing">
+        <div class="container">
+            <h2 data-en="🧭 Skill Routing" data-fa="🧭 مسیریابی مهارت">🧭 Skill Routing</h2>
+            <div class="routing-diagram">
+                <pre data-en="User Request
+     ↓
+┌─────────────────┐
+│ Task Classifier  │  What type of task?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Skill Detector   │  Which skills are relevant?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Priority Sort    │  What's the priority?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Dependency Check │  What must run first?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Load ONLY Needed │  Don't load all skills
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Execute          │  Run in order
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Verify           │  Check results
+└────────┬────────┘
+     Response" data-fa="درخواست کاربر
+     ↓
+┌─────────────────┐
+│  طبقه‌بندی تسک   │  نوع تسک چیه؟
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│  تشخیص مهارت     │  کدوم مهارت‌ها مرتبطن؟
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│  مرتب‌سازی       │  اولویت چیه؟
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│  بررسی وابستگی   │  کدوم اول اجرا بشه؟
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│  بارگذاری فقط    │  همه رو لود نکن
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│  اجرا            │  به ترتیب اجرا کن
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│  اعتبارسنجی     │  نتایج رو چک کن
+└────────┬────────┘
+     پاسخ">User Request
+     ↓
+┌─────────────────┐
+│ Task Classifier  │  What type of task?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Skill Detector   │  Which skills are relevant?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Priority Sort    │  What's the priority?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Dependency Check │  What must run first?
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Load ONLY Needed │  Don't load all skills
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Execute          │  Run in order
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Verify           │  Check results
+└────────┬────────┘
+     Response</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>
+                <span data-en="Built with ❤️ for the AI Agent community" data-fa="ساخته شده با ❤️ برای جامعه اجنت‌های هوش مصنوعی">Built with ❤️ for the AI Agent community</span>
+                <br><br>
+                <a href="https://github.com/AnishtayiN/skills" target="_blank" data-en="GitHub Repository" data-fa="ریپوی گیت‌هاب">GitHub Repository</a>
+                •
+                <a href="https://github.com/AnishtayiN/skills#readme" target="_blank" data-en="Documentation" data-fa="مستندات">Documentation</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Language switching
+        function setLang(lang) {
+            // Update buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'en' && btn.textContent === 'EN') || 
+                    (lang === 'fa' && btn.textContent === 'FA')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update direction
+            document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+            document.documentElement.lang = lang;
+
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = lang === 'fa' ? el.getAttribute('data-fa') : el.getAttribute('data-en');
+                if (text) {
+                    el.textContent = text;
+                }
+            });
+
+            // Save preference
+            localStorage.setItem('preferred-lang', lang);
+        }
+
+        // Load saved language
+        const savedLang = localStorage.getItem('preferred-lang') || 'en';
+        setLang(savedLang);
+    </script>
+</body>
+</html>

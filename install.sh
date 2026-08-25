@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 🧠 Coding Agent Skill Library Installer
-# Interactive installer with agent detection
+# Interactive installer with agent detection and selection
 
 set -e
 
@@ -17,6 +17,9 @@ CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 NC='\033[0m'
 BOLD='\033[1m'
+
+# Selected agents
+declare -A SELECTED
 
 print_banner() {
     clear
@@ -35,64 +38,38 @@ print_banner() {
 print_success() { echo -e "${GREEN}  ✅ $1${NC}"; }
 print_info() { echo -e "${BLUE}  ℹ️  $1${NC}"; }
 print_warning() { echo -e "${YELLOW}  ⚠️  $1${NC}"; }
+print_error() { echo -e "${RED}  ❌ $1${NC}"; }
 
-# Check if agent is installed in current directory
+# Check if agent is installed
 check_agent() {
     local agent="$1"
     case "$agent" in
         claude)
-            if [ -f "CLAUDE.md" ] && [ -d ".claude/skills" ]; then
-                echo "installed"
-            else
-                echo "not_installed"
-            fi
+            [ -f "CLAUDE.md" ] && [ -d ".claude/skills" ] && echo "installed" || echo "not_installed"
             ;;
         cursor)
-            if [ -f ".cursorrules" ] && [ -d ".cursor/skills" ]; then
-                echo "installed"
-            else
-                echo "not_installed"
-            fi
+            [ -f ".cursorrules" ] && [ -d ".cursor/skills" ] && echo "installed" || echo "not_installed"
             ;;
         windsurf)
-            if [ -f ".windsurfrules" ] && [ -d ".windsurf/skills" ]; then
-                echo "installed"
-            else
-                echo "not_installed"
-            fi
+            [ -f ".windsurfrules" ] && [ -d ".windsurf/skills" ] && echo "installed" || echo "not_installed"
             ;;
         aider)
-            if [ -f ".aider.conf.yml" ] && [ -d ".aider/skills" ]; then
-                echo "installed"
-            else
-                echo "not_installed"
-            fi
+            [ -f ".aider.conf.yml" ] && [ -d ".aider/skills" ] && echo "installed" || echo "not_installed"
             ;;
         continue)
-            if [ -d ".continue/skills" ]; then
-                echo "installed"
-            else
-                echo "not_installed"
-            fi
+            [ -d ".continue/skills" ] && echo "installed" || echo "not_installed"
             ;;
         hermes)
-            if [ -d ".hermes/skills" ]; then
-                echo "installed"
-            else
-                echo "not_installed"
-            fi
+            [ -d ".hermes/skills" ] && echo "installed" || echo "not_installed"
             ;;
-        *)
-            echo "unknown"
-            ;;
+        *) echo "unknown" ;;
     esac
 }
 
-# Count installed skills for an agent
+# Count installed skills
 count_installed_skills() {
     local agent="$1"
     local skills_dir=""
-    
     case "$agent" in
         claude) skills_dir=".claude/skills" ;;
         cursor) skills_dir=".cursor/skills" ;;
@@ -101,20 +78,15 @@ count_installed_skills() {
         continue) skills_dir=".continue/skills" ;;
         hermes) skills_dir=".hermes/skills" ;;
     esac
-    
-    if [ -d "$skills_dir" ]; then
-        find "$skills_dir" -name "SKILL.md" -type f 2>/dev/null | wc -l | tr -d ' '
-    else
-        echo "0"
-    fi
+    [ -d "$skills_dir" ] && find "$skills_dir" -name "SKILL.md" -type f 2>/dev/null | wc -l | tr -d ' ' || echo "0"
 }
 
-# Count total available skills
+# Count available skills
 count_available_skills() {
     find "$NEW_SKILLS_DIR" -name "SKILL.md" -type f 2>/dev/null | wc -l | tr -d ' '
 }
 
-# Show menu
+# Show menu with selection status
 show_menu() {
     local total_skills
     total_skills=$(count_available_skills)
@@ -123,106 +95,112 @@ show_menu() {
     echo -e "${CYAN}  ─────────────────────────────────────────────────────────────${NC}"
     echo ""
     
-    # Claude Code
-    local claude_status=$(check_agent "claude")
-    local claude_count=$(count_installed_skills "claude")
-    if [ "$claude_status" = "installed" ]; then
-        echo -e "    ${GREEN}1)${NC} Claude Code          ${GREEN}(Installed)${NC} ${YELLOW}[$claude_count/$total_skills skills]${NC}"
-    else
-        echo -e "    ${BLUE}1)${NC} Claude Code          ${RED}(Not Installed)${NC}"
-    fi
+    local agents=("claude:Claude Code" "cursor:Cursor AI" "windsurf:Windsurf" "aider:Aider" "continue:Continue.dev" "hermes:Hermes Agent")
+    local i=1
     
-    # Cursor AI
-    local cursor_status=$(check_agent "cursor")
-    local cursor_count=$(count_installed_skills "cursor")
-    if [ "$cursor_status" = "installed" ]; then
-        echo -e "    ${GREEN}2)${NC} Cursor AI            ${GREEN}(Installed)${NC} ${YELLOW}[$cursor_count/$total_skills skills]${NC}"
-    else
-        echo -e "    ${BLUE}2)${NC} Cursor AI            ${RED}(Not Installed)${NC}"
-    fi
+    for agent_info in "${agents[@]}"; do
+        local agent="${agent_info%%:*}"
+        local name="${agent_info##*:}"
+        local status=$(check_agent "$agent")
+        local count=$(count_installed_skills "$agent")
+        local selected="${SELECTED[$agent]:-0}"
+        
+        # Selection indicator
+        local sel_mark=""
+        if [ "$selected" = "1" ]; then
+            sel_mark="${GREEN}[✓]${NC} "
+        else
+            sel_mark="${RED}[ ]${NC} "
+        fi
+        
+        # Installation status
+        local inst_mark=""
+        if [ "$status" = "installed" ]; then
+            inst_mark="${GREEN}(Installed)${NC} ${YELLOW}[$count/$total_skills skills]${NC}"
+        else
+            inst_mark="${RED}(Not Installed)${NC}"
+        fi
+        
+        echo -e "    ${sel_mark}${BLUE}$i)${NC} $name          $inst_mark"
+        ((i++))
+    done
     
-    # Windsurf
-    local windsurf_status=$(check_agent "windsurf")
-    local windsurf_count=$(count_installed_skills "windsurf")
-    if [ "$windsurf_status" = "installed" ]; then
-        echo -e "    ${GREEN}3)${NC} Windsurf             ${GREEN}(Installed)${NC} ${YELLOW}[$windsurf_count/$total_skills skills]${NC}"
-    else
-        echo -e "    ${BLUE}3)${NC} Windsurf             ${RED}(Not Installed)${NC}"
-    fi
-    
-    # Aider
-    local aider_status=$(check_agent "aider")
-    local aider_count=$(count_installed_skills "aider")
-    if [ "$aider_status" = "installed" ]; then
-        echo -e "    ${GREEN}4)${NC} Aider                ${GREEN}(Installed)${NC} ${YELLOW}[$aider_count/$total_skills skills]${NC}"
-    else
-        echo -e "    ${BLUE}4)${NC} Aider                ${RED}(Not Installed)${NC}"
-    fi
-    
-    # Continue.dev
-    local continue_status=$(check_agent "continue")
-    local continue_count=$(count_installed_skills "continue")
-    if [ "$continue_status" = "installed" ]; then
-        echo -e "    ${GREEN}5)${NC} Continue.dev         ${GREEN}(Installed)${NC} ${YELLOW}[$continue_count/$total_skills skills]${NC}"
-    else
-        echo -e "    ${BLUE}5)${NC} Continue.dev         ${RED}(Not Installed)${NC}"
-    fi
-    
-    # Hermes Agent
-    local hermes_status=$(check_agent "hermes")
-    local hermes_count=$(count_installed_skills "hermes")
-    if [ "$hermes_status" = "installed" ]; then
-        echo -e "    ${GREEN}6)${NC} Hermes Agent         ${GREEN}(Installed)${NC} ${YELLOW}[$hermes_count/$total_skills skills]${NC}"
-    else
-        echo -e "    ${BLUE}6)${NC} Hermes Agent         ${RED}(Not Installed)${NC}"
-    fi
-    
-    # Install All
     echo ""
     echo -e "${CYAN}  ─────────────────────────────────────────────────────────────${NC}"
-    echo -e "    ${MAGENTA}7)${NC} ${BOLD}Install ALL Agents${NC}"
-    echo -e "    ${MAGENTA}8)${NC} ${BOLD}Update/Reinstall ALL${NC}"
+    echo -e "    ${MAGENTA}7)${NC} ${BOLD}Select All${NC} — Select all agents"
+    echo -e "    ${MAGENTA}8)${NC} ${BOLD}Deselect All${NC} — Clear selection"
+    echo -e "    ${GREEN}9)${NC} ${BOLD}Install Selected${NC} — Install chosen agents"
     echo -e "    ${RED}0)${NC} Exit"
     echo ""
     echo -e "${CYAN}  ─────────────────────────────────────────────────────────────${NC}"
+    
+    # Show selected count
+    local selected_count=0
+    for agent_info in "${agents[@]}"; do
+        local agent="${agent_info%%:*}"
+        [ "${SELECTED[$agent]:-0}" = "1" ] && ((selected_count++))
+    done
+    
+    if [ $selected_count -gt 0 ]; then
+        echo -e "    ${GREEN}Selected: $selected_count agent(s)${NC}"
+    else
+        echo -e "    ${YELLOW}No agents selected${NC}"
+    fi
+    
     echo -e "    ${BLUE}Total Skills: ${BOLD}$total_skills${NC}"
     echo ""
+}
+
+# Toggle selection
+toggle_selection() {
+    local agent="$1"
+    if [ "${SELECTED[$agent]:-0}" = "1" ]; then
+        SELECTED[$agent]=0
+    else
+        SELECTED[$agent]=1
+    fi
+}
+
+# Select all
+select_all() {
+    SELECTED[claude]=1
+    SELECTED[cursor]=1
+    SELECTED[windsurf]=1
+    SELECTED[aider]=1
+    SELECTED[continue]=1
+    SELECTED[hermes]=1
+}
+
+# Deselect all
+deselect_all() {
+    SELECTED[claude]=0
+    SELECTED[cursor]=0
+    SELECTED[windsurf]=0
+    SELECTED[aider]=0
+    SELECTED[continue]=0
+    SELECTED[hermes]=0
 }
 
 # Copy all skills to target
 copy_all_skills() {
     local target="$1"
-    
-    # Create directory structure
     mkdir -p "$target"
-    
-    # Copy all categories
     for category in core coding quality architecture git devops security performance ai documentation; do
-        if [ -d "$NEW_SKILLS_DIR/$category" ]; then
-            cp -r "$NEW_SKILLS_DIR/$category" "$target/" 2>/dev/null || true
-        fi
+        [ -d "$NEW_SKILLS_DIR/$category" ] && cp -r "$NEW_SKILLS_DIR/$category" "$target/" 2>/dev/null || true
     done
-    
-    # Copy management files
     cp "$NEW_SKILLS_DIR/ROUTER.md" "$target/" 2>/dev/null || true
     cp "$NEW_SKILLS_DIR/AGENT.md" "$target/" 2>/dev/null || true
     cp "$NEW_SKILLS_DIR/SKILL-MATRIX.md" "$target/" 2>/dev/null || true
 }
 
-# Install for Claude Code
+# Install functions
 install_claude() {
     local target="${1:-.}"
     echo ""
     echo -e "${CYAN}  📦 Installing for Claude Code...${NC}"
-    echo ""
-    
-    # Create .claude directory
     mkdir -p "$target/.claude"
-    
-    # Copy all skills
     copy_all_skills "$target/.claude/skills"
     
-    # Create CLAUDE.md
     cat > "$target/CLAUDE.md" << 'EOF'
 # CLAUDE.md
 
@@ -246,32 +224,19 @@ When performing tasks, read the relevant skill file from `.claude/skills/` first
 | Review code | `skills/quality/code-review/SKILL.md` |
 | Write tests | `skills/quality/testing/SKILL.md` |
 | Verify changes | `skills/quality/verification/SKILL.md` |
-
-### Routing
-See `skills/ROUTER.md` for skill routing logic.
-See `skills/AGENT.md` for agent rules.
 EOF
     
     local count=$(find "$target/.claude/skills" -name "SKILL.md" -type f | wc -l | tr -d ' ')
     print_success "Installed $count skills for Claude Code"
-    print_info "Location: $target/.claude/skills/"
-    print_info "Config: $target/CLAUDE.md"
 }
 
-# Install for Cursor
 install_cursor() {
     local target="${1:-.}"
     echo ""
     echo -e "${CYAN}  📦 Installing for Cursor AI...${NC}"
-    echo ""
-    
-    # Create .cursor directory
     mkdir -p "$target/.cursor"
-    
-    # Copy all skills
     copy_all_skills "$target/.cursor/skills"
     
-    # Create .cursorrules
     cat > "$target/.cursorrules" << 'EOF'
 # Cursor Rules
 
@@ -283,35 +248,16 @@ Read the relevant skill file from `.cursor/skills/` before performing tasks.
 1. **Evidence First** — Never guess. Always verify.
 2. **Minimal Fix** — Smallest change that fixes root cause.
 3. **Verification Required** — Never claim success without proof.
-
-### Quick Reference
-| Task | Skill |
-|------|-------|
-| Analyze project | `skills/core/project-analysis/SKILL.md` |
-| Plan work | `skills/core/task-planning/SKILL.md` |
-| Write code | `skills/coding/code-generation/SKILL.md` |
-| Fix bugs | `skills/coding/debugging/SKILL.md` |
-| Review code | `skills/quality/code-review/SKILL.md` |
-| Write tests | `skills/quality/testing/SKILL.md` |
-| Verify changes | `skills/quality/verification/SKILL.md` |
-
-### Routing
-See `skills/ROUTER.md` for skill routing logic.
 EOF
     
     local count=$(find "$target/.cursor/skills" -name "SKILL.md" -type f | wc -l | tr -d ' ')
     print_success "Installed $count skills for Cursor AI"
-    print_info "Location: $target/.cursor/skills/"
-    print_info "Config: $target/.cursorrules"
 }
 
-# Install for Windsurf
 install_windsurf() {
     local target="${1:-.}"
     echo ""
     echo -e "${CYAN}  📦 Installing for Windsurf...${NC}"
-    echo ""
-    
     mkdir -p "$target/.windsurf"
     copy_all_skills "$target/.windsurf/skills"
     
@@ -321,69 +267,47 @@ install_windsurf() {
 ## 🧠 Skills
 
 Read the relevant skill file from `.windsurf/skills/` before performing tasks.
-
-### Core Principles
-1. **Evidence First** — Never guess. Always verify.
-2. **Minimal Fix** — Smallest change that fixes root cause.
-3. **Verification Required** — Never claim success without proof.
 EOF
     
     local count=$(find "$target/.windsurf/skills" -name "SKILL.md" -type f | wc -l | tr -d ' ')
     print_success "Installed $count skills for Windsurf"
-    print_info "Location: $target/.windsurf/skills/"
 }
 
-# Install for Aider
 install_aider() {
     local target="${1:-.}"
     echo ""
     echo -e "${CYAN}  📦 Installing for Aider...${NC}"
-    echo ""
-    
     mkdir -p "$target/.aider"
     copy_all_skills "$target/.aider/skills"
     
     cat > "$target/.aider.conf.yml" << 'EOF'
 # Aider Configuration
-
-## Skills
 # Skills are in .aider/skills/ directory
-# Read the relevant SKILL.md before performing tasks
 EOF
     
     local count=$(find "$target/.aider/skills" -name "SKILL.md" -type f | wc -l | tr -d ' ')
     print_success "Installed $count skills for Aider"
-    print_info "Location: $target/.aider/skills/"
 }
 
-# Install for Continue.dev
 install_continue() {
     local target="${1:-.}"
     echo ""
     echo -e "${CYAN}  📦 Installing for Continue.dev...${NC}"
-    echo ""
-    
     mkdir -p "$target/.continue"
     copy_all_skills "$target/.continue/skills"
     
     local count=$(find "$target/.continue/skills" -name "SKILL.md" -type f | wc -l | tr -d ' ')
     print_success "Installed $count skills for Continue.dev"
-    print_info "Location: $target/.continue/skills/"
 }
 
-# Install for Hermes
 install_hermes() {
     local target="${1:-.}"
     echo ""
     echo -e "${CYAN}  📦 Installing for Hermes Agent...${NC}"
-    echo ""
-    
     mkdir -p "$target/.hermes"
     copy_all_skills "$target/.hermes/skills"
     
     cat > "$target/.hermes/config.yaml" << 'EOF'
-# Hermes Skills Configuration
-
 skills:
   path: .hermes/skills
   auto_load: true
@@ -392,58 +316,97 @@ EOF
     
     local count=$(find "$target/.hermes/skills" -name "SKILL.md" -type f | wc -l | tr -d ' ')
     print_success "Installed $count skills for Hermes Agent"
-    print_info "Location: $target/.hermes/skills/"
 }
 
-# Install all agents
-install_all() {
-    local target="${1:-.}"
-    install_claude "$target"
-    install_cursor "$target"
-    install_windsurf "$target"
-    install_aider "$target"
-    install_continue "$target"
-    install_hermes "$target"
+# Install selected agents
+install_selected() {
+    local installed=0
+    
+    [ "${SELECTED[claude]:-0}" = "1" ] && install_claude "." && ((installed++))
+    [ "${SELECTED[cursor]:-0}" = "1" ] && install_cursor "." && ((installed++))
+    [ "${SELECTED[windsurf]:-0}" = "1" ] && install_windsurf "." && ((installed++))
+    [ "${SELECTED[aider]:-0}" = "1" ] && install_aider "." && ((installed++))
+    [ "${SELECTED[continue]:-0}" = "1" ] && install_continue "." && ((installed++))
+    [ "${SELECTED[hermes]:-0}" = "1" ] && install_hermes "." && ((installed++))
+    
+    echo ""
+    if [ $installed -gt 0 ]; then
+        print_success "Successfully installed $installed agent(s)"
+    else
+        print_warning "No agents selected"
+    fi
+}
+
+# Parse command line arguments
+parse_args() {
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --claude) SELECTED[claude]=1; shift ;;
+            --cursor) SELECTED[cursor]=1; shift ;;
+            --windsurf) SELECTED[windsurf]=1; shift ;;
+            --aider) SELECTED[aider]=1; shift ;;
+            --continue) SELECTED[continue]=1; shift ;;
+            --hermes) SELECTED[hermes]=1; shift ;;
+            --all) select_all; shift ;;
+            --help|-h)
+                echo "Usage: ./install.sh [OPTIONS]"
+                echo ""
+                echo "Options:"
+                echo "  --claude      Install for Claude Code"
+                echo "  --cursor      Install for Cursor AI"
+                echo "  --windsurf    Install for Windsurf"
+                echo "  --aider       Install for Aider"
+                echo "  --continue    Install for Continue.dev"
+                echo "  --hermes      Install for Hermes Agent"
+                echo "  --all         Install for all agents"
+                echo "  --help        Show this help"
+                echo ""
+                echo "Interactive mode (no arguments):"
+                echo "  ./install.sh                    Start interactive menu"
+                exit 0
+                ;;
+            *) print_error "Unknown option: $1"; exit 1 ;;
+        esac
+    done
 }
 
 # Main
 main() {
-    local total_skills
-    total_skills=$(count_available_skills)
+    # If arguments provided, use non-interactive mode
+    if [ $# -gt 0 ]; then
+        parse_args "$@"
+        install_selected
+        exit 0
+    fi
     
+    # Interactive mode
     while true; do
         print_banner
         show_menu
         
-        read -p "  🔢 Select option (0-8): " choice
+        read -p "  🔢 Enter command (1-9, 0): " choice
         echo ""
         
         case "$choice" in
-            1)
-                install_claude "."
-                ;;
-            2)
-                install_cursor "."
-                ;;
-            3)
-                install_windsurf "."
-                ;;
-            4)
-                install_aider "."
-                ;;
-            5)
-                install_continue "."
-                ;;
-            6)
-                install_hermes "."
+            [1-6])
+                # Get agent name from choice
+                local agents=("claude" "cursor" "windsurf" "aider" "continue" "hermes")
+                local idx=$((choice - 1))
+                local agent="${agents[$idx]}"
+                toggle_selection "$agent"
                 ;;
             7)
-                echo -e "${CYAN}  📦 Installing for ALL agents...${NC}"
-                install_all "."
+                select_all
+                echo -e "${GREEN}  ✓ All agents selected${NC}"
+                sleep 1
                 ;;
             8)
-                echo -e "${YELLOW}  🔄 Reinstalling ALL agents...${NC}"
-                install_all "."
+                deselect_all
+                echo -e "${YELLOW}  ✓ All deselected${NC}"
+                sleep 1
+                ;;
+            9)
+                install_selected
                 ;;
             0)
                 echo ""
@@ -452,12 +415,10 @@ main() {
                 exit 0
                 ;;
             *)
-                echo -e "${RED}  ❌ Invalid option. Please try again.${NC}"
+                echo -e "${RED}  ❌ Invalid option${NC}"
+                sleep 1
                 ;;
         esac
-        
-        echo ""
-        read -p "  ⏎ Press Enter to continue..."
     done
 }
 
