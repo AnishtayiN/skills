@@ -336,6 +336,167 @@ def build_rollback_strategies(tasks: list[dict]) -> list[dict]:
     return strategies
 ```
 
+### 8. Buffer Estimation (1.3x Multiplier)
+
+Apply a consistent buffer to estimates to account for unknowns and typical underestimation:
+
+```python
+def apply_buffer(tasks: list[dict], buffer_factor: float = 1.3) -> list[dict]:
+    """Apply a 1.3x buffer to each task estimate.
+
+    Research shows developers underestimate by 30-50% on average.
+    The 1.3x multiplier is a conservative buffer that:
+    - Accounts for unexpected complexity
+    - Covers context-switching overhead
+    - Includes time for code review and iteration
+    - Leaves room for minor scope adjustments
+
+    When to use different factors:
+    - 1.2x: Well-understood work, experienced team, clear requirements
+    - 1.3x: Standard buffer for most tasks (DEFAULT)
+    - 1.5x: New technology, unclear requirements, or complex integration
+    - 2.0x: Research/spike work, greenfield projects, or external dependencies
+    """
+    buffered = []
+    for task in tasks:
+        buffered_task = task.copy()
+        original_size = task.get('size', 'M')
+        # Map sizes to hours for calculation
+        size_hours = {'S': 4, 'M': 16, 'L': 40, 'XL': 80}
+        hours = size_hours.get(original_size, 16)
+        buffered_hours = int(hours * buffer_factor)
+        # Map back to size
+        if buffered_hours <= 6:
+            buffered_task['size'] = 'S'
+        elif buffered_hours <= 20:
+            buffered_task['size'] = 'M'
+        elif buffered_hours <= 50:
+            buffered_task['size'] = 'L'
+        else:
+            buffered_task['size'] = 'XL'
+        buffered_task['original_estimate'] = original_size
+        buffered_task['buffered_estimate'] = buffered_task['size']
+        buffered_task['buffer_factor'] = buffer_factor
+        buffered.append(buffered_task)
+    return buffered
+
+# Usage in plan output:
+# | Task | Original | Buffered (1.3x) | Rationale |
+# |------|----------|-----------------|-----------|
+# | Schema | S (4h) | S (5h) | Well-understood |
+# | API | M (16h) | M (21h) | External API integration |
+# | Payment | L (40h) | L (52h) | Complex integration |
+
+BUDGET ALLOCATION RULE:
+- Total project estimate = Sum of BUFFERED estimates
+- If total exceeds deadline, cut COULD items first
+- NEVER remove buffers to fit a deadline — cut scope instead
+- Track actual vs estimated to calibrate future buffers
+```
+
+### 9. TDD Task Sequencing
+
+Structure tasks to follow the Red-Green-Refactor cycle:
+
+```
+TECHNIQUE: Test-Driven Development Task Ordering
+
+WHEN TO USE:
+- Building new features from scratch
+- Tasks that involve business logic
+- When test coverage is a priority
+- When the team follows TDD practices
+
+TASK STRUCTURE (for each feature):
+  Step 1: Write failing test (RED)
+    → Define expected behavior in a test
+    → Run test, confirm it fails
+    → Time estimate: 20% of task
+
+  Step 2: Implement minimum code (GREEN)
+    → Write just enough code to pass the test
+    → Run test, confirm it passes
+    → Time estimate: 40% of task
+
+  Step 3: Refactor (REFACTOR)
+    → Clean up code while keeping tests green
+    → Extract methods, improve naming, remove duplication
+    → Run tests, confirm still passing
+    → Time estimate: 40% of task
+
+EXAMPLE TASK BREAKDOWN:
+  Task: "Add user registration"
+
+  1a. [RED] Write test: test_register_new_user_success
+  1b. [RED] Write test: test_register_duplicate_email_fails
+  1c. [RED] Write test: test_register_invalid_email_fails
+  1d. [GREEN] Implement register_user() to pass all tests
+  1e. [REFACTOR] Extract validation into separate method
+  1f. [REFACTOR] Add proper error types
+
+PLANNING INTEGRATION:
+  - Each TDD cycle is a micro-step within a larger task
+  - Tests are written BEFORE implementation (reduces rework)
+  - Refactoring happens naturally within each cycle
+  - Verification is automatic (tests pass or fail)
+
+BENEFITS FOR PLANNING:
+  - More accurate estimates (test-first reveals hidden complexity)
+  - Built-in verification at each step
+  - Reduces debugging time later
+  - Forces clear acceptance criteria upfront
+```
+
+### 10. Vertical Slice Planning
+
+Plan features as thin vertical slices through all layers, not horizontal layers:
+
+```
+TECHNIQUE: Vertical Slice Architecture for Task Planning
+
+WHY VERTICAL SLICES:
+  Traditional (horizontal):        Vertical Slice:
+  ┌──────────────────────┐        ┌──────────────────────┐
+  │ All database changes  │        │ Feature A: DB + API  │
+  │ All API changes       │        │   + UI + Tests       │
+  │ All UI changes        │        ├──────────────────────┤
+  │ All test changes      │        │ Feature B: DB + API  │
+  └──────────────────────┘        │   + UI + Tests       │
+                                  └──────────────────────┘
+  Problem: Nothing works until     Benefit: Each slice is
+  everything is done               independently shippable
+
+VERTICAL SLICE STRUCTURE:
+  For each user-facing feature:
+  1. Database: schema/migration for this feature ONLY
+  2. Backend: API endpoint/service for this feature ONLY
+  3. Frontend: UI component for this feature ONLY
+  4. Tests: unit + integration tests for this feature ONLY
+  5. Documentation: docs for this feature ONLY
+
+PLANNING APPROACH:
+  1. Identify all features (user stories)
+  2. For EACH feature, plan the full vertical slice
+  3. Each slice is independently developable and deployable
+  4. Slices can be worked on in parallel by different developers
+  5. Integration happens at the API/contract level
+
+EXAMPLE:
+  Feature: "User Registration"
+  ┌─ DB: users table, email index
+  ├─ API: POST /api/auth/register
+  ├─ UI: Registration form component
+  ├─ Tests: register unit + integration tests
+  └─ Docs: Registration API documentation
+
+  Feature: "User Login"
+  ┌─ DB: sessions table, token storage
+  ├─ API: POST /api/auth/login
+  ├─ UI: Login form component
+  ├─ Tests: login unit + integration tests
+  └─ Docs: Authentication flow documentation
+```
+
 ## Common Patterns
 
 ### Pattern 1: Full Task Plan Output

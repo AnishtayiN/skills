@@ -537,6 +537,105 @@ options were considered.}
 - {link 2}
 ```
 
+### 8. Anti-Info-Dump Philosophy
+
+The anti-info-dump philosophy is the principle that technical content should present information in the order the reader needs it, not in the order the author learned it. Info dumps happen when writers front-load everything they know before getting to the point. The reader drowns in context before reaching the single fact they came for.
+
+**Why info dumps fail:**
+- Readers arrive with a specific question; dumping unrelated context first forces them to wade through noise.
+- Cognitive overload: too much information at once makes none of it stick.
+- Trust erosion: if the first 500 words don't answer the question, readers leave.
+
+**How to avoid info dumps:**
+
+```markdown
+# BAD: Info Dump
+
+## Authentication System
+
+The authentication system was built in Q3 2023. It uses JSON Web Tokens (JWT)
+with RS256 signing. The system supports multiple providers including OAuth 2.0,
+SAML, and password-based authentication. JWT tokens have a configurable expiry
+defaulting to 15 minutes. Refresh tokens are stored in HTTP-only cookies with
+a 7-day expiry. The system also supports MFA via TOTP and SMS. Rate limiting
+is applied at 100 requests per minute per IP. The system was built using Node.js
+with Express and PostgreSQL for token storage.
+
+Now, if you want to know how to add a new authentication provider...
+
+# GOOD: Answer First, Context After
+
+## Adding a New Authentication Provider
+
+**Quick answer:** Create a new class implementing `AuthProvider` interface,
+register it in `auth-config.ts`, and add the provider to the login UI.
+
+### Step-by-Step
+
+1. **Create the provider class:**
+```typescript
+// src/auth/providers/saml-provider.ts
+export class SAMLProvider implements AuthProvider {
+  async authenticate(credentials: Credentials): Promise<AuthResult> {
+    // ...
+  }
+}
+```
+
+2. **Register in config:**
+```typescript
+// src/auth/auth-config.ts
+providers: {
+  saml: new SAMLProvider(config.saml),
+}
+```
+
+### How the Auth System Works
+
+If you want to understand the full auth architecture (JWT, refresh tokens,
+MFA, rate limiting), read on...
+```
+
+**Key principles:**
+1. **Answer first, explain after** — Lead with the actionable information. Context follows.
+2. **Progressive layers** — Start with the minimum viable answer, then expand for those who need depth.
+3. **Let the reader choose depth** — Use collapsible sections (`<details>`) or "read more" links.
+4. **Separate reference from tutorial** — Reference docs (what does this API do?) are different from tutorials (how do I build X?). Don't mix them.
+5. **Respect the "just tell me" impulse** — Many readers just want the answer. Make it impossible to miss.
+
+### 9. Version-Anchored Writing
+
+Every piece of technical content should be anchored to specific versions of the tools, languages, and frameworks it describes. This prevents readers from following instructions that don't apply to their version, and it helps content authors know when to update.
+
+**Implementation:**
+
+```markdown
+---
+title: "Deploying with Docker Compose"
+last_updated: 2024-07-10
+tested_with:
+  docker: "27.0.3"
+  docker_compose: "2.28.1"
+  ubuntu: "24.04"
+  python: "3.12.4"
+---
+
+# Deploying with Docker Compose
+
+> **Version note:** This guide was written for Docker Compose v2.28.1
+> (the `docker compose` plugin, not the legacy `docker-compose` v1).
+> If you're using an older version, some commands may differ.
+```
+
+**Version-anchoring rules:**
+
+1. **State versions in the introduction** — Don't bury version requirements in a prerequisites section the reader might skip.
+2. **Use version ranges when appropriate** — "Docker 24.0+ (tested with 27.0.3)" is more useful than just "Docker 27.0.3."
+3. **Mark version-sensitive content** — When a feature or API changed between versions, note which version introduced or deprecated it.
+4. **Date your content** — "Last updated: YYYY-MM-DD" helps readers assess freshness.
+5. **Test against stated versions** — If you say "tested with Python 3.12.4," actually test with that version.
+6. **Plan for decay** — Add a "review by" date. Tutorial content should be reviewed quarterly. API docs should be reviewed with each release.
+
 ---
 
 ## Common Patterns
@@ -961,6 +1060,125 @@ severity: {SEV1|SEV2|SEV3}
 ## Lessons Learned
 1. {lesson}
 2. {lesson}
+```
+
+### Blog Post
+
+```markdown
+---
+title: "{Compelling Title That Promises Value}"
+description: "{SEO-friendly description, 150-160 chars}"
+date: {YYYY-MM-DD}
+author: {Author Name}
+tags: [{tag1}, {tag2}, {tag3}]
+reading_time: {X} min
+hero_image: {url or path}
+---
+
+# {Compelling Title}
+
+> {One sentence that captures the core promise of this article.}
+
+{1-2 paragraphs: Hook the reader with a relatable problem, surprising fact,
+or bold claim. Then state what this article covers and who it's for.}
+
+**In this article, you'll learn:**
+- {takeaway 1}
+- {takeaway 2}
+- {takeaway 3}
+
+---
+
+## {Section 1: The Problem}
+
+{Describe the problem. Make the reader feel understood.}
+
+```{language}
+// Example of the problem
+{code that illustrates the challenge}
+```
+
+## {Section 2: The Solution}
+
+{Introduce the approach. Explain the concept before the implementation.}
+
+```{language}
+// Solution code with clear comments
+{complete, runnable code}
+```
+
+## {Section 3: Going Deeper}
+
+{Advanced variations, edge cases, or production considerations.}
+
+## {Section 4: Results and Trade-offs}
+
+| Aspect | Result |
+|--------|--------|
+| {metric 1} | {before → after} |
+
+## Summary
+
+{3-5 bullet points recapping key takeaways.}
+
+## What's Next
+
+- {follow-up topic}
+- {related technique}
+- {community resource}
+
+---
+
+*Last updated: {YYYY-MM-DD} | Tested with: {versions}*
+```
+
+### Multi-Part Series
+
+```markdown
+---
+series: "{Series Title}"
+part: {N}
+total_parts: {M}
+description: "Part {N} of {M}: {subtitle}"
+---
+
+# Part {N}: {Title} — {Subtitle}
+
+> **This is Part {N} of the "{Series Title}" series.**
+> - [Part 1: {Title}]({url}) — {one-line summary}
+> - [Part 2: {Title}]({url}) — {one-line summary}
+> - **Part {N}: {Title}** ← You are here
+> - [Part {N+1}: {Title}]({url}) — {one-line summary} (coming {date})
+
+{Introduction connecting to previous part and previewing this part.}
+
+**What you'll learn in this part:**
+- {specific outcome 1}
+- {specific outcome 2}
+
+**Prerequisites:**
+- Completion of Parts 1-{N-1}, or familiarity with {concepts}
+
+---
+
+## {Section 1}
+{Content building on the series foundation}
+
+## {Section 2}
+{New material for this part}
+
+## Series Recap So Far
+After Parts 1-{N}, you now know:
+- ✅ {concept from Part 1}
+- ✅ **New:** {what this part added}
+
+## Up Next
+In **Part {N+1}: {Title}**, you'll learn:
+- {preview of next content}
+
+---
+
+*Last updated: {YYYY-MM-DD} | Series started: {date}*
 ```
 
 ### Workshop Module

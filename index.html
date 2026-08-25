@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coding Agent Skill Library</title>
-    <meta name="description" content="25 professional skills for autonomous coding agents. Evidence first. Minimal fix. Verification required.">
+    <meta name="description" content="39 professional skills for autonomous coding agents. Evidence first. Minimal fix. Verification required.">
     <style>
         :root {
             --bg: #0a0a0a;
@@ -21,8 +21,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
         .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
-
-        /* NAV */
         nav { position: sticky; top: 0; background: rgba(10,10,10,.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 100; }
         nav .container { display: flex; align-items: center; justify-content: space-between; height: 56px; }
         nav .logo { font-weight: 700; font-size: 1.1rem; }
@@ -31,177 +29,124 @@
         nav .links a:hover { color: var(--text); }
         .lang-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: .8rem; }
         .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-        /* HERO */
         .hero { padding: 80px 0 60px; text-align: center; }
         .hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
         .hero p { color: var(--text2); font-size: 1.1rem; max-width: 500px; margin: 0 auto 32px; }
         .hero .badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
         .badge { background: var(--surface2); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: .85rem; color: var(--text2); }
         .badge strong { color: var(--text); }
-
-        /* SECTION */
         section { padding: 60px 0; }
         section + section { border-top: 1px solid var(--border); }
         .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
         .section-desc { color: var(--text2); margin-bottom: 32px; font-size: 1rem; }
-
-        /* INSTALL STEPS */
         .steps { display: grid; gap: 16px; margin-bottom: 24px; }
         .step { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
         .step-num { width: 36px; height: 36px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem; flex-shrink: 0; }
         .step-content h3 { font-size: 1rem; margin-bottom: 4px; }
         .step-content p { color: var(--text2); font-size: .9rem; }
-
-        /* CODE */
         .code { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: .85rem; line-height: 1.8; overflow-x: auto; }
         .code .c { color: var(--text2); }
         .code .g { color: var(--green); }
-        .code .y { color: var(--yellow); }
-        .code .r { color: var(--red); }
-        .code .b { color: var(--accent); }
-
-        /* MENU PREVIEW */
         .menu-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-top: 24px; }
         .menu-box h3 { font-size: 1rem; margin-bottom: 16px; color: var(--accent); }
         .menu-line { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-family: monospace; font-size: .85rem; }
         .menu-line .check { width: 20px; text-align: center; }
         .menu-line .num { color: var(--accent); width: 24px; text-align: right; }
         .menu-line .label { flex: 1; }
-        .menu-line .status { font-size: .8rem; }
         .menu-sep { border-top: 1px solid var(--border); margin: 8px 0; }
-
-        /* SKILLS TABLE */
-        .skill-grid { display: grid; gap: 12px; }
-        .skill-row { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: .9rem; }
+        .cat-label { font-size: .8rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 8px; }
+        .skill-grid { display: grid; gap: 8px; }
+        .skill-row { display: grid; grid-template-columns: 1fr 60px auto; gap: 12px; align-items: center; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: .85rem; }
         .skill-row:hover { border-color: var(--accent); }
         .skill-name { font-weight: 600; }
-        .skill-desc { color: var(--text2); font-size: .85rem; }
-        .p { padding: 2px 10px; border-radius: 12px; font-size: .75rem; font-weight: 700; }
+        .skill-lines { color: var(--text2); font-size: .8rem; text-align: right; }
+        .p { padding: 2px 8px; border-radius: 12px; font-size: .7rem; font-weight: 700; }
         .p0 { background: var(--red); color: #fff; }
         .p1 { background: #f97316; color: #fff; }
         .p2 { background: var(--yellow); color: #000; }
         .p3 { background: var(--green); color: #fff; }
-        .cat-label { font-size: .8rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 8px; }
-
-        /* PRINCIPLES */
         .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .principle { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; text-align: center; }
         .principle .icon { font-size: 2rem; margin-bottom: 12px; }
         .principle h3 { font-size: 1rem; margin-bottom: 8px; }
         .principle p { color: var(--text2); font-size: .85rem; }
-
-        /* ROUTING */
         .routing-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; font-family: monospace; font-size: .8rem; line-height: 1.6; overflow-x: auto; white-space: pre; }
-
-        /* FOOTER */
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-align: center; }
+        .stat .num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+        .stat .label { color: var(--text2); font-size: .85rem; margin-top: 4px; }
         footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text2); font-size: .85rem; }
         footer a { color: var(--accent); text-decoration: none; }
-
-        /* RTL */
         [dir="rtl"] body { font-family: 'Vazirmatn', 'Segoe UI', sans-serif; }
-
         @media (max-width: 640px) {
             .hero h1 { font-size: 1.6rem; }
             .principles { grid-template-columns: 1fr; }
-            .skill-row { grid-template-columns: 1fr auto; }
-            .skill-row .skill-desc { display: none; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .skill-row .skill-lines { display: none; }
         }
     </style>
 </head>
 <body>
-
 <nav>
     <div class="container">
-        <div class="logo">🧠 Skills</div>
+        <div class="logo">🧠 Skills v4</div>
         <div class="links">
             <a href="#install" data-en="Install" data-fa="نصب">Install</a>
             <a href="#skills" data-en="Skills" data-fa="مهارت‌ها">Skills</a>
             <a href="#philosophy" data-en="Philosophy" data-fa="فلسفه">Philosophy</a>
-            <a href="#routing" data-en="Routing" data-fa="مسیریابی">Routing</a>
             <button class="lang-btn active" onclick="setLang('en')">EN</button>
             <button class="lang-btn" onclick="setLang('fa')">FA</button>
         </div>
     </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
     <div class="container">
         <h1 data-en="🧠 Coding Agent Skill Library" data-fa="🧠 کتابخانه مهارت‌های اجنت کدنویسی">🧠 Coding Agent Skill Library</h1>
-        <p data-en="25 professional skills for autonomous coding agents. Ship faster. Break less. Verify everything." data-fa="۲۵ مهارت حرفه‌ای برای اجنت‌های کدنویسی مستقل. سریع‌تر بساز. کمتر خراب کن. همه چیز رو verify کن.">25 professional skills for autonomous coding agents. Ship faster. Break less. Verify everything.</p>
+        <p data-en="39 professional skills. 27,700+ lines. Evidence first. Minimal fix. Verify everything." data-fa="۳۹ مهارت حرفه‌ای. ۲۷,۷۰۰+ خط. اول شواهد. تعمیر حداقلی. همه چیز رو verify کن.">39 professional skills. 27,700+ lines. Evidence first. Minimal fix. Verify everything.</p>
         <div class="badges">
-            <span class="badge"><strong>25</strong> <span data-en="Skills" data-fa="مهارت">Skills</span></span>
-            <span class="badge"><strong>10</strong> <span data-en="Categories" data-fa="دسته‌بندی">Categories</span></span>
+            <span class="badge"><strong>39</strong> <span data-en="Skills" data-fa="مهارت">Skills</span></span>
+            <span class="badge"><strong>11</strong> <span data-en="Categories" data-fa="دسته‌بندی">Categories</span></span>
             <span class="badge"><strong>6</strong> <span data-en="Agents" data-fa="اجنت">Agents</span></span>
-            <span class="badge"><strong>4</strong> <span data-en="Priorities" data-fa="اولویت">Priorities</span></span>
+            <span class="badge"><strong>3</strong> <span data-en="Languages" data-fa="زبان">Languages</span></span>
         </div>
     </div>
 </section>
 
-<!-- INSTALL -->
 <section id="install">
     <div class="container">
         <h2 class="section-title" data-en="🚀 Installation" data-fa="🚀 نصب">🚀 Installation</h2>
         <p class="section-desc" data-en="Get started in 30 seconds." data-fa="در ۳۰ ثانیه شروع کن.">Get started in 30 seconds.</p>
-
         <div style="margin-bottom: 24px;">
             <h3 style="font-size: 1rem; margin-bottom: 8px; color: var(--accent);" data-en="⚡ One-Line Install" data-fa="⚡ نصب با یک دستور">⚡ One-Line Install</h3>
-            <div class="code">
-                <span class="g">bash &lt;(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/refs/heads/main/install.sh)</span>
-            </div>
+            <div class="code"><span class="g">bash &lt;(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/refs/heads/main/install.sh)</span></div>
         </div>
-
         <div class="steps">
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-content">
-                    <h3 data-en="Clone the repo" data-fa="ریپو رو کلون کن">Clone the repo</h3>
-                    <p data-en="Download the skill library to your machine." data-fa="کتابخانه مهارت‌ها رو دانلود کن.">Download the skill library to your machine.</p>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-content">
-                    <h3 data-en="Run the installer" data-fa="نصب‌کننده رو اجرا کن">Run the installer</h3>
-                    <p data-en="Interactive menu — pick your agents." data-fa="منوی تعاملی — اجنت‌هات رو انتخاب کن.">Interactive menu — pick your agents.</p>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-content">
-                    <h3 data-en="Start coding" data-fa="شروع به کدنویسی کن">Start coding</h3>
-                    <p data-en="Your agent now knows 25 professional skills." data-fa="اجنتت حالا ۲۵ مهارت حرفه‌ای بلده.">Your agent now knows 25 professional skills.</p>
-                </div>
-            </div>
+            <div class="step"><div class="step-num">1</div><div class="step-content"><h3 data-en="Clone the repo" data-fa="ریپو رو کلون کن">Clone the repo</h3><p data-en="Download the skill library." data-fa="کتابخانه مهارت‌ها رو دانلود کن.">Download the skill library.</p></div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-content"><h3 data-en="Run the installer" data-fa="نصب‌کننده رو اجرا کن">Run the installer</h3><p data-en="Interactive menu — pick your agents." data-fa="منوی تعاملی — اجنت‌هات رو انتخاب کن.">Interactive menu — pick your agents.</p></div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-content"><h3 data-en="Start coding" data-fa="شروع به کدنویسی کن">Start coding</h3><p data-en="Your agent now knows 39 professional skills." data-fa="اجنتت حالا ۳۹ مهارت حرفه‌ای بلده.">Your agent now knows 39 professional skills.</p></div></div>
         </div>
-
         <div class="code">
-            <span class="c"># One-line install</span><br>
-            <span class="g">bash &lt;(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh)</span><br><br>
-            <span class="c"># Or clone and install</span><br>
+            <span class="c"># Clone</span><br>
             <span class="g">git clone https://github.com/AnishtayiN/skills.git</span><br>
-            <span class="g">cd skills</span><br>
+            <span class="g">cd skills</span><br><br>
+            <span class="c"># Interactive install</span><br>
             <span class="g">./install.sh</span><br><br>
-            <span class="c"># Install directly</span><br>
+            <span class="c"># Or direct</span><br>
             <span class="g">./install.sh --claude</span><br>
-            <span class="g">./install.sh --cursor</span><br>
             <span class="g">./install.sh --all</span><br><br>
-            <span class="c"># Uninstall</span><br>
-            <span class="g">./install.sh --uninstall claude</span><br>
-            <span class="g">./install.sh --uninstall all</span><br><br>
-            <span class="c"># Update</span><br>
+            <span class="c"># Uninstall / Update</span><br>
+            <span class="g">./install.sh --uninstall all</span><br>
             <span class="g">./install.sh --update all</span>
         </div>
-
         <div class="menu-box">
             <h3 data-en="🎮 Interactive Menu" data-fa="🎮 منوی تعاملی">🎮 Interactive Menu</h3>
-            <div class="menu-line"><span class="check" style="color:var(--green)">[✓]</span><span class="num">1)</span><span class="label">Claude Code</span><span class="status" style="color:var(--green)">Installed</span></div>
-            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">2)</span><span class="label">Cursor AI</span><span class="status" style="color:var(--red)">Not Installed</span></div>
-            <div class="menu-line"><span class="check" style="color:var(--green)">[✓]</span><span class="num">3)</span><span class="label">Windsurf</span><span class="status" style="color:var(--green)">Installed</span></div>
-            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">4)</span><span class="label">Aider</span><span class="status" style="color:var(--red)">Not Installed</span></div>
-            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">5)</span><span class="label">Continue.dev</span><span class="status" style="color:var(--red)">Not Installed</span></div>
-            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">6)</span><span class="label">Hermes Agent</span><span class="status" style="color:var(--red)">Not Installed</span></div>
+            <div class="menu-line"><span class="check" style="color:var(--green)">[✓]</span><span class="num">1)</span><span class="label">Claude Code</span></div>
+            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">2)</span><span class="label">Cursor AI</span></div>
+            <div class="menu-line"><span class="check" style="color:var(--green)">[✓]</span><span class="num">3)</span><span class="label">Windsurf</span></div>
+            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">4)</span><span class="label">Aider</span></div>
+            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">5)</span><span class="label">Continue.dev</span></div>
+            <div class="menu-line"><span class="check" style="color:var(--red)">[ ]</span><span class="num">6)</span><span class="label">Hermes Agent</span></div>
             <div class="menu-sep"></div>
             <div class="menu-line"><span class="num" style="color:var(--accent)">7)</span><span class="label" data-en="Select All" data-fa="انتخاب همه">Select All</span></div>
             <div class="menu-line"><span class="num" style="color:var(--accent)">8)</span><span class="label" data-en="Deselect All" data-fa="لغو انتخاب">Deselect All</span></div>
@@ -214,104 +159,111 @@
     </div>
 </section>
 
-<!-- SKILLS -->
 <section id="skills">
     <div class="container">
         <h2 class="section-title" data-en="📋 Skills" data-fa="📋 مهارت‌ها">📋 Skills</h2>
-        <p class="section-desc" data-en="25 skills across 10 categories." data-fa="۲۵ مهارت در ۱۰ دسته‌بندی.">25 skills across 10 categories.</p>
+        <p class="section-desc" data-en="39 skills across 11 categories. Every skill has 7+ advanced techniques, 5+ patterns, 15 edge cases, 4 templates." data-fa="۳۹ مهارت در ۱۱ دسته‌بندی. هر مهارت ۷+ تکنیک پیشرفته، ۵+ الگو، ۱۵ edge case، ۴ قالب داره.">39 skills across 11 categories. Every skill has 7+ advanced techniques, 5+ patterns, 15 edge cases, 4 templates.</p>
 
-        <div class="cat-label" data-en="Core Analysis" data-fa="تحلیل پایه">Core Analysis</div>
+        <div class="cat-label">🧠 AI & Reasoning</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">project-analysis</div><div class="skill-desc" data-en="Understand project structure" data-fa="درک ساختار پروژه">Understand project structure</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">requirement-analysis</div><div class="skill-desc" data-en="Clarify user requirements" data-fa="روشن‌سازی نیازمندی‌ها">Clarify user requirements</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">task-planning</div><div class="skill-desc" data-en="Break work into steps" data-fa="تقسیم کار به مراحل">Break work into steps</div></div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">prompt-engineering</div><div class="skill-lines">353</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">chain-of-thought</div><div class="skill-lines">441</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">self-correction</div><div class="skill-lines">467</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">brainstorming</div><div class="skill-lines">570</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">rag-implementation</div><div class="skill-lines">772</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">agent-orchestration</div><div class="skill-lines">1,198</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">tool-management</div><div class="skill-lines">1,027</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">context-management</div><div class="skill-lines">1,229</div><span class="p p1">P1</span></div>
         </div>
 
-        <div class="cat-label" data-en="Coding" data-fa="کدنویسی">Coding</div>
+        <div class="cat-label">💻 Coding</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">code-generation</div><div class="skill-desc" data-en="Write new code" data-fa="نوشتن کد جدید">Write new code</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">code-editing</div><div class="skill-desc" data-en="Modify existing code" data-fa="ویرایش کد موجود">Modify existing code</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">code-explanation</div><div class="skill-desc" data-en="Explain code" data-fa="توضیح کد">Explain code</div></div><span class="p p2">P2</span></div>
-            <div class="skill-row"><div><div class="skill-name">debugging</div><div class="skill-desc" data-en="Find and fix bugs" data-fa="پیدا کردن و رفع باگ">Find and fix bugs</div></div><span class="p p0">P0</span></div>
-            <div class="skill-row"><div><div class="skill-name">refactoring</div><div class="skill-desc" data-en="Improve code structure" data-fa="بهبود ساختار کد">Improve code structure</div></div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">code-generation</div><div class="skill-lines">648</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">code-editing</div><div class="skill-lines">431</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">code-explanation</div><div class="skill-lines">661</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">debugging</div><div class="skill-lines">732</div><span class="p p0">P0</span></div>
+            <div class="skill-row"><div class="skill-name">refactoring</div><div class="skill-lines">831</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">api-integration</div><div class="skill-lines">791</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">web-scraping</div><div class="skill-lines">722</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">browser-automation</div><div class="skill-lines">886</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">clean-architecture</div><div class="skill-lines">1,034</div><span class="p p2">P2</span></div>
         </div>
 
-        <div class="cat-label" data-en="Quality" data-fa="کیفیت">Quality</div>
+        <div class="cat-label">✅ Quality</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">code-review</div><div class="skill-desc" data-en="Review code quality" data-fa="بررسی کیفیت کد">Review code quality</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">testing</div><div class="skill-desc" data-en="Create and run tests" data-fa="ایجاد و اجرای تست">Create and run tests</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">verification</div><div class="skill-desc" data-en="Verify changes work" data-fa="اعتبارسنجی تغییرات">Verify changes work</div></div><span class="p p0">P0</span></div>
+            <div class="skill-row"><div class="skill-name">code-review</div><div class="skill-lines">495</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">testing</div><div class="skill-lines">658</div><span class="p p1">P1</span></div>
+            <div class="skill-row"><div class="skill-name">verification</div><div class="skill-lines">603</div><span class="p p0">P0</span></div>
+            <div class="skill-row"><div class="skill-name">data-analysis</div><div class="skill-lines">1,143</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">data-cleaning</div><div class="skill-lines">1,328</div><span class="p p2">P2</span></div>
         </div>
 
-        <div class="cat-label" data-en="Architecture" data-fa="معماری">Architecture</div>
+        <div class="cat-label">🏗️ Architecture</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">system-design</div><div class="skill-desc" data-en="Design system architecture" data-fa="طراحی معماری سیستم">Design system architecture</div></div><span class="p p2">P2</span></div>
-            <div class="skill-row"><div><div class="skill-name">api-design</div><div class="skill-desc" data-en="Design APIs" data-fa="طراحی API">Design APIs</div></div><span class="p p2">P2</span></div>
-            <div class="skill-row"><div><div class="skill-name">database-design</div><div class="skill-desc" data-en="Design databases" data-fa="طراحی دیتابیس">Design databases</div></div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">system-design</div><div class="skill-lines">628</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">api-design</div><div class="skill-lines">766</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">database-design</div><div class="skill-lines">483</div><span class="p p2">P2</span></div>
         </div>
 
-        <div class="cat-label">DevOps</div>
+        <div class="cat-label">🔧 DevOps</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">git-workflow</div><div class="skill-desc" data-en="Manage Git operations" data-fa="مدیریت عملیات گیت">Manage Git operations</div></div><span class="p p2">P2</span></div>
-            <div class="skill-row"><div><div class="skill-name">dockerization</div><div class="skill-desc" data-en="Docker configuration" data-fa="پیکربندی داکر">Docker configuration</div></div><span class="p p3">P3</span></div>
-            <div class="skill-row"><div><div class="skill-name">ci-cd</div><div class="skill-desc" data-en="CI/CD pipelines" data-fa="پایپ‌لاین CI/CD">CI/CD pipelines</div></div><span class="p p3">P3</span></div>
-            <div class="skill-row"><div><div class="skill-name">deployment</div><div class="skill-desc" data-en="Deploy applications" data-fa="استقرار اپلیکیشن">Deploy applications</div></div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">git-workflow</div><div class="skill-lines">688</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">dockerization</div><div class="skill-lines">677</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">ci-cd</div><div class="skill-lines">778</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">deployment</div><div class="skill-lines">911</div><span class="p p3">P3</span></div>
         </div>
 
-        <div class="cat-label" data-en="Security & Performance" data-fa="امنیت و عملکرد">Security & Performance</div>
+        <div class="cat-label">🔒 Security & Performance</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">security-audit</div><div class="skill-desc" data-en="Security review" data-fa="بررسی امنیت">Security review</div></div><span class="p p0">P0</span></div>
-            <div class="skill-row"><div><div class="skill-name">performance-analysis</div><div class="skill-desc" data-en="Performance optimization" data-fa="بهینه‌سازی عملکرد">Performance optimization</div></div><span class="p p2">P2</span></div>
-            <div class="skill-row"><div><div class="skill-name">concurrency-debugging</div><div class="skill-desc" data-en="Debug concurrency issues" data-fa="عیب‌یابی همزمانی">Debug concurrency issues</div></div><span class="p p0">P0</span></div>
+            <div class="skill-row"><div class="skill-name">security-audit</div><div class="skill-lines">589</div><span class="p p0">P0</span></div>
+            <div class="skill-row"><div class="skill-name">performance-analysis</div><div class="skill-lines">677</div><span class="p p2">P2</span></div>
+            <div class="skill-row"><div class="skill-name">concurrency-debugging</div><div class="skill-lines">821</div><span class="p p0">P0</span></div>
         </div>
 
-        <div class="cat-label" data-en="AI & Documentation" data-fa="هوش مصنوعی و مستندات">AI & Documentation</div>
+        <div class="cat-label">📝 Documentation</div>
         <div class="skill-grid">
-            <div class="skill-row"><div><div class="skill-name">agent-orchestration</div><div class="skill-desc" data-en="Multi-agent coordination" data-fa="هماهنگی چنداجنتی">Multi-agent coordination</div></div><span class="p p2">P2</span></div>
-            <div class="skill-row"><div><div class="skill-name">tool-management</div><div class="skill-desc" data-en="Tool call management" data-fa="مدیریت فراخوانی ابزار">Tool call management</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">context-management</div><div class="skill-desc" data-en="Token management" data-fa="مدیریت توکن">Token management</div></div><span class="p p1">P1</span></div>
-            <div class="skill-row"><div><div class="skill-name">documentation</div><div class="skill-desc" data-en="Write documentation" data-fa="نوشتن مستندات">Write documentation</div></div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">documentation</div><div class="skill-lines">1,284</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">technical-writing</div><div class="skill-lines">753</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">summarization</div><div class="skill-lines">1,261</div><span class="p p3">P3</span></div>
+            <div class="skill-row"><div class="skill-name">changelog</div><div class="skill-lines">402</div><span class="p p3">P3</span></div>
         </div>
     </div>
 </section>
 
-<!-- PHILOSOPHY -->
 <section id="philosophy">
     <div class="container">
         <h2 class="section-title" data-en="🎯 Philosophy" data-fa="🎯 فلسفه">🎯 Philosophy</h2>
         <p class="section-desc" data-en="Three rules that govern every skill." data-fa="سه قانونی که همه مهارت‌ها رو کنترل میکنه.">Three rules that govern every skill.</p>
         <div class="principles">
-            <div class="principle">
-                <div class="icon">🔍</div>
-                <h3 data-en="Evidence First" data-fa="اول شواهد">Evidence First</h3>
-                <p data-en="Never guess. Always verify." data-fa="هرگز حدس نزن. همیشه verify کن.">Never guess. Always verify.</p>
-            </div>
-            <div class="principle">
-                <div class="icon">🎯</div>
-                <h3 data-en="Minimal Fix" data-fa="تعمیر حداقلی">Minimal Fix</h3>
-                <p data-en="Smallest change that fixes root cause." data-fa="کوچک‌ترین تغییری که root cause رو حل کنه.">Smallest change that fixes root cause.</p>
-            </div>
-            <div class="principle">
-                <div class="icon">✅</div>
-                <h3 data-en="Verification Required" data-fa="اعتبارسنجی ضروری">Verification Required</h3>
-                <p data-en="Never claim success without proof." data-fa="هرگز بدون اثبات ادعا نکن.">Never claim success without proof.</p>
-            </div>
+            <div class="principle"><div class="icon">🔍</div><h3 data-en="Evidence First" data-fa="اول شواهد">Evidence First</h3><p data-en="Never guess. Always verify." data-fa="هرگز حدس نزن. همیشه verify کن.">Never guess. Always verify.</p></div>
+            <div class="principle"><div class="icon">🎯</div><h3 data-en="Minimal Fix" data-fa="تعمیر حداقلی">Minimal Fix</h3><p data-en="Smallest change that fixes root cause." data-fa="کوچک‌ترین تغییری که root cause رو حل کنه.">Smallest change that fixes root cause.</p></div>
+            <div class="principle"><div class="icon">✅</div><h3 data-en="Verification Required" data-fa="اعتبارسنجی ضروری">Verification Required</h3><p data-en="Never claim success without proof." data-fa="هرگز بدون اثبات ادعا نکن.">Never claim success without proof.</p></div>
         </div>
     </div>
 </section>
 
-<!-- ROUTING -->
+<section>
+    <div class="container">
+        <h2 class="section-title" data-en="📊 Statistics" data-fa="📊 آمار">📊 Statistics</h2>
+        <div class="stats">
+            <div class="stat"><div class="num">39</div><div class="label" data-en="Skills" data-fa="مهارت">Skills</div></div>
+            <div class="stat"><div class="num">27K</div><div class="label" data-en="Lines" data-fa="خط">Lines</div></div>
+            <div class="stat"><div class="num">273+</div><div class="label" data-en="Techniques" data-fa="تکنیک">Techniques</div></div>
+            <div class="stat"><div class="num">585+</div><div class="label" data-en="Edge Cases" data-fa="موارد خاص">Edge Cases</div></div>
+        </div>
+    </div>
+</section>
+
 <section id="routing">
     <div class="container">
         <h2 class="section-title" data-en="🧭 Skill Routing" data-fa="🧭 مسیریابی مهارت">🧭 Skill Routing</h2>
         <p class="section-desc" data-en="How the agent picks the right skills." data-fa="اجنت چطور مهارت درست رو انتخاب میکنه.">How the agent picks the right skills.</p>
-        <div class="routing-box">User Request → Task Classifier → Skill Detector → Priority Sort
-        → Dependency Check → Conflict Check → Load Only Needed
-        → Execute → Verify → Response</div>
+        <div class="routing-box">Request → Classify → Detect Skills → Sort Priority
+→ Check Dependencies → Resolve Conflicts
+→ Load Only Needed → Execute → Verify → Response</div>
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
     <div class="container">
         <p data-en="Built with ❤️ for the AI Agent community" data-fa="ساخته شده با ❤️ برای جامعه اجنت‌های هوش مصنوعی">Built with ❤️ for the AI Agent community</p>
