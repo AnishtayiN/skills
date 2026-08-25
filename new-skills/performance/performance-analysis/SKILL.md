@@ -14,11 +14,11 @@ conflicts: []
 
 # Performance Analysis Skill
 
-## Purpose
+## Overview
 
 Systematic performance analysis and optimization. Measure before optimizing, profile to find bottlenecks, and apply targeted optimizations with measurable improvements.
 
-## When to Activate
+## When to Use This Skill
 
 - Code is slow or unresponsive
 - User reports performance issues
@@ -27,6 +27,15 @@ Systematic performance analysis and optimization. Measure before optimizing, pro
 - Database queries are slow
 - Application doesn't scale
 - User says "optimize this" or "make it faster"
+
+## When NOT to Use This Skill
+
+- When debugging logical errors unrelated to performance
+- When setting up initial development environments without performance requirements
+- When the application is already performing within acceptable thresholds
+- When the focus is on feature development rather than optimization
+- When dealing with UI/UX design issues rather than technical performance
+- When the problem is network-related rather than application performance
 
 ## Workflow
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: testing
 description: >-
   Create, run, and manage tests: unit, integration, E2E, regression, performance.
@@ -13,11 +13,11 @@ conflicts: []
 
 # Testing Skill
 
-## Purpose
+## Overview
 
 Create, run, and maintain tests across all levels of the test pyramid. Ensure code correctness through automated verification using unit tests, integration tests, and end-to-end tests with proper mocking strategies, property-based testing, mutation testing, and coverage analysis.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks to write tests
 - Test coverage is low
@@ -29,7 +29,7 @@ Create, run, and maintain tests across all levels of the test pyramid. Ensure co
 - تست بنویس (write tests), تست واحد (unit test)
 - 写测试, 单元测试
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - User wants to write production code (→ code-generation)
 - No code to test

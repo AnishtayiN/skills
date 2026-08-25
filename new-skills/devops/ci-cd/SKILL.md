@@ -13,11 +13,11 @@ conflicts: []
 
 # CI/CD Skill
 
-## Purpose
+## Overview
 
 Automate testing, building, and deployment with production-grade CI/CD pipelines including GitHub Actions deep dive, GitLab CI, pipeline optimization, matrix builds, caching strategies, secrets management, OIDC federation, canary deployments, and rollback strategies.
 
-## When to Activate
+## When to Use This Skill
 
 - Setting up CI/CD for new or existing projects
 - Optimizing pipeline speed and cost
@@ -27,6 +27,16 @@ Automate testing, building, and deployment with production-grade CI/CD pipelines
 - Setting up OIDC federation for cloud deployments
 - Configuring caching to speed up builds
 - Implementing rollback strategies
+
+## When NOT to Use This Skill
+
+- Writing application code (→ code-generation)
+- Debugging application logic (→ debugging)
+- Designing system architecture (→ system-design)
+- No deployment pipeline needed (local-only project)
+- Manual one-off tasks that don't need automation
+- Database schema design only (→ database-design)
+- Writing unit tests (→ testing)
 
 ## Workflow
 

@@ -14,11 +14,11 @@ conflicts: []
 
 # Concurrency Debugging Skill
 
-## Purpose
+## Overview
 
 Find and fix concurrency issues including race conditions, deadlocks, livelocks, and async/await pitfalls. Understand concurrency models and apply appropriate synchronization patterns.
 
-## When to Activate
+## When to Use This Skill
 
 - Non-deterministic failures (works sometimes, fails sometimes)
 - Deadlock detected (program hangs)
@@ -27,6 +27,15 @@ Find and fix concurrency issues including race conditions, deadlocks, livelocks,
 - High CPU usage with low throughput
 - Race conditions in shared state
 - "Cannot access already disposed object" errors
+
+## When NOT to Use This Skill
+
+- When debugging purely sequential, single-threaded code without concurrency primitives
+- When the issue is syntactic (syntax errors, typos, missing imports)
+- When performance problems stem from algorithmic complexity rather than concurrency
+- When working with single-threaded event loops where concurrency primitives aren't used
+- When the problem involves external services, network issues, or API failures
+- When dealing with configuration, deployment, or environment setup issues
 
 ## Workflow
 

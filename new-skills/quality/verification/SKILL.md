@@ -1,4 +1,4 @@
----
+﻿---
 name: verification
 description: >-
   Verify that changes work correctly. Build, test, lint, type-check, and smoke test.
@@ -13,11 +13,11 @@ conflicts: []
 
 # Verification Skill
 
-## Purpose
+## Overview
 
 NEVER claim something works without verification. Every significant change MUST be verified through a systematic pipeline: build verification, lint verification, type checking, test verification, manual verification, regression detection, and deployment verification.
 
-## When to Activate
+## When to Use This Skill
 
 - After any code change
 - After debugging (verify fix)
@@ -30,7 +30,7 @@ NEVER claim something works without verification. Every significant change MUST 
 - 验证 (verify), 检查 (check), 确认 (confirm)
 - بررسی کن (check it), تایید کن (confirm it)
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Reading code (no changes made)
 - Planning (no code changed)

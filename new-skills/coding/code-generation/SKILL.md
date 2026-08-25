@@ -13,11 +13,11 @@ conflicts: []
 
 # Code Generation Skill
 
-## Purpose
+## Overview
 
 Write clean, production-ready code that follows project conventions and requirements. Generate type-safe, well-tested, maintainable code from specifications.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks to create new code
 - User needs a function, class, module, or file
@@ -25,7 +25,7 @@ Write clean, production-ready code that follows project conventions and requirem
 - User asks to scaffold or template
 - User provides a specification or API contract
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Modifying existing code (→ code-editing)
 - Fixing bugs (→ debugging)

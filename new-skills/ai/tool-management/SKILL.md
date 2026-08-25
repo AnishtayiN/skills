@@ -7,7 +7,8 @@ description: >-
   tool retry, tool routing, hallucinated tool, tool validation, tool timeout,
   parallel tools, rate limit, tool schema, tool parsing,
   فراخوانی ابزار, خطای ابزار, ابزار پیدا نشد, اعتبارسنجی ابزار,
-  محدودیت ابزار, اجرای موازی ابزار
+  محدودیت ابزار, اجرای موازی ابزار,
+  工具调用, 工具错误, 工具重试, 工具验证, 速率限制, 并行工具
 priority: P1
 dependencies: [agent-orchestration, context-management]
 conflicts: []
@@ -15,7 +16,7 @@ conflicts: []
 
 # Tool Management Skill
 
-## Purpose
+## Overview
 
 Manage tool calls effectively throughout their entire lifecycle: validate inputs,
 handle errors with intelligent retry strategies, prevent infinite loops, execute
@@ -23,7 +24,7 @@ tools in parallel when safe, respect rate limits, parse and validate results,
 and recover gracefully from any failure mode. This skill ensures that every
 tool interaction is robust, efficient, and predictable.
 
-## When to Activate
+## When to Use This Skill
 
 - Tool call fails with any error
 - Tool returns unexpected or malformed result
@@ -34,7 +35,7 @@ tool interaction is robust, efficient, and predictable.
 - Tool schema validation fails
 - Tool call takes longer than expected
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Simple single tool call that succeeds on first try
 - User provides exact tool call with known-good arguments

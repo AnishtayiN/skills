@@ -13,11 +13,11 @@ conflicts: []
 
 # Dockerization Skill
 
-## Purpose
+## Overview
 
 Create production-ready Docker configurations with optimized builds, security hardening, proper signal handling, health checks, multi-architecture support, and comprehensive docker-compose patterns.
 
-## When to Activate
+## When to Use This Skill
 
 - Creating Dockerfiles for new or existing applications
 - Optimizing Docker image size and build speed
@@ -27,6 +27,15 @@ Create production-ready Docker configurations with optimized builds, security ha
 - Hardening containers for production security
 - Configuring GPU-enabled containers
 - Setting up BuildKit cache mounts for faster builds
+
+## When NOT to Use This Skill
+
+- When deploying to bare-metal or VM infrastructure without containerization requirements
+- When applications are single-file scripts that don't benefit from container packaging
+- When the team lacks Docker runtime expertise and the learning curve outweighs benefits
+- When orchestrating serverless functions where container management is handled by the platform
+- When building for air-gapped environments without access to container registries
+- When running legacy applications that have deep OS dependencies incompatible with containers
 
 ## Workflow
 

@@ -15,7 +15,7 @@ conflicts: []
 
 # Context Management Skill
 
-## Purpose
+## Overview
 
 Use context windows efficiently to maximize the quality and relevance of information
 available to the agent. Prevent overflow, reduce noise, maintain coherence across
@@ -24,7 +24,7 @@ This skill covers token counting, context window optimization, conversation
 summarization, sliding window strategies, key information extraction, context
 compression, and priority-based context selection.
 
-## When to Activate
+## When to Use This Skill
 
 - Context window is getting full (approaching token limit)
 - Token limit approaching threshold (80%+ usage)
@@ -35,7 +35,7 @@ compression, and priority-based context selection.
 - User requests a context refresh or restart
 - Task requires maintaining long-term memory across turns
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Fresh conversation with plenty of context space
 - Single-turn interactions with minimal context

@@ -13,11 +13,11 @@ conflicts: []
 
 # System Design Skill
 
-## Purpose
+## Overview
 
 Design scalable, maintainable system architecture. Make informed trade-offs using back-of-envelope calculations, bounded context extraction, FMEA-lite analysis, data partitioning strategies, consistency patterns, multi-region architecture, and CQRS patterns.
 
-## When to Activate
+## When to Use This Skill
 
 - Designing a new system
 - Scaling an existing system
@@ -28,7 +28,7 @@ Design scalable, maintainable system architecture. Make informed trade-offs usin
 - 系统设计 (system design), 架构 (architecture)
 - طراحی سیستم (system design), معماری (architecture)
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Implementing a specific feature (→ code-generation)
 - Debugging (→ debugging)

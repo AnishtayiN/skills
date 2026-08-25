@@ -1,4 +1,4 @@
----
+﻿---
 name: code-review
 description: >-
   Multi-dimensional code review: correctness, security, performance, maintainability, architecture.
@@ -13,11 +13,11 @@ conflicts: []
 
 # Code Review Skill
 
-## Purpose
+## Overview
 
 Systematic multi-dimensional code review using a structured 5-pass methodology. Catch issues before they reach production through correctness analysis, security auditing (STRIDE threat modeling), performance profiling, maintainability scoring, and architectural evaluation.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks for code review
 - Before merging a PR / Pull Request
@@ -29,7 +29,7 @@ Systematic multi-dimensional code review using a structured 5-pass methodology. 
 - بررسی کد (review code), نقد کد (code critique)
 - 审查代码, 代码审查
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - User wants to write new code (→ code-generation)
 - User wants to fix bugs (→ debugging)

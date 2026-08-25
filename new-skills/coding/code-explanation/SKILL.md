@@ -13,11 +13,11 @@ conflicts: []
 
 # Code Explanation Skill
 
-## Purpose
+## Overview
 
 Explain code at the right level of detail for the audience. From 30,000-foot view to line-by-line analysis. Support multi-level explanations, visual diagrams, call flow tracing, dependency mapping, and architecture explanation.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks "what does this code do?"
 - User asks to explain a function/class/module
@@ -27,7 +27,7 @@ Explain code at the right level of detail for the audience. From 30,000-foot vie
 - User wants a walkthrough of code flow
 - User asks about call stacks or execution paths
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - User wants to modify code (→ code-editing)
 - User wants to fix bugs (→ debugging)

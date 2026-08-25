@@ -17,11 +17,11 @@ conflicts: [refactoring]
 
 # Debugging Skill
 
-## Purpose
+## Overview
 
 Find and fix bugs systematically. NO GUESSING. Evidence → Hypothesis → Experiment → Root Cause → Minimal Fix → Verify.
 
-## When to Activate
+## When to Use This Skill
 
 - Any error, exception, or crash
 - Wrong output or unexpected behavior
@@ -30,7 +30,7 @@ Find and fix bugs systematically. NO GUESSING. Evidence → Hypothesis → Exper
 - Agent loop or tool call failure
 - User says "it's broken" or "fix this"
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Writing new code (→ code-generation)
 - User wants code review (→ code-review)

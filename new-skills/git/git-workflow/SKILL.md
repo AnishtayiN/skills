@@ -13,11 +13,11 @@ conflicts: []
 
 # Git Workflow Skill
 
-## Purpose
+## Overview
 
 Manage Git operations safely and effectively, including branching strategies, conflict resolution, bisect debugging, cherry-pick workflows, interactive rebase, stash management, conventional commits, and Git hooks.
 
-## When to Activate
+## When to Use This Skill
 
 - Creating commits or conventional commits
 - Managing branches with defined strategies
@@ -28,6 +28,15 @@ Manage Git operations safely and effectively, including branching strategies, co
 - Cherry-picking specific commits
 - Configuring Git hooks
 - Managing stashes across context switches
+
+## When NOT to Use This Skill
+
+- When working with files outside of a Git repository
+- When the task involves reading or editing file contents without version control operations
+- When using a centralized version control system (SVN, Perforce) instead of Git
+- When the team does not use branching strategies or PR-based workflows
+- When managing build artifacts or binary files that shouldn't be in Git history
+- When performing database migrations or deployment tasks unrelated to source control
 
 ## Workflow
 

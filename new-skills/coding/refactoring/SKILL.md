@@ -1,4 +1,4 @@
----
+﻿---
 name: refactoring
 description: >-
   Improve code structure without changing behavior. Extract, rename, move, simplify, optimize.
@@ -13,11 +13,11 @@ conflicts: [debugging]
 
 # Refactoring Skill
 
-## Purpose
+## Overview
 
 Improve code structure, readability, and maintainability WITHOUT changing behavior. Apply SOLID principles, eliminate code smells, and use proven refactoring techniques safely.
 
-## When to Activate
+## When to Use This Skill
 
 - Code works but is hard to maintain
 - User asks to clean up or simplify code
@@ -26,7 +26,7 @@ Improve code structure, readability, and maintainability WITHOUT changing behavi
 - Technical debt needs reduction
 - Code review identified structural issues
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Code has bugs (→ debugging first)
 - User wants new features (→ code-generation)

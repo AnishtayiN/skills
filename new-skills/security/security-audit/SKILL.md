@@ -14,11 +14,11 @@ conflicts: []
 
 # Security Audit Skill
 
-## Purpose
+## Overview
 
 Comprehensive security review and vulnerability assessment. Identify, analyze, and remediate security vulnerabilities across the entire application stack including code, infrastructure, dependencies, and configurations.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks for security review
 - Before deployment to production
@@ -28,6 +28,15 @@ Comprehensive security review and vulnerability assessment. Identify, analyze, a
 - New dependency added to project
 - Infrastructure changes or container deployments
 - Compliance audit required
+
+## When NOT to Use This Skill
+
+- When performing routine code reviews without security concerns
+- When debugging non-security-related bugs or performance issues
+- When setting up development environments or local tooling
+- When the application has no user input or external data processing
+- When the system is purely internal with no external attack surface
+- When compliance requirements don't apply to the current scope
 
 ## Workflow
 

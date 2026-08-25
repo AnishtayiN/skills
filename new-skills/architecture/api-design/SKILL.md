@@ -13,11 +13,11 @@ conflicts: []
 
 # API Design Skill
 
-## Purpose
+## Overview
 
 Design clean, consistent, well-documented APIs covering REST conventions deep dive, GraphQL schema design, versioning strategies, error handling patterns, pagination, rate limiting, authentication/authorization, and OpenAPI spec generation.
 
-## When to Activate
+## When to Use This Skill
 
 - Designing new API endpoints
 - Creating API documentation
@@ -28,7 +28,7 @@ Design clean, consistent, well-documented APIs covering REST conventions deep di
 - API设计 (API design), 接口设计 (interface design)
 - طراحی API (API design)
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Implementing business logic only (→ code-generation)
 - Database design only (→ database-design)

@@ -13,11 +13,11 @@ conflicts: []
 
 # Deployment Skill
 
-## Purpose
+## Overview
 
 Deploy applications safely with rollback capability using production-grade strategies including blue-green deployments, canary releases, rolling updates, feature flags, database migration coordination, monitoring, cost optimization, and multi-region architecture.
 
-## When to Activate
+## When to Use This Skill
 
 - Deploying to staging or production environments
 - Planning deployment strategy for a new service
@@ -28,6 +28,15 @@ Deploy applications safely with rollback capability using production-grade strat
 - Setting up post-deployment monitoring
 - Optimizing cloud infrastructure costs
 - Planning multi-region deployment architecture
+
+## When NOT to Use This Skill
+
+- Local development or testing (use docker-compose instead)
+- Simple static site hosting (use CI/CD static export)
+- Prototype/demo deployments without production requirements
+- Tasks that don't involve releasing code to an environment
+- Server setup tasks unrelated to application deployment
+- When a rollback plan is not needed (throwaway environments)
 
 ## Workflow
 

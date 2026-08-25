@@ -14,11 +14,11 @@ conflicts: []
 
 # Documentation Skill
 
-## Purpose
+## Overview
 
 Create clear, useful, and maintainable documentation. Write for the reader, not the writer. Implement documentation-as-code practices with testing and continuous integration.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks to write documentation
 - New project needs README
@@ -29,6 +29,15 @@ Create clear, useful, and maintainable documentation. Write for the reader, not 
 - Deprecation notices needed
 - SDK or CLI documentation
 - Documentation testing required
+
+## When NOT to Use This Skill
+
+- Code changes that don't affect public interface
+- Internal implementation details that change frequently
+- One-off scripts with no reuse potential
+- When the code itself is self-documenting (clear naming, types)
+- Rapid prototyping where documentation would be outdated instantly
+- When the user explicitly says "no docs needed"
 
 ## Workflow
 

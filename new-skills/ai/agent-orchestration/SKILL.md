@@ -15,11 +15,11 @@ conflicts: []
 
 # Agent Orchestration Skill
 
-## Purpose
+## Overview
 
 Coordinate multiple AI agents effectively. Design and implement multi-agent systems with proper communication, task delegation, error recovery, state management, and loop prevention.
 
-## When to Activate
+## When to Use This Skill
 
 - Task requires multiple agents
 - User asks for agent coordination
@@ -28,6 +28,15 @@ Coordinate multiple AI agents effectively. Design and implement multi-agent syst
 - Multi-agent system design
 - Agent communication patterns
 - Error recovery in agent systems
+
+## When NOT to Use This Skill
+
+- Single-agent tasks with no coordination needed
+- Simple deterministic workflows (no branching logic)
+- Tasks with no inter-agent dependencies
+- One-shot prompts that don't need orchestration
+- Simple tool-calling chains (use tool-management instead)
+- Tasks where a single agent can handle all subtasks
 
 ## Workflow
 

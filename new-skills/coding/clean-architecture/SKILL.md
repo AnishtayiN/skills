@@ -1,905 +1,793 @@
 ---
 name: clean-architecture
 description: >-
-  English: Clean architecture and SOLID principles, dependency rule, entities use-cases adapters frameworks layers, interface segregation principle, dependency inversion principle, repository pattern, unit of work pattern, CQRS command query responsibility segregation, domain events, hexagonal architecture ports and adapters, onion architecture, domain-driven design, bounded contexts, aggregate roots, value objects, domain services.
-  Farsi: معماری تمیز و اصول SOLID، قاعده وابستگی، لایه‌های entities use-cases adapters frameworks، اصل جداسازی رابط، اصل وارونگی وابستگی، الگوی Repository، الگوی Unit of Work، CQRS جدایش مسئولیت فرمان پرسش، رویدادهای دامنه، معماری شش‌لایه ports and adapters، معماری پیازی، طراحی محور دامنه.
-  Chinese: 洁净架构与SOLID原则，依赖规则，实体/用例/适配器/框架层，接口隔离原则，依赖倒置原则，仓储模式，工作单元模式，CQRS命令查询职责分离，领域事件，六边形架构端口与适配器，洋葱架构，领域驱动设计。
+  Clean architecture and SOLID principles for maintainable, testable software systems.
+  Covers dependency rule, four layers (entities/use-cases/adapters/frameworks), interface
+  segregation principle, dependency inversion principle, repository pattern, unit of work pattern,
+  CQRS (command query responsibility segregation), domain events, hexagonal architecture (ports
+  and adapters), onion architecture, SOLID principles with code examples, adapter pattern,
+  facade pattern. معماری تمیز و اصول SOLID، قاعده وابستگی، الگوی Repository،
+  CQRS، رویدادهای دامنه، معماری شش‌لایه، معماری پیازی. 清洁架构，SOLID原则，
+  依赖规则，仓储模式，领域事件，六边形架构
 ---
 
-# Clean Architecture
+# Clean Architecture & SOLID Principles
 
 ## Overview
 
-Clean Architecture is a software design philosophy introduced by Robert C. Martin (Uncle Bob) that organizes code into concentric layers with a strict dependency rule: source code dependencies point inward toward higher-level policies. The core principle is that business logic (entities and use cases) must never depend on external details (databases, frameworks, UI).
+Clean Architecture is a software design philosophy that separates concerns into concentric layers, ensuring that business logic remains independent of frameworks, databases, UI, and external services. Created by Robert C. Martin (Uncle Bob), it provides a blueprint for building systems that are testable, maintainable, and resilient to change.
 
-This skill encompasses Clean Architecture, SOLID principles, and complementary patterns like CQRS, Domain Events, Repository Pattern, and Unit of Work. It also covers related architectural styles including Hexagonal (Ports & Adapters) Architecture, Onion Architecture, and Domain-Driven Design (DDD) patterns such as Aggregates, Value Objects, and Bounded Contexts.
+The core insight is simple but profound: **business rules should not depend on anything external.** The database should be replaceable. The UI should be swappable. The frameworks should be a detail. Only the business logic—the domain—is permanent.
 
-The goal is software that is **testable**, **maintainable**, **flexible**, and **independent of external frameworks**—systems where business logic can survive changes in database, UI, or infrastructure without modification.
+This skill covers Clean Architecture, SOLID principles, and related patterns (Repository, Unit of Work, CQRS, Domain Events, Hexagonal/Ports-and-Adapters, Onion Architecture) with practical TypeScript and Python code examples.
+
+**Core Philosophy:** "Architecture is about the decisions you wish you could get right early." Every architectural decision is a trade-off. The goal is not perfection but *clarity of boundaries*—so that when requirements change (and they will), the blast radius of any change is contained within a single layer.
+
+**Key Benefits:**
+- **Testability:** Business logic can be tested without databases, networks, or UIs
+- **Framework Independence:** Replace Express with FastAPI without touching domain logic
+- **UI Independence:** Switch from CLI to web to mobile without rearchitecting
+- **Database Independence:** Swap PostgreSQL for MongoDB without changing business rules
+- **External Agency Independence:** Third-party services become replaceable adapters
 
 ## When to Use This Skill
 
-- Building enterprise applications with complex business logic
-- Projects expected to last 5+ years with evolving requirements
-- Systems requiring testability without external dependencies
-- Microservices with clear domain boundaries
-- Applications that may switch databases, frameworks, or UI
-- Teams needing clear separation of concerns and ownership
-- Systems requiring audit trails, event sourcing, or CQRS
-- Projects following Domain-Driven Design (DDD)
-- APIs that must remain backward compatible during refactoring
-- Applications with complex validation and business rules
+- Designing systems expected to evolve over years, not months
+- Building domains with complex business rules (fintech, healthcare, e-commerce)
+- Creating systems that must support multiple interfaces (API, CLI, web, mobile)
+- Working with teams where multiple developers need clear boundaries
+- Building systems that require high test coverage (60%+ unit tests)
+- Refactoring monolithic applications into modular architectures
+- Designing microservices with clear domain boundaries
+- Creating plugin architectures where external code must be safely integrated
+- Building event-driven systems with complex domain interactions
+- Developing APIs that must remain stable while internal implementations change
 
 ## When NOT to Use This Skill
 
-- Simple CRUD applications with minimal business logic
-- Prototype or proof-of-concept projects
-- Small scripts or utilities
-- Single-developer projects with no expected evolution
-- Performance-critical systems where abstraction overhead matters
-- Projects with tight deadlines and simple requirements
+- Simple CRUD applications with minimal business logic (a simpler MVC pattern suffices)
+- Prototypes and proof-of-concepts where speed of delivery matters more than structure
+- Small scripts or utilities with a single responsibility
+- When the team is small (1-2 developers) and communication overhead exceeds the benefit
+- When the domain is stable and unlikely to change (rare in practice)
+- When performance constraints demand the tightest possible coupling
+- When the project has a very short lifespan (< 3 months)
 
 ## Workflow
 
-### Phase 1: Domain Modeling
+### Phase 1: Identify the Domain Model
 
-1. **Identify entities**: Core business objects with identity (User, Order, Product)
-2. **Define value objects**: Immutable objects without identity (Money, Address, DateRange)
-3. **Design aggregates**: Clusters of entities with consistency boundaries
-4. **Specify domain events**: What happens in the domain (OrderPlaced, PaymentReceived)
-5. **Map bounded contexts**: Define clear boundaries between subdomains
-
-### Phase 2: Architecture Design
-
-1. **Define layers**: Entities → Use Cases → Interface Adapters → Frameworks & Drivers
-2. **Create interfaces (ports)**: Abstract boundaries between layers
-3. **Design repository interfaces**: In the domain/use-case layer, implement in adapter layer
-4. **Plan CQRS separation**: Read models vs. write models if complexity warrants
-5. **Define anti-corruption layers**: Translate between bounded contexts
-
-### Phase 3: Implementation
-
-1. **Implement entities**: Pure business logic, no external dependencies
-2. **Build use cases**: Orchestrate entity interactions, define input/output ports
-3. **Create adapters**: Repository implementations, API controllers, UI components
-4. **Wire dependencies**: Use dependency injection to connect layers
-5. **Implement domain events**: Event publishing and handling
-
-### Phase 4: Testing
-
-1. **Unit test entities**: Pure business logic tests, no mocks needed
-2. **Test use cases**: Mock only repository/external interfaces
-3. **Integration test adapters**: Test real database/API implementations
-4. **Contract test interfaces**: Verify adapter implementations match port contracts
-5. **End-to-end test workflows**: Full flow through all layers
-
-### Phase 5: Evolution
-
-1. **Refactor within layers**: Change implementations without affecting other layers
-2. **Add new features**: Extend entities and use cases without modifying existing code
-3. **Swap adapters**: Change database, API, or framework by swapping adapter implementations
-4. **Extract bounded contexts**: Split into microservices when boundaries are clear
-5. **Monitor and optimize**: Profile and optimize without violating architectural boundaries
-
-## Advanced Techniques
-
-### 1. Entity Design with Domain Logic
+Before writing any architecture, understand the business domain:
 
 ```typescript
-// Value Object (immutable, no identity)
-class Money {
-  constructor(
-    public readonly amount: number,
-    public readonly currency: string
-  ) {
-    if (amount < 0) throw new Error('Amount cannot be negative');
-    if (!currency || currency.length !== 3) {
-      throw new Error('Invalid currency code');
-    }
-  }
+// DOMAIN MODEL: The heart of your system
+// These are pure business objects with NO framework dependencies
 
-  add(other: Money): Money {
-    if (this.currency !== other.currency) {
-      throw new Error('Cannot add different currencies');
-    }
-    return new Money(this.amount + other.amount, this.currency);
-  }
-
-  multiply(factor: number): Money {
-    return new Money(this.amount * factor, this.currency);
-  }
-
-  equals(other: Money): boolean {
-    return this.amount === other.amount && this.currency === other.currency;
-  }
-
-  static zero(currency: string): Money {
-    return new Money(0, currency);
-  }
+interface Money {
+  amount: number;
+  currency: string;
 }
 
-// Entity (has identity, mutable state)
-class Order {
-  private _items: OrderItem[] = [];
-  private _status: OrderStatus = OrderStatus.Draft;
-  private _events: DomainEvent[] = [];
+interface OrderItem {
+  productId: string;
+  quantity: number;
+  unitPrice: Money;
+}
 
-  constructor(
-    public readonly id: OrderId,
-    public readonly customerId: CustomerId,
-    private _createdAt: Date = new Date()
-  ) {}
+interface Order {
+  id: string;
+  customerId: string;
+  items: OrderItem[];
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  createdAt: Date;
+  totalAmount(): Money;
+  addItem(item: OrderItem): void;
+  cancel(): void;
+  canBeCancelled(): boolean;
+}
 
-  get items(): ReadonlyArray<OrderItem> {
-    return [...this._items];
+// Domain Rule: An order can only be cancelled if it's pending or confirmed
+class OrderImpl implements Order {
+  id: string;
+  customerId: string;
+  items: OrderItem[] = [];
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' = 'pending';
+  createdAt: Date = new Date();
+
+  totalAmount(): Money {
+    const total = this.items.reduce((sum, item) => sum + item.unitPrice.amount * item.quantity, 0);
+    return { amount: total, currency: this.items[0]?.unitPrice.currency ?? 'USD' };
   }
 
-  get status(): OrderStatus {
-    return this._status;
+  addItem(item: OrderItem): void {
+    if (this.status !== 'pending') {
+      throw new Error('Cannot add items to a non-pending order');
+    }
+    this.items.push(item);
   }
 
-  get total(): Money {
-    return this._items.reduce(
-      (total, item) => total.add(item.subtotal),
-      Money.zero('USD')
-    );
+  cancel(): void {
+    if (!this.canBeCancelled()) {
+      throw new Error(`Cannot cancel order in status: ${this.status}`);
+    }
+    this.status = 'cancelled';
   }
 
-  addItem(productId: ProductId, quantity: number, price: Money): void {
-    if (this._status !== OrderStatus.Draft) {
-      throw new Error('Cannot add items to non-draft order');
-    }
-    if (quantity <= 0) {
-      throw new Error('Quantity must be positive');
-    }
-
-    const existingItem = this._items.find(
-      item => item.productId === productId
-    );
-
-    if (existingItem) {
-      existingItem.increaseQuantity(quantity);
-    } else {
-      this._items.push(new OrderItem(productId, quantity, price));
-    }
-
-    this.addEvent(new ItemAddedToOrder(this.id, productId, quantity));
-  }
-
-  submit(): void {
-    if (this._status !== OrderStatus.Draft) {
-      throw new Error('Only draft orders can be submitted');
-    }
-    if (this._items.length === 0) {
-      throw new Error('Cannot submit empty order');
-    }
-
-    this._status = OrderStatus.Submitted;
-    this.addEvent(new OrderSubmitted(this.id, this.total));
-  }
-
-  cancel(reason: string): void {
-    if (this._status === OrderStatus.Cancelled) {
-      throw new Error('Order is already cancelled');
-    }
-    if (this._status === OrderStatus.Delivered) {
-      throw new Error('Cannot cancel delivered order');
-    }
-
-    this._status = OrderStatus.Cancelled;
-    this.addEvent(new OrderCancelled(this.id, reason));
-  }
-
-  private addEvent(event: DomainEvent): void {
-    this._events.push(event);
-  }
-
-  pullEvents(): DomainEvent[] {
-    const events = [...this._events];
-    this._events = [];
-    return events;
+  canBeCancelled(): boolean {
+    return this.status === 'pending' || this.status === 'confirmed';
   }
 }
 ```
 
-### 2. Repository Pattern with Interface Segregation
+### Phase 2: Apply the Dependency Rule
+
+The Dependency Rule: source code dependencies must point inward. The inner layers know nothing about the outer layers.
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   FRAMEWORKS                         │
+│  (Express, React, PostgreSQL, Redis, etc.)           │
+│                                                      │
+│  ┌─────────────────────────────────────────────────┐ │
+│  │                ADAPTERS                          │ │
+│  │  (Controllers, Repositories, Gateways)           │ │
+│  │                                                  │ │
+│  │  ┌─────────────────────────────────────────────┐ │ │
+│  │  │            USE CASES                        │ │ │
+│  │  │  (Application Business Rules)               │ │ │
+│  │  │                                             │ │ │
+│  │  │  ┌─────────────────────────────────────────┐ │ │ │
+│  │  │  │           ENTITIES                      │ │ │ │
+│  │  │  │  (Enterprise Business Rules)            │ │ │ │
+│  │  │  │                                         │ │ │ │
+│  │  │  │  ← DEPENDENCIES POINT INWARD →         │ │ │ │
+│  │  │  └─────────────────────────────────────────┘ │ │ │
+│  │  └─────────────────────────────────────────────┘ │ │
+│  └─────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘
+```
 
 ```typescript
-// Domain Layer: Repository Interface (Port)
+// ENTITIES (Innermost Layer) — Pure business logic
+// No imports from outer layers. No framework dependencies.
+
+// Use Cases (Application Layer) — Orchestrate business logic
+// Depends on entities and repository interfaces
+
+interface CreateOrderUseCase {
+  execute(input: CreateOrderInput): Promise<CreateOrderOutput>;
+}
+
+interface CreateOrderInput {
+  customerId: string;
+  items: Array<{ productId: string; quantity: number }>;
+}
+
+interface CreateOrderOutput {
+  orderId: string;
+  totalAmount: Money;
+  status: string;
+}
+
+class CreateOrder implements CreateOrderUseCase {
+  constructor(
+    private orderRepository: OrderRepository,  // Interface (inner layer)
+    private productCatalog: ProductCatalog,     // Interface (inner layer)
+    private eventBus: DomainEventBus,           // Interface (inner layer)
+  ) {}
+
+  async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
+    // 1. Validate business rules
+    const customer = await this.orderRepository.findCustomerById(input.customerId);
+    if (!customer) throw new Error('Customer not found');
+
+    // 2. Create domain entity
+    const order = new OrderImpl();
+    order.customerId = input.customerId;
+
+    for (const item of input.items) {
+      const product = await this.productCatalog.getProduct(item.productId);
+      if (!product) throw new Error(`Product not found: ${item.productId}`);
+      order.addItem({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: product.price,
+      });
+    }
+
+    // 3. Persist via repository interface (implemented in adapter layer)
+    await this.orderRepository.save(order);
+
+    // 4. Emit domain event
+    await this.eventBus.publish({
+      type: 'ORDER_CREATED',
+      orderId: order.id,
+      customerId: order.customerId,
+      totalAmount: order.totalAmount(),
+      timestamp: new Date(),
+    });
+
+    return {
+      orderId: order.id,
+      totalAmount: order.totalAmount(),
+      status: order.status,
+    };
+  }
+}
+```
+
+### Phase 3: Repository Pattern
+
+```typescript
+// REPOSITORY INTERFACE (defined in domain/use-case layer)
+// The implementation lives in the adapter layer
+
 interface OrderRepository {
-  findById(id: OrderId): Promise<Order | null>;
-  findByCustomerId(customerId: CustomerId): Promise<Order[]>;
+  findById(id: string): Promise<Order | null>;
+  findCustomerById(id: string): Promise<Customer | null>;
   save(order: Order): Promise<void>;
-  delete(id: OrderId): Promise<void>;
+  findByCustomerId(customerId: string): Promise<Order[]>;
 }
 
-// Specific read model interface (Interface Segregation)
-interface OrderReadModel {
-  findById(id: string): Promise<OrderDTO | null>;
-  findByStatus(status: OrderStatus): Promise<OrderSummaryDTO[]>;
-  getOrdersByDateRange(start: Date, end: Date): Promise<OrderDTO[]>;
-}
-
-// Infrastructure Layer: Repository Implementation (Adapter)
+// ADAPTER LAYER: PostgreSQL Implementation
 class PostgresOrderRepository implements OrderRepository {
   constructor(private db: DatabaseConnection) {}
 
-  async findById(id: OrderId): Promise<Order | null> {
-    const row = await this.db.query(
-      'SELECT * FROM orders WHERE id = $1',
-      [id.value]
-    );
+  async findById(id: string): Promise<Order | null> {
+    const row = await this.db.query('SELECT * FROM orders WHERE id = $1', [id]);
     if (!row) return null;
     return this.toDomain(row);
   }
 
-  async findByCustomerId(customerId: CustomerId): Promise<Order[]> {
-    const rows = await this.db.query(
-      'SELECT * FROM orders WHERE customer_id = $1',
-      [customerId.value]
-    );
-    return rows.map(row => this.toDomain(row));
-  }
-
   async save(order: Order): Promise<void> {
-    const data = this.toPersistence(order);
     await this.db.query(
-      `INSERT INTO orders (id, customer_id, status, total, created_at)
-       VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (id) DO UPDATE SET
-         status = $3, total = $4`,
-      [data.id, data.customerId, data.status, data.total, data.createdAt]
+      'INSERT INTO orders (id, customer_id, status, created_at) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET status = $3',
+      [order.id, order.customerId, order.status, order.createdAt]
     );
-  }
-
-  async delete(id: OrderId): Promise<void> {
-    await this.db.query('DELETE FROM orders WHERE id = $1', [id.value]);
   }
 
   private toDomain(row: any): Order {
-    // Map database row to domain entity
-    const order = new Order(
-      new OrderId(row.id),
-      new CustomerId(row.customer_id),
-      row.created_at
-    );
-    // Reconstitute items...
+    const order = new OrderImpl();
+    order.id = row.id;
+    order.customerId = row.customer_id;
+    order.status = row.status;
+    order.createdAt = row.created_at;
     return order;
-  }
-
-  private toPersistence(order: Order): any {
-    // Map domain entity to database row
-    return {
-      id: order.id.value,
-      customerId: order.customerId.value,
-      status: order.status,
-      total: order.total.amount,
-      createdAt: order.createdAt,
-    };
   }
 }
 
-// In-Memory Implementation for Testing
+// ADAPTER LAYER: In-Memory Implementation (for testing)
 class InMemoryOrderRepository implements OrderRepository {
   private orders = new Map<string, Order>();
 
-  async findById(id: OrderId): Promise<Order | null> {
-    return this.orders.get(id.value) || null;
-  }
-
-  async findByCustomerId(customerId: CustomerId): Promise<Order[]> {
-    return Array.from(this.orders.values()).filter(
-      order => order.customerId === customerId
-    );
+  async findById(id: string): Promise<Order | null> {
+    return this.orders.get(id) ?? null;
   }
 
   async save(order: Order): Promise<void> {
-    this.orders.set(order.id.value, order);
+    this.orders.set(order.id, order);
   }
 
-  async delete(id: OrderId): Promise<void> {
-    this.orders.delete(id.value);
+  async findCustomerById(id: string): Promise<Customer | null> {
+    return null; // Simplified for example
+  }
+
+  async findByCustomerId(customerId: string): Promise<Order[]> {
+    return Array.from(this.orders.values()).filter(o => o.customerId === customerId);
   }
 }
 ```
 
-### 3. CQRS Implementation
+### Phase 4: Unit of Work Pattern
 
 ```typescript
-// Command Side
+// UNIT OF WORK: Ensures multiple repository operations succeed or fail together
+
+interface UnitOfWork {
+  begin(): Promise<void>;
+  commit(): Promise<void>;
+  rollback(): Promise<void>;
+  getOrders(): OrderRepository;
+  getProducts(): ProductRepository;
+  getInventory(): InventoryRepository;
+}
+
+class PostgresUnitOfWork implements UnitOfWork {
+  private transaction: Transaction | null = null;
+  private orders: OrderRepository;
+  private products: ProductRepository;
+  private inventory: InventoryRepository;
+
+  constructor(private db: DatabaseConnection) {
+    this.orders = new PostgresOrderRepository(db);
+    this.products = new PostgresProductRepository(db);
+    this.inventory = new PostgresInventoryRepository(db);
+  }
+
+  async begin(): Promise<void> {
+    this.transaction = await this.db.beginTransaction();
+  }
+
+  async commit(): Promise<void> {
+    if (this.transaction) await this.transaction.commit();
+  }
+
+  async rollback(): Promise<void> {
+    if (this.transaction) await this.transaction.rollback();
+  }
+
+  getOrders(): OrderRepository { return this.orders; }
+  getProducts(): ProductRepository { return this.products; }
+  getInventory(): InventoryRepository { return this.inventory; }
+}
+
+// Usage in a use case
+class PlaceOrder {
+  constructor(private unitOfWork: UnitOfWork) {}
+
+  async execute(input: PlaceOrderInput): Promise<void> {
+    await this.unitOfWork.begin();
+    try {
+      // Multiple repository operations in a single transaction
+      const order = await this.unitOfWork.getOrders().findById(input.orderId);
+      if (!order) throw new Error('Order not found');
+
+      // Check inventory
+      for (const item of order.items) {
+        const stock = await this.unitOfWork.getInventory().getStock(item.productId);
+        if (stock < item.quantity) throw new Error(`Insufficient stock for ${item.productId}`);
+      }
+
+      // Deduct inventory
+      for (const item of order.items) {
+        await this.unitOfWork.getInventory().deduct(item.productId, item.quantity);
+      }
+
+      // Confirm order
+      order.status = 'confirmed';
+      await this.unitOfWork.getOrders().save(order);
+
+      await this.unitOfWork.commit();
+    } catch (error) {
+      await this.unitOfWork.rollback();
+      throw error;
+    }
+  }
+}
+```
+
+### Phase 5: CQRS (Command Query Responsibility Segregation)
+
+```typescript
+// CQRS: Separate read and write models
+
+// COMMAND SIDE
 interface Command {
-  readonly type: string;
+  type: string;
+  timestamp: Date;
 }
 
-interface CommandHandler<TCommand extends Command, TResult = void> {
-  execute(command: TCommand): Promise<TResult>;
+interface CreateOrderCommand extends Command {
+  type: 'CREATE_ORDER';
+  customerId: string;
+  items: Array<{ productId: string; quantity: number }>;
 }
 
-class PlaceOrderCommand implements Command {
-  readonly type = 'PlaceOrder';
-  constructor(
-    public readonly customerId: string,
-    public readonly items: Array<{
-      productId: string;
-      quantity: number;
-      price: number;
-    }>
-  ) {}
+interface CommandHandler<T extends Command> {
+  handle(command: T): Promise<void>;
 }
 
-class PlaceOrderHandler implements CommandHandler<PlaceOrderCommand, string> {
+class CreateOrderCommandHandler implements CommandHandler<CreateOrderCommand> {
   constructor(
     private orderRepository: OrderRepository,
-    private eventPublisher: EventPublisher
+    private eventBus: DomainEventBus,
   ) {}
 
-  async execute(command: PlaceOrderCommand): Promise<string> {
-    const orderId = new OrderId(generateId());
-    const customerId = new CustomerId(command.customerId);
-
-    const order = new Order(orderId, customerId);
+  async handle(command: CreateOrderCommand): Promise<void> {
+    const order = new OrderImpl();
+    order.customerId = command.customerId;
 
     for (const item of command.items) {
-      order.addItem(
-        new ProductId(item.productId),
-        item.quantity,
-        new Money(item.price, 'USD')
-      );
+      order.addItem({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: { amount: 0, currency: 'USD' }, // Would fetch from catalog
+      });
     }
-
-    order.submit();
 
     await this.orderRepository.save(order);
 
-    // Publish domain events
-    const events = order.pullEvents();
-    for (const event of events) {
-      await this.eventPublisher.publish(event);
-    }
-
-    return orderId.value;
-  }
-}
-
-// Query Side
-interface OrderQueryService {
-  getOrderById(id: string): Promise<OrderView | null>;
-  getOrdersByCustomer(customerId: string): Promise<OrderView[]>;
-  getOrdersByStatus(status: string): Promise<OrderView[]>;
-}
-
-class PostgresOrderQueryService implements OrderQueryService {
-  constructor(private db: DatabaseConnection) {}
-
-  async getOrderById(id: string): Promise<OrderView | null> {
-    const result = await this.db.query(
-      `SELECT o.*, c.name as customer_name, c.email as customer_email
-       FROM orders o
-       JOIN customers c ON o.customer_id = c.id
-       WHERE o.id = $1`,
-      [id]
-    );
-    return result ? this.toView(result) : null;
-  }
-
-  async getOrdersByCustomer(customerId: string): Promise<OrderView[]> {
-    const results = await this.db.query(
-      `SELECT o.*, c.name as customer_name
-       FROM orders o
-       JOIN customers c ON o.customer_id = c.id
-       WHERE o.customer_id = $1
-       ORDER BY o.created_at DESC`,
-      [customerId]
-    );
-    return results.map(r => this.toView(r));
-  }
-
-  async getOrdersByStatus(status: string): Promise<OrderView[]> {
-    const results = await this.db.query(
-      `SELECT o.*, c.name as customer_name
-       FROM orders o
-       JOIN customers c ON o.customer_id = c.id
-       WHERE o.status = $1
-       ORDER BY o.created_at DESC`,
-      [status]
-    );
-    return results.map(r => this.toView(r));
-  }
-
-  private toView(row: any): OrderView {
-    return {
-      id: row.id,
-      customerName: row.customer_name,
-      customerEmail: row.customer_email,
-      status: row.status,
-      total: row.total,
-      itemCount: row.item_count,
-      createdAt: row.created_at,
-    };
-  }
-}
-
-// API Layer uses appropriate side
-class OrderController {
-  constructor(
-    private commandHandler: PlaceOrderHandler,
-    private queryService: OrderQueryService
-  ) {}
-
-  async placeOrder(req: Request, res: Response): Promise<void> {
-    const command = new PlaceOrderCommand(
-      req.body.customerId,
-      req.body.items
-    );
-    const orderId = await this.commandHandler.execute(command);
-    res.status(201).json({ orderId });
-  }
-
-  async getOrder(req: Request, res: Response): Promise<void> {
-    const order = await this.queryService.getOrderById(req.params.id);
-    if (!order) {
-      res.status(404).json({ error: 'Order not found' });
-      return;
-    }
-    res.json(order);
-  }
-}
-```
-
-### 4. Domain Events System
-
-```typescript
-// Domain Event Base
-interface DomainEvent {
-  readonly type: string;
-  readonly occurredAt: Date;
-  readonly aggregateId: string;
-}
-
-// Event Publisher Interface (Port)
-interface EventPublisher {
-  publish(event: DomainEvent): Promise<void>;
-}
-
-// Event Handler Interface
-interface EventHandler<TEvent extends DomainEvent> {
-  handle(event: TEvent): Promise<void>;
-}
-
-// Concrete Events
-class OrderSubmitted implements DomainEvent {
-  readonly type = 'OrderSubmitted';
-  readonly occurredAt = new Date();
-
-  constructor(
-    public readonly aggregateId: string,
-    public readonly total: Money
-  ) {}
-}
-
-class PaymentReceived implements DomainEvent {
-  readonly type = 'PaymentReceived';
-  readonly occurredAt = new Date();
-
-  constructor(
-    public readonly aggregateId: string,
-    public readonly amount: Money,
-    public readonly paymentMethod: string
-  ) {}
-}
-
-// Event Bus Implementation
-class InMemoryEventBus implements EventPublisher {
-  private handlers = new Map<string, EventHandler<any>[]>();
-
-  subscribe<TEvent extends DomainEvent>(
-    eventType: string,
-    handler: EventHandler<TEvent>
-  ): void {
-    const existing = this.handlers.get(eventType) || [];
-    this.handlers.set(eventType, [...existing, handler]);
-  }
-
-  async publish(event: DomainEvent): Promise<void> {
-    const handlers = this.handlers.get(event.type) || [];
-    await Promise.all(handlers.map(handler => handler.handle(event)));
-  }
-}
-
-// Event Handlers
-class SendOrderConfirmationHandler
-  implements EventHandler<OrderSubmitted>
-{
-  constructor(private emailService: EmailService) {}
-
-  async handle(event: OrderSubmitted): Promise<void> {
-    await this.emailService.send({
-      to: event.customerEmail,
-      subject: `Order ${event.aggregateId} Confirmed`,
-      body: `Your order of ${event.total} has been received.`,
+    await this.eventBus.publish({
+      type: 'ORDER_CREATED',
+      orderId: order.id,
+      customerId: order.customerId,
+      totalAmount: order.totalAmount(),
+      timestamp: new Date(),
     });
   }
 }
 
-class UpdateInventoryHandler implements EventHandler<OrderSubmitted> {
+// QUERY SIDE: Optimized read model
+interface OrderReadModel {
+  orderId: string;
+  customerName: string;
+  itemCount: number;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+}
+
+class OrderQueryService {
+  constructor(private readDb: ReadDatabase) {}
+
+  async getOrderSummary(orderId: string): Promise<OrderReadModel | null> {
+    // Query optimized for reading (may use denormalized view)
+    return this.readDb.query(
+      'SELECT order_id, customer_name, item_count, total_amount, status, created_at FROM order_summary WHERE order_id = $1',
+      [orderId]
+    );
+  }
+
+  async getCustomerOrders(customerId: string): Promise<OrderReadModel[]> {
+    return this.readDb.query(
+      'SELECT * FROM order_summary WHERE customer_id = $1 ORDER BY created_at DESC',
+      [customerId]
+    );
+  }
+}
+```
+
+### Phase 6: Domain Events
+
+```typescript
+// DOMAIN EVENTS: Decouple business logic from side effects
+
+interface DomainEvent {
+  type: string;
+  timestamp: Date;
+  [key: string]: unknown;
+}
+
+interface DomainEventBus {
+  publish(event: DomainEvent): Promise<void>;
+  subscribe(eventType: string, handler: (event: DomainEvent) => Promise<void>): void;
+}
+
+// In-Memory event bus for simple applications
+class InMemoryDomainEventBus implements DomainEventBus {
+  private handlers = new Map<string, Array<(event: DomainEvent) => Promise<void>>>();
+
+  async publish(event: DomainEvent): Promise<void> {
+    const handlers = this.handlers.get(event.type) ?? [];
+    for (const handler of handlers) {
+      await handler(event);
+    }
+  }
+
+  subscribe(eventType: string, handler: (event: DomainEvent) => Promise<void>): void {
+    const existing = this.handlers.get(eventType) ?? [];
+    existing.push(handler);
+    this.handlers.set(eventType, existing);
+  }
+}
+
+// Event handlers (in adapter layer, subscribing to domain events)
+class SendOrderConfirmationEmail {
+  constructor(private emailService: EmailService) {}
+
+  async handle(event: DomainEvent): Promise<void> {
+    if (event.type === 'ORDER_CREATED') {
+      await this.emailService.send({
+        to: event.customerId,
+        subject: 'Order Confirmation',
+        body: `Your order ${event.orderId} has been confirmed.`,
+      });
+    }
+  }
+}
+
+class UpdateInventoryCounter {
   constructor(private inventoryService: InventoryService) {}
 
-  async handle(event: OrderSubmitted): Promise<void> {
-    for (const item of event.items) {
-      await this.inventoryService.reserve(
-        item.productId,
-        item.quantity
-      );
-    }
-  }
-}
-
-// Wire up in composition root
-const eventBus = new InMemoryEventBus();
-eventBus.subscribe('OrderSubmitted', new SendOrderConfirmationHandler(emailService));
-eventBus.subscribe('OrderSubmitted', new UpdateInventoryHandler(inventoryService));
-```
-
-### 5. Unit of Work Pattern
-
-```typescript
-// Unit of Work Interface
-interface UnitOfWork {
-  getRepository<T>(entityClass: new (...args: any[]) => T): Repository<T>;
-  commit(): Promise<void>;
-  rollback(): Promise<void>;
-  begin(): Promise<void>;
-}
-
-interface Repository<T> {
-  add(entity: T): void;
-  update(entity: T): void;
-  remove(entity: T): void;
-  findById(id: string): Promise<T | null>;
-}
-
-// Implementation
-class TypeORMUnitOfWork implements UnitOfWork {
-  private repositories = new Map<string, Repository<any>>();
-  private queryRunner: QueryRunner;
-
-  constructor(private dataSource: DataSource) {
-    this.queryRunner = dataSource.createQueryRunner();
-  }
-
-  async begin(): Promise<void> {
-    await this.queryRunner.startTransaction();
-  }
-
-  getRepository<T>(entityClass: new (...args: any[]) => T): Repository<T> {
-    const entityName = entityClass.name;
-    if (!this.repositories.has(entityName)) {
-      const repo = this.queryRunner.manager.getRepository(entityClass);
-      this.repositories.set(entityName, new TypeORMRepositoryAdapter(repo));
-    }
-    return this.repositories.get(entityName)!;
-  }
-
-  async commit(): Promise<void> {
-    try {
-      await this.queryRunner.commitTransaction();
-    } catch (error) {
-      await this.queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await this.queryRunner.release();
-    }
-  }
-
-  async rollback(): Promise<void> {
-    await this.queryRunner.rollbackTransaction();
-    await this.queryRunner.release();
-  }
-}
-
-// Use Case using Unit of Work
-class TransferMoneyUseCase {
-  constructor(private unitOfWorkFactory: () => UnitOfWork) {}
-
-  async execute(
-    fromAccountId: string,
-    toAccountId: string,
-    amount: Money
-  ): Promise<void> {
-    const uow = this.unitOfWorkFactory();
-    await uow.begin();
-
-    try {
-      const accountRepo = uow.getRepository(Account);
-      const fromAccount = await accountRepo.findById(fromAccountId);
-      const toAccount = await accountRepo.findById(toAccountId);
-
-      if (!fromAccount || !toAccount) {
-        throw new Error('Account not found');
+  async handle(event: DomainEvent): Promise<void> {
+    if (event.type === 'ORDER_CREATED') {
+      for (const item of (event.items as any[]) ?? []) {
+        await this.inventoryService.decrementStock(item.productId, item.quantity);
       }
-
-      fromAccount.debit(amount);
-      toAccount.credit(amount);
-
-      accountRepo.update(fromAccount);
-      accountRepo.update(toAccount);
-
-      await uow.commit();
-    } catch (error) {
-      await uow.rollback();
-      throw error;
     }
   }
 }
+
+// Wire up
+const eventBus = new InMemoryDomainEventBus();
+eventBus.subscribe('ORDER_CREATED', emailHandler.handle.bind(emailHandler));
+eventBus.subscribe('ORDER_CREATED', inventoryHandler.handle.bind(inventoryHandler));
 ```
 
-### 6. Dependency Injection Container
+### Phase 7: Hexagonal Architecture (Ports and Adapters)
 
 ```typescript
-// Simple DI Container
-class Container {
-  private services = new Map<string, any>();
-  private factories = new Map<string, () => any>();
+// PORTS: Interfaces that define how the outside world interacts with the domain
+// ADAPTERS: Implementations of those interfaces
 
-  register<T>(name: string, instance: T): void {
-    this.services.set(name, instance);
-  }
-
-  registerFactory<T>(name: string, factory: () => T): void {
-    this.factories.set(name, factory);
-  }
-
-  resolve<T>(name: string): T {
-    if (this.services.has(name)) {
-      return this.services.get(name) as T;
-    }
-    if (this.factories.has(name)) {
-      const instance = this.factories.get(name)!();
-      this.services.set(name, instance);
-      return instance as T;
-    }
-    throw new Error(`Service '${name}' not registered`);
-  }
+// PRIMARY PORTS (Driving adapters: UI, CLI, API)
+interface OrderManagementPort {
+  createOrder(input: CreateOrderInput): Promise<CreateOrderOutput>;
+  cancelOrder(orderId: string): Promise<void>;
+  getOrderStatus(orderId: string): Promise<OrderStatusOutput>;
 }
 
-// Composition Root
-function createContainer(): Container {
-  const container = new Container();
-
-  // Infrastructure
-  const db = new PostgresDatabase(process.env.DATABASE_URL!);
-  container.register('Database', db);
-
-  // Repositories
-  container.registerFactory('OrderRepository', () =>
-    new PostgresOrderRepository(container.resolve('Database'))
-  );
-  container.registerFactory('CustomerRepository', () =>
-    new PostgresCustomerRepository(container.resolve('Database'))
-  );
-
-  // Services
-  container.registerFactory('EmailService', () =>
-    new SMTPEmailService({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-    })
-  );
-
-  // Event Bus
-  const eventBus = new InMemoryEventBus();
-  container.register('EventBus', eventBus);
-
-  // Use Cases
-  container.registerFactory('PlaceOrderUseCase', () =>
-    new PlaceOrderUseCase(
-      container.resolve('OrderRepository'),
-      container.resolve('EventBus')
-    )
-  );
-
-  // Controllers
-  container.registerFactory('OrderController', () =>
-    new OrderController(
-      container.resolve('PlaceOrderUseCase'),
-      container.resolve('OrderRepository')
-    )
-  );
-
-  return container;
-}
-```
-
-### 7. Anti-Corruption Layer
-
-```typescript
-// External system interface (legacy)
-interface LegacyOrderSystem {
-  createOrder(data: any): Promise<any>;
-  getOrder(id: number): Promise<any>;
-  updateOrder(id: number, data: any): Promise<void>;
+// SECONDARY PORTS (Driven adapters: Database, Email, Payment)
+interface OrderPersistencePort {
+  save(order: Order): Promise<void>;
+  findById(id: string): Promise<Order | null>;
 }
 
-// Anti-Corruption Layer
-class LegacyOrderAdapter implements OrderRepository {
-  constructor(private legacySystem: LegacyOrderSystem) {}
-
-  async findById(id: OrderId): Promise<Order | null> {
-    const legacyOrder = await this.legacySystem.getOrder(
-      parseInt(id.value)
-    );
-    if (!legacyOrder) return null;
-    return this.toDomain(legacyOrder);
-  }
-
-  async save(order: Order): Promise<void> {
-    const legacyData = this.toLegacy(order);
-    if (order.isNew) {
-      await this.legacySystem.createOrder(legacyData);
-    } else {
-      await this.legacySystem.updateOrder(
-        parseInt(order.id.value),
-        legacyData
-      );
-    }
-  }
-
-  private toDomain(legacyOrder: any): Order {
-    // Translate legacy format to domain model
-    return new Order(
-      new OrderId(String(legacyOrder.ord_id)),
-      new CustomerId(String(legacyOrder.cust_no)),
-      new Date(legacyOrder.ord_date)
-    );
-  }
-
-  private toLegacy(order: Order): any {
-    // Translate domain model to legacy format
-    return {
-      ord_id: parseInt(order.id.value),
-      cust_no: parseInt(order.customerId.value),
-      ord_date: order.createdAt.toISOString(),
-      status: this.mapStatus(order.status),
-    };
-  }
-
-  private mapStatus(status: OrderStatus): string {
-    const statusMap: Record<OrderStatus, string> = {
-      [OrderStatus.Draft]: 'NEW',
-      [OrderStatus.Submitted]: 'SUB',
-      [OrderStatus.Paid]: 'PAID',
-      [OrderStatus.Delivered]: 'DEL',
-      [OrderStatus.Cancelled]: 'CAN',
-    };
-    return statusMap[status];
-  }
-}
-```
-
-## Common Patterns
-
-### Pattern 1: Use Case with Input/Output Ports
-
-```typescript
-// Input Port
-interface CreateOrderInput {
-  customerId: string;
-  items: Array<{
-    productId: string;
-    quantity: number;
-    price: number;
-  }>;
+interface PaymentPort {
+  charge(customerId: string, amount: Money): Promise<PaymentResult>;
+  refund(transactionId: string): Promise<void>;
 }
 
-// Output Port
-interface CreateOrderOutput {
-  orderId: string;
-  total: number;
-  status: string;
+interface NotificationPort {
+  sendOrderConfirmation(order: Order): Promise<void>;
+  sendCancellationNotice(order: Order): Promise<void>;
 }
 
-// Use Case Implementation
-class CreateOrderUseCase {
+// APPLICATION SERVICE: Implements primary port, uses secondary ports
+class OrderManagementService implements OrderManagementPort {
   constructor(
-    private orderRepository: OrderRepository,
-    private customerRepository: CustomerRepository,
-    private eventPublisher: EventPublisher
+    private persistence: OrderPersistencePort,
+    private payment: PaymentPort,
+    private notification: NotificationPort,
   ) {}
 
-  async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
-    // Validate customer exists
-    const customer = await this.customerRepository.findById(
-      new CustomerId(input.customerId)
-    );
-    if (!customer) {
-      throw new ValidationError('Customer not found');
+  async createOrder(input: CreateOrderInput): Promise<CreateOrderOutput> {
+    const order = new OrderImpl();
+    order.customerId = input.customerId;
+    // ... add items ...
+
+    const paymentResult = await this.payment.charge(input.customerId, order.totalAmount());
+    if (!paymentResult.success) throw new Error('Payment failed');
+
+    await this.persistence.save(order);
+    await this.notification.sendOrderConfirmation(order);
+
+    return { orderId: order.id, totalAmount: order.totalAmount(), status: order.status };
+  }
+}
+
+// ADAPTER: Express.js HTTP adapter (driving)
+class ExpressOrderController {
+  constructor(private orderService: OrderManagementPort) {}
+
+  async createOrder(req: Request, res: Response): Promise<void> {
+    try {
+      const result = await this.orderService.createOrder(req.body);
+      res.status(201).json(result);
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
     }
+  }
+}
 
-    // Create order entity
-    const order = new Order(
-      new OrderId(generateId()),
-      new CustomerId(input.customerId)
-    );
+// ADAPTER: CLI adapter (driving)
+class CLIOrderHandler {
+  constructor(private orderService: OrderManagementPort) {}
 
-    // Add items
-    for (const item of input.items) {
-      order.addItem(
-        new ProductId(item.productId),
-        item.quantity,
-        new Money(item.price, 'USD')
-      );
-    }
-
-    // Submit order
-    order.submit();
-
-    // Persist
-    await this.orderRepository.save(order);
-
-    // Publish events
-    const events = order.pullEvents();
-    for (const event of events) {
-      await this.eventPublisher.publish(event);
-    }
-
-    // Return output
-    return {
-      orderId: order.id.value,
-      total: order.total.amount,
-      status: order.status,
-    };
+  async handleCreateOrder(args: string[]): Promise<void> {
+    const result = await this.orderService.createOrder({
+      customerId: args[0],
+      items: JSON.parse(args[1]),
+    });
+    console.log(`Order created: ${result.orderId}`);
   }
 }
 ```
 
-### Pattern 2: Domain Service for Cross-Entity Logic
+### Phase 8: SOLID Principles in Practice
 
 ```typescript
-// Domain Service (logic that doesn't belong to a single entity)
-class PricingService {
-  calculateDiscount(
-    customer: Customer,
-    items: OrderItem[],
-    currentDate: Date
-  ): Money {
-    let totalDiscount = Money.zero('USD');
+// ===================== S: Single Responsibility =====================
+// BAD: One class does everything
+class BadUserService {
+  createUser(data: any) { /* creates user */ }
+  sendEmail(to: string, subject: string) { /* sends email */ }
+  generateReport() { /* generates report */ }
+  logActivity(activity: string) { /* logs */ }
+}
 
-    // Loyalty discount
-    if (customer.yearsOfMembership > 5) {
-      const loyaltyDiscount = items.reduce(
-        (sum, item) => sum.add(item.subtotal.multiply(0.1)),
-        Money.zero('USD')
-      );
-      totalDiscount = totalDiscount.add(loyaltyDiscount);
+// GOOD: Each class has one reason to change
+class UserService {
+  constructor(private userRepository: UserRepository) {}
+  async createUser(data: CreateUserInput): Promise<User> { /* ... */ }
+}
+
+class EmailService {
+  async send(to: string, subject: string, body: string): Promise<void> { /* ... */ }
+}
+
+class ReportGenerator {
+  async generate(userId: string): Promise<Report> { /* ... */ }
+}
+
+class ActivityLogger {
+  async log(activity: string): Promise<void> { /* ... */ }
+}
+
+// ===================== O: Open/Closed Principle =====================
+// BAD: Must modify class to add new payment methods
+class BadPaymentProcessor {
+  process(method: string, amount: number) {
+    if (method === 'credit_card') { /* credit card logic */ }
+    else if (method === 'paypal') { /* paypal logic */ }
+    else if (method === 'crypto') { /* crypto logic */ }
+  }
+}
+
+// GOOD: Open for extension, closed for modification
+interface PaymentMethod {
+  charge(amount: Money): Promise<PaymentResult>;
+  refund(transactionId: string): Promise<void>;
+}
+
+class CreditCardPayment implements PaymentMethod {
+  async charge(amount: Money): Promise<PaymentResult> { /* ... */ }
+  async refund(transactionId: string): Promise<void> { /* ... */ }
+}
+
+class PayPalPayment implements PaymentMethod {
+  async charge(amount: Money): Promise<PaymentResult> { /* ... */ }
+  async refund(transactionId: string): Promise<void> { /* ... */ }
+}
+
+// Adding CryptoPayment requires NO changes to existing code
+class CryptoPayment implements PaymentMethod {
+  async charge(amount: Money): Promise<PaymentResult> { /* ... */ }
+  async refund(transactionId: string): Promise<void> { /* ... */ }
+}
+
+// ===================== L: Liskov Substitution =====================
+// All implementations must be substitutable without breaking the contract
+
+interface Shape {
+  area(): number;
+  describe(): string;
+}
+
+class Circle implements Shape {
+  constructor(private radius: number) {}
+  area(): number { return Math.PI * this.radius ** 2; }
+  describe(): string { return `Circle with radius ${this.radius}`; }
+}
+
+class Rectangle implements Shape {
+  constructor(private width: number, private height: number) {}
+  area(): number { return this.width * this.height; }
+  describe(): string { return `Rectangle ${this.width}×${this.height}`; }
+}
+
+// Both can be used interchangeably
+function printShapeInfo(shape: Shape): void {
+  console.log(shape.describe());
+  console.log(`Area: ${shape.area()}`);
+}
+
+// ===================== I: Interface Segregation =====================
+// BAD: One fat interface forces implementations to depend on methods they don't use
+interface BadWorker {
+  work(): void;
+  eat(): void;
+  sleep(): void;
+  manage(): void;
+  code(): void;
+}
+
+// GOOD: Small, focused interfaces
+interface Workable {
+  work(): void;
+}
+
+interface Feedable {
+  eat(): void;
+}
+
+interface Sleepable {
+  sleep(): void;
+}
+
+interface Manageable {
+  manage(): void;
+}
+
+interface Codeable {
+  code(): void;
+}
+
+class HumanDeveloper implements Workable, Feedable, Sleepable, Codeable {
+  work(): void { /* ... */ }
+  eat(): void { /* ... */ }
+  sleep(): void { /* ... */ }
+  code(): void { /* ... */ }
+}
+
+class Robot implements Workable, Codeable {
+  work(): void { /* ... */ }
+  code(): void { /* ... */ }
+  // Robot doesn't need eat() or sleep()
+}
+
+// ===================== D: Dependency Inversion =====================
+// BAD: High-level module depends on low-level module
+class BadOrderService {
+  private mysqlRepo = new MySQLOrderRepository(); // Concrete dependency!
+  async createOrder(data: any) { /* ... */ }
+}
+
+// GOOD: Both depend on abstractions
+interface OrderRepository {
+  save(order: Order): Promise<void>;
+  findById(id: string): Promise<Order | null>;
+}
+
+class GoodOrderService {
+  constructor(private orderRepo: OrderRepository) {} // Depends on abstraction
+  async createOrder(data: CreateOrderInput): Promise<void> { /* ... */ }
+}
+
+// Can be wired with any implementation
+const service = new GoodOrderService(new PostgresOrderRepository(db));
+// Or in tests:
+const testService = new GoodOrderService(new InMemoryOrderRepository());
+```
+
+## Advanced Techniques
+
+### Technique 1: Facade Pattern for Complex Subsystems
+
+```typescript
+// FACADE: Simplify access to complex subsystems
+
+class PaymentFacade {
+  constructor(
+    private stripe: StripeService,
+    private paypal: PayPalService,
+    private fraud: FraudDetectionService,
+    private ledger: AccountingService,
+  ) {}
+
+  async processPayment(order: Order, method: 'stripe' | 'paypal'): Promise<PaymentResult> {
+    // 1. Fraud check
+    const risk = await this.fraud.assessRisk(order);
+    if (risk.score > 0.8) {
+      return { success: false, reason: 'Fraud detected' };
     }
 
-    // Seasonal discount
-    if (currentDate.getMonth() === 11) { // December
-      const seasonalDiscount = items.reduce(
-        (sum, item) => sum.add(item.subtotal.multiply(0.05)),
-        Money.zero('USD')
-      );
-      totalDiscount = totalDiscount.add(seasonalDiscount);
+    // 2. Process payment
+    let result: PaymentResult;
+    if (method === 'stripe') {
+      result = await this.stripe.charge(order.customerId, order.totalAmount());
+    } else {
+      result = await this.paypal.charge(order.customerId, order.totalAmount());
     }
 
-    // Maximum discount cap
-    const maxDiscount = items.reduce(
-      (sum, item) => sum.add(item.subtotal),
-      Money.zero('USD')
-    ).multiply(0.25);
-
-    if (totalDiscount.amount > maxDiscount.amount) {
-      totalDiscount = maxDiscount;
+    // 3. Record in ledger
+    if (result.success) {
+      await this.ledger.recordPayment({
+        orderId: order.id,
+        amount: order.totalAmount(),
+        method,
+        transactionId: result.transactionId,
+      });
     }
 
-    return totalDiscount;
+    return result;
   }
 }
 ```
 
-### Pattern 3: Specification Pattern
+### Technique 2: Specification Pattern for Complex Business Rules
 
 ```typescript
-// Specification Interface
 interface Specification<T> {
   isSatisfiedBy(candidate: T): boolean;
   and(other: Specification<T>): Specification<T>;
@@ -907,346 +795,769 @@ interface Specification<T> {
   not(): Specification<T>;
 }
 
-// Base Implementation
 class CompositeSpecification<T> implements Specification<T> {
+  constructor(protected condition: (candidate: T) => boolean) {}
+
   isSatisfiedBy(candidate: T): boolean {
-    throw new Error('Must be implemented by subclass');
+    return this.condition(candidate);
   }
 
   and(other: Specification<T>): Specification<T> {
-    return new AndSpecification(this, other);
+    return new CompositeSpecification<T>(
+      (c) => this.isSatisfiedBy(c) && other.isSatisfiedBy(c)
+    );
   }
 
   or(other: Specification<T>): Specification<T> {
-    return new OrSpecification(this, other);
+    return new CompositeSpecification<T>(
+      (c) => this.isSatisfiedBy(c) || other.isSatisfiedBy(c)
+    );
   }
 
   not(): Specification<T> {
-    return new NotSpecification(this);
+    return new CompositeSpecification<T>(
+      (c) => !this.isSatisfiedBy(c)
+    );
   }
 }
 
-// Concrete Specifications
-class MinimumAgeSpecification extends CompositeSpecification<User> {
-  constructor(private minimumAge: number) {
-    super();
+// Usage: Complex business rules as composable specifications
+const orderMustHaveItems = new CompositeSpecification<Order>(
+  (order) => order.items.length > 0
+);
+
+const orderTotalMustBePositive = new CompositeSpecification<Order>(
+  (order) => order.totalAmount().amount > 0
+);
+
+const customerMustBeActive = new CompositeSpecification<Customer>(
+  (customer) => customer.status === 'active'
+);
+
+// Compose: Order can be placed if it has items AND positive total AND customer is active
+const canPlaceOrder = orderMustHaveItems
+  .and(orderTotalMustBePositive);
+
+// For a specific use case, extend with customer check
+const fullValidation = canPlaceOrder; // Additional specs can be composed dynamically
+```
+
+### Technique 3: Domain Events with Outbox Pattern
+
+```typescript
+// OUTBOX PATTERN: Guarantee event delivery without distributed transactions
+
+interface OutboxMessage {
+  id: string;
+  aggregateType: string;
+  aggregateId: string;
+  eventType: string;
+  payload: string; // JSON serialized
+  createdAt: Date;
+  processed: boolean;
+}
+
+class OutboxRepository {
+  constructor(private db: DatabaseConnection) {}
+
+  async save(message: OutboxMessage): Promise<void> {
+    await this.db.query(
+      'INSERT INTO outbox (id, aggregate_type, aggregate_id, event_type, payload, created_at, processed) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [message.id, message.aggregateType, message.aggregateId, message.eventType, message.payload, message.createdAt, message.processed]
+    );
   }
 
-  isSatisfiedBy(user: User): boolean {
-    return user.age >= this.minimumAge;
+  async getUnprocessed(limit: number = 100): Promise<OutboxMessage[]> {
+    return this.db.query(
+      'SELECT * FROM outbox WHERE processed = false ORDER BY created_at ASC LIMIT $1',
+      [limit]
+    );
+  }
+
+  async markProcessed(id: string): Promise<void> {
+    await this.db.query('UPDATE outbox SET processed = true WHERE id = $1', [id]);
   }
 }
 
-class ActiveSubscriptionSpecification extends CompositeSpecification<User> {
-  isSatisfiedBy(user: User): boolean {
-    return user.subscription?.status === 'active';
+// Background processor: polls outbox and publishes events
+class OutboxProcessor {
+  constructor(
+    private outbox: OutboxRepository,
+    private eventBus: DomainEventBus,
+  ) {}
+
+  async processBatch(): Promise<void> {
+    const messages = await this.outbox.getUnprocessed();
+    for (const msg of messages) {
+      try {
+        const event: DomainEvent = {
+          type: msg.eventType,
+          timestamp: msg.createdAt,
+          ...JSON.parse(msg.payload),
+        };
+        await this.eventBus.publish(event);
+        await this.outbox.markProcessed(msg.id);
+      } catch (error) {
+        console.error(`Failed to process outbox message ${msg.id}:`, error);
+      }
+    }
   }
-}
-
-// Usage
-const canAccessPremium = new MinimumAgeSpecification(18)
-  .and(new ActiveSubscriptionSpecification());
-
-if (canAccessPremium.isSatisfiedBy(user)) {
-  // Grant access
 }
 ```
 
-### Pattern 4: Factory Pattern for Complex Object Creation
+### Technique 4: Anti-Corruption Layer
 
 ```typescript
-// Factory Interface
-interface OrderFactory {
-  createFromCart(cart: Cart): Order;
-  createFromDirectOrder(input: DirectOrderInput): Order;
+// ANTI-CORRUPTION LAYER: Translate between your domain and external systems
+
+interface ExternalPaymentGateway {
+  // External system uses different naming, structure, error codes
+  makePayment(cust_id: string, amt: number, curr_code: string): Promise<{
+    status: string;
+    txn_ref: string;
+    err_code?: number;
+    err_msg?: string;
+  }>;
 }
 
-// Implementation
-class StandardOrderFactory implements OrderFactory {
-  createFromCart(cart: Cart): Order {
-    const order = new Order(
-      new OrderId(generateId()),
-      cart.customerId
-    );
+// Anti-corruption layer translates external model to domain model
+class PaymentGatewayAdapter implements PaymentPort {
+  constructor(private external: ExternalPaymentGateway) {}
 
-    for (const item of cart.items) {
-      order.addItem(item.productId, item.quantity, item.price);
-    }
+  async charge(customerId: string, amount: Money): Promise<PaymentResult> {
+    try {
+      const externalResult = await this.external.makePayment(
+        customerId,
+        amount.amount,
+        amount.currency,
+      );
 
-    return order;
-  }
-
-  createFromDirectOrder(input: DirectOrderInput): Order {
-    const order = new Order(
-      new OrderId(generateId()),
-      new CustomerId(input.customerId)
-    );
-
-    for (const item of input.items) {
-      order.addItem(
-        new ProductId(item.productId),
-        item.quantity,
-        new Money(item.price, 'USD')
+      // Translate external result to domain result
+      if (externalResult.status === 'SUCCESS') {
+        return {
+          success: true,
+          transactionId: externalResult.txn_ref,
+        };
+      } else {
+        return {
+          success: false,
+          reason: `External error ${externalResult.err_code}: ${externalResult.err_msg}`,
+        };
+      }
+    } catch (error) {
+      // Translate external exceptions to domain exceptions
+      throw new PaymentException(
+        `Payment gateway communication failed: ${(error as Error).message}`
       );
     }
-
-    return order;
   }
 }
 ```
 
-### Pattern 5: Pipeline Pattern for Request Processing
+### Technique 5: Plugin Architecture with Clean Architecture
 
 ```typescript
-// Middleware/Pipeline Interface
-interface Middleware<TContext> {
-  handle(
-    context: TContext,
-    next: () => Promise<void>
-  ): Promise<void>;
+// PLUGIN SYSTEM: Load external functionality while maintaining clean boundaries
+
+interface Plugin {
+  name: string;
+  version: string;
+  initialize(context: PluginContext): Promise<void>;
+  shutdown(): Promise<void>;
 }
 
-// Pipeline Builder
-class Pipeline<TContext> {
-  private middlewares: Middleware<TContext>[] = [];
-
-  use(middleware: Middleware<TContext>): this {
-    this.middlewares.push(middleware);
-    return this;
-  }
-
-  async execute(
-    context: TContext,
-    handler: (ctx: TContext) => Promise<void>
-  ): Promise<void> {
-    let index = -1;
-
-    const dispatch = async (): Promise<void> => {
-      index++;
-      if (index < this.middlewares.length) {
-        await this.middlewares[index].handle(context, dispatch);
-      } else {
-        await handler(context);
-      }
-    };
-
-    await dispatch();
-  }
+interface PluginContext {
+  registerCommandHandler(type: string, handler: CommandHandler<Command>): void;
+  registerEventHandler(type: string, handler: (event: DomainEvent) => Promise<void>): void;
+  registerQueryHandler(type: string, handler: (query: any) => Promise<any>): void;
+  getService<T>(token: string): T;
 }
 
-// Concrete Middlewares
-class ValidationMiddleware implements Middleware<RequestContext> {
-  async handle(
-    context: RequestContext,
-    next: () => Promise<void>
-  ): Promise<void> {
-    const errors = context.validator.validate(context.body);
-    if (errors.length > 0) {
-      throw new ValidationError(errors);
+class PluginManager {
+  private plugins = new Map<string, Plugin>();
+
+  async loadPlugin(plugin: Plugin, context: PluginContext): Promise<void> {
+    await plugin.initialize(context);
+    this.plugins.set(plugin.name, plugin);
+    console.log(`Plugin loaded: ${plugin.name} v${plugin.version}`);
+  }
+
+  async unloadPlugin(name: string): Promise<void> {
+    const plugin = this.plugins.get(name);
+    if (plugin) {
+      await plugin.shutdown();
+      this.plugins.delete(name);
     }
-    await next();
   }
 }
+```
 
-class AuthenticationMiddleware implements Middleware<RequestContext> {
-  async handle(
-    context: RequestContext,
-    next: () => Promise<void>
-  ): Promise<void> {
-    const token = context.request.headers.authorization;
-    if (!token) {
-      throw new UnauthorizedError('No token provided');
+### Technique 6: Value Objects
+
+```typescript
+// VALUE OBJECTS: Immutable, self-validating domain primitives
+
+class Email {
+  private constructor(private readonly value: string) {}
+
+  static create(email: string): Email {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new Error(`Invalid email: ${email}`);
     }
-    context.user = await this.authService.verify(token);
-    await next();
+    return new Email(email.toLowerCase().trim());
+  }
+
+  toString(): string { return this.value; }
+  equals(other: Email): boolean { return this.value === other.value; }
+}
+
+class Money {
+  private constructor(
+    private readonly amount: number,
+    private readonly currency: string,
+  ) {}
+
+  static create(amount: number, currency: string): Money {
+    if (amount < 0) throw new Error('Money amount cannot be negative');
+    if (!/^[A-Z]{3}$/.test(currency)) throw new Error(`Invalid currency: ${currency}`);
+    return new Money(Math.round(amount * 100) / 100, currency);
+  }
+
+  add(other: Money): Money {
+    if (this.currency !== other.currency) {
+      throw new Error('Cannot add different currencies');
+    }
+    return Money.create(this.amount + other.amount, this.currency);
+  }
+
+  multiply(factor: number): Money {
+    return Money.create(this.amount * factor, this.currency);
+  }
+
+  toString(): string { return `${this.currency} ${this.amount.toFixed(2)}`; }
+  equals(other: Money): boolean {
+    return this.amount === other.amount && this.currency === other.currency;
   }
 }
 
 // Usage
-const pipeline = new Pipeline<RequestContext>();
-pipeline
-  .use(new ValidationMiddleware())
-  .use(new AuthenticationMiddleware())
-  .use(new AuthorizationMiddleware());
+const price = Money.create(29.99, 'USD');
+const tax = price.multiply(0.08);
+const total = price.add(tax);
+// Total: USD 32.39
+```
 
-await pipeline.execute(context, async (ctx) => {
-  // Handle request
-});
+### Technique 7: Dependency Injection Containers
+
+```typescript
+// SIMPLE DI CONTAINER: Wire up dependencies at the composition root
+
+interface Container {
+  register<T>(token: string, factory: (container: Container) => T): void;
+  resolve<T>(token: string): T;
+}
+
+class SimpleContainer implements Container {
+  private factories = new Map<string, (container: Container) => any>();
+  private singletons = new Map<string, any>();
+
+  register<T>(token: string, factory: (container: Container) => T): void {
+    this.factories.set(token, factory);
+  }
+
+  resolve<T>(token: string): T {
+    if (this.singletons.has(token)) {
+      return this.singletons.get(token);
+    }
+    const factory = this.factories.get(token);
+    if (!factory) throw new Error(`No registration for: ${token}`);
+    const instance = factory(this);
+    this.singletons.set(token, instance);
+    return instance;
+  }
+}
+
+// COMPOSITION ROOT: Where all dependencies are wired
+const container = new SimpleContainer();
+
+// Register implementations
+container.register('Database', () => new PostgresDatabase(config.dbUrl));
+container.register('OrderRepository', (c) => new PostgresOrderRepository(c.resolve('Database')));
+container.register('EventBus', () => new InMemoryDomainEventBus());
+container.register('OrderService', (c) => new OrderManagementService(
+  c.resolve('OrderRepository'),
+  c.resolve('EventBus'),
+));
+container.register('OrderController', (c) => new ExpressOrderController(
+  c.resolve('OrderService'),
+));
+
+// Application startup
+const controller = container.resolve<ExpressOrderController>('OrderController');
+```
+
+## Common Patterns
+
+### Pattern 1: The Clean Architecture File Structure
+
+```
+src/
+├── domain/                    # ENTITIES (innermost)
+│   ├── models/
+│   │   ├── order.ts
+│   │   ├── customer.ts
+│   │   └── money.ts
+│   ├── events/
+│   │   ├── order-created.ts
+│   │   └── order-cancelled.ts
+│   ├── repositories/          # Repository interfaces
+│   │   └── order-repository.ts
+│   └── services/              # Domain services
+│       └── pricing-service.ts
+├── application/               # USE CASES
+│   ├── commands/
+│   │   ├── create-order.ts
+│   │   └── cancel-order.ts
+│   ├── queries/
+│   │   ├── get-order.ts
+│   │   └── list-customer-orders.ts
+│   └── ports/                 # Port interfaces
+│       ├── payment-port.ts
+│       └── notification-port.ts
+├── adapters/                  # ADAPTERS (outer)
+│   ├── persistence/
+│   │   ├── postgres-order-repository.ts
+│   │   └── in-memory-order-repository.ts
+│   ├── http/
+│   │   ├── express-order-controller.ts
+│   │   └── express-router.ts
+│   ├── messaging/
+│   │   └── rabbitmq-event-bus.ts
+│   └── payment/
+│       └── stripe-payment-adapter.ts
+├── infrastructure/            # FRAMEWORKS
+│   ├── database.ts
+│   ├── config.ts
+│   └── logger.ts
+├── composition-root.ts        # DI WIRING
+└── main.ts                    # ENTRY POINT
+```
+
+### Pattern 2: Repository Pattern Template
+
+```typescript
+// Generic repository pattern with common operations
+interface Repository<T, ID> {
+  findById(id: ID): Promise<T | null>;
+  findAll(): Promise<T[]>;
+  save(entity: T): Promise<void>;
+  delete(id: ID): Promise<void>;
+  exists(id: ID): Promise<boolean>;
+}
+
+// Specific repository extends generic with domain-specific methods
+interface OrderRepository extends Repository<Order, string> {
+  findByCustomerId(customerId: string): Promise<Order[]>;
+  findByStatus(status: Order['status']): Promise<Order[]>;
+  countByStatus(status: Order['status']): Promise<number>;
+}
+```
+
+### Pattern 3: Use Case Template
+
+```typescript
+// Template for a complete use case with input/output validation
+
+interface UseCase<I, O> {
+  execute(input: I): Promise<O>;
+}
+
+interface CreateOrderInput {
+  customerId: string;
+  items: Array<{ productId: string; quantity: number }>;
+}
+
+interface CreateOrderOutput {
+  orderId: string;
+  totalAmount: Money;
+  status: string;
+}
+
+class CreateOrderUseCase implements UseCase<CreateOrderInput, CreateOrderOutput> {
+  constructor(
+    private orderRepo: OrderRepository,
+    private productRepo: ProductRepository,
+    private eventBus: DomainEventBus,
+  ) {}
+
+  async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
+    // 1. Validate input
+    this.validate(input);
+
+    // 2. Execute business logic
+    const order = new OrderImpl();
+    order.customerId = input.customerId;
+
+    for (const item of input.items) {
+      const product = await this.productRepo.findById(item.productId);
+      if (!product) throw new Error(`Product not found: ${item.productId}`);
+      order.addItem({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: product.price,
+      });
+    }
+
+    // 3. Persist
+    await this.orderRepo.save(order);
+
+    // 4. Emit events
+    await this.eventBus.publish({
+      type: 'ORDER_CREATED',
+      orderId: order.id,
+      customerId: order.customerId,
+      totalAmount: order.totalAmount(),
+      timestamp: new Date(),
+    });
+
+    // 5. Return output
+    return {
+      orderId: order.id,
+      totalAmount: order.totalAmount(),
+      status: order.status,
+    };
+  }
+
+  private validate(input: CreateOrderInput): void {
+    if (!input.customerId) throw new Error('Customer ID is required');
+    if (!input.items.length) throw new Error('Order must have at least one item');
+    for (const item of input.items) {
+      if (item.quantity <= 0) throw new Error(`Invalid quantity for ${item.productId}`);
+    }
+  }
+}
+```
+
+### Pattern 4: Event Sourcing with Clean Architecture
+
+```typescript
+// EVENT SOURCING: Store events, not state
+
+interface EventSourcedAggregate {
+  id: string;
+  getUncommittedEvents(): DomainEvent[];
+  markEventsAsCommitted(): void;
+  loadFromHistory(events: DomainEvent[]): void;
+}
+
+class EventSourcedOrder implements EventSourcedAggregate {
+  id: string = '';
+  private uncommittedEvents: DomainEvent[] = [];
+  private status: string = 'pending';
+  private items: OrderItem[] = [];
+
+  getUncommittedEvents(): DomainEvent[] { return this.uncommittedEvents; }
+  markEventsAsCommitted(): void { this.uncommittedEvents = []; }
+
+  loadFromHistory(events: DomainEvent[]): void {
+    for (const event of events) {
+      this.apply(event, false);
+    }
+  }
+
+  // Commands
+  createOrder(customerId: string): void {
+    this.apply({
+      type: 'ORDER_CREATED',
+      orderId: crypto.randomUUID(),
+      customerId,
+      timestamp: new Date(),
+    }, true);
+  }
+
+  addItem(productId: string, quantity: number, price: Money): void {
+    this.apply({
+      type: 'ITEM_ADDED',
+      orderId: this.id,
+      productId,
+      quantity,
+      price,
+      timestamp: new Date(),
+    }, true);
+  }
+
+  // Event application (state transition)
+  private apply(event: DomainEvent, isNew: boolean): void {
+    switch (event.type) {
+      case 'ORDER_CREATED':
+        this.id = (event as any).orderId;
+        this.status = 'pending';
+        break;
+      case 'ITEM_ADDED':
+        this.items.push({
+          productId: (event as any).productId,
+          quantity: (event as any).quantity,
+          unitPrice: (event as any).price,
+        });
+        break;
+    }
+    if (isNew) this.uncommittedEvents.push(event);
+  }
+}
+```
+
+### Pattern 5: Layered Exception Handling
+
+```typescript
+// DOMAIN EXCEPTIONS: Business rule violations
+class OrderCannotBeCancelledException extends Error {
+  constructor(orderId: string, currentStatus: string) {
+    super(`Order ${orderId} cannot be cancelled in status: ${currentStatus}`);
+    this.name = 'OrderCannotBeCancelledException';
+  }
+}
+
+class InsufficientStockException extends Error {
+  constructor(productId: string, requested: number, available: number) {
+    super(`Insufficient stock for ${productId}: requested ${requested}, available ${available}`);
+    this.name = 'InsufficientStockException';
+  }
+}
+
+// APPLICATION EXCEPTIONS: Use case failures
+class OrderNotFoundError extends Error {
+  constructor(orderId: string) {
+    super(`Order not found: ${orderId}`);
+    this.name = 'OrderNotFoundError';
+  }
+}
+
+// INFRASTRUCTURE EXCEPTIONS: Technical failures
+class DatabaseConnectionError extends Error {
+  constructor(message: string) {
+    super(`Database connection failed: ${message}`);
+    this.name = 'DatabaseConnectionError';
+  }
+}
+
+// ADAPTER LAYER: Translate domain exceptions to HTTP responses
+class OrderController {
+  async cancelOrder(req: Request, res: Response): Promise<void> {
+    try {
+      await this.orderService.cancelOrder(req.params.id);
+      res.status(200).json({ message: 'Order cancelled' });
+    } catch (error) {
+      if (error instanceof OrderCannotBeCancelledException) {
+        res.status(409).json({ error: error.message });
+      } else if (error instanceof OrderNotFoundError) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    }
+  }
+}
 ```
 
 ## Edge Cases & Pitfalls
 
-| # | Edge Case | Problem | Solution |
-|---|-----------|---------|----------|
-| 1 | **Anemic domain model** | Entities are just data containers; logic in services | Move business logic into entities; services only orchestrate |
-| 2 | **Leaky abstractions** | Domain layer knows about database/framework | Enforce dependency rule; use interfaces at boundaries |
-| 3 | **Over-engineering** | Simple CRUD wrapped in complex architecture | Match architecture complexity to problem complexity |
-| 4 | **Circular dependencies** | Layers depend on each other | Enforce inward-only dependency direction |
-| 5 | **Transaction management** | Multi-aggregate consistency | Use eventual consistency; sagas for cross-aggregate |
-| 6 | **Performance overhead** | Too many abstractions slow the system | Profile before optimizing; measure actual impact |
-| 7 | **Team adoption** | Developers resist new patterns | Start with smaller modules; demonstrate benefits |
-| 8 | **Testing complexity** | Too many mocks needed | Ensure clean boundaries; use in-memory implementations |
-| 9 | **Migration path** | Existing monolith hard to refactor | Strangler fig pattern; incrementally extract modules |
-| 10 | **Eventual consistency** | CQRS read model out of date | Accept delay; use polling or signals for real-time needs |
-| 11 | **Value object identity** | Comparing value objects by reference | Implement proper equality methods |
-| 12 | **Aggregate boundaries** | Too large/small aggregates | Follow rule: small as possible, large as needed |
-| 13 | **Cross-cutting concerns** | Logging, auth scattered across layers | Use decorators, middleware, or AOP |
-| 14 | **DTO proliferation** | Too many mapping classes | Consider GraphQL or auto-mapping libraries |
-| 15 | **Premature abstraction** | Abstracting before patterns emerge | Wait for 3+ occurrences before extracting |
+1. **Over-Engineering Small Projects:** Clean Architecture adds complexity. For a simple CRUD app with 3 endpoints, the overhead of repositories, use cases, and adapters is not justified. Start simple and add structure as complexity demands.
+
+2. **Anemic Domain Model:** Putting all business logic in use cases while entities are just data containers. Entities should contain business rules (validation, state transitions, invariants), not just fields.
+
+3. **Leaking Infrastructure into Domain:** Importing database types, HTTP request objects, or framework-specific code into domain models. The domain layer must be a pure business logic layer with zero external dependencies.
+
+4. **Repository as God Interface:** Creating repositories with dozens of methods for every possible query. Keep repositories focused on aggregate-level operations. Complex queries belong in read models (CQRS query side).
+
+5. **Event Soup:** Publishing domain events for every trivial state change. Events should represent meaningful business occurrences, not every database write. Too many events create noise and make systems harder to reason about.
+
+6. **Circular Dependencies Between Layers:** Use case layer importing from adapter layer, or entities importing from application layer. Dependencies must always point inward. If you need to call outward, use dependency inversion (interfaces).
+
+7. **Premature Abstraction:** Creating abstractions for things that only have one implementation. Don't create an interface for a service that will never have an alternative implementation unless you need it for testing.
+
+8. **Transaction Boundary Confusion:** Unit of Work should span a single use case execution. Opening a transaction in the controller and closing it in the repository creates inconsistency. Manage transactions at the use case boundary.
+
+9. **Read Model vs Write Model Confusion:** Trying to use the same model for reads and writes when CQRS is appropriate. Write models are optimized for consistency and business rules. Read models are optimized for query performance.
+
+10. **Validation in Wrong Layer:** Business rule validation belongs in entities/use cases. Input format validation belongs in adapters/controllers. Schema validation belongs in the API layer. Mixing these creates confusion about where to look when validation fails.
+
+11. **Repository Per Table vs Per Aggregate:** One repository per table defeats the purpose of aggregates. Repositories should persist and retrieve entire aggregates (root entity + contained entities), not individual rows.
+
+12. **Ignoring Idempotency in Commands:** If a command handler can be called twice (network retry, message redelivery), it must be idempotent. Use idempotency keys or check for existing state before processing.
+
+13. **Domain Events Without Subscribers:** Publishing events that nobody listens to is dead code. Every published event should have at least one subscriber. If not, question whether the event is necessary.
+
+14. **Fat Interfaces in Ports:** Defining ports with too many methods violates Interface Segregation. Split ports by capability: `ReadPort`, `WritePort`, `NotificationPort` instead of one monolithic `ServicePort`.
+
+15. **Ignoring the Composition Root:** Hardcoding dependency wiring throughout the application. All dependency creation should happen in a single composition root (or DI container configuration). This makes swapping implementations trivial.
 
 ## Integration with Other Skills
 
-| Skill | Integration Points |
-|-------|-------------------|
-| **API Design** | Controllers as adapters; input/output ports as API contracts |
-| **Database Design** | Repository pattern; ORM as adapter; migration management |
-| **Testing** | Use cases testable without infrastructure; in-memory adapters |
-| **Security** | Authentication as middleware; authorization in use cases |
-| **Caching** | Cache as decorator around repositories |
-| **Messaging** | Domain events as message bus integration |
-| **Microservices** | Bounded contexts as service boundaries; anti-corruption layers |
-| **DevOps** | Dependency injection; composition root per environment |
-| **Monitoring** | Domain events for audit; metrics at adapter boundaries |
-| **Documentation** | Use cases as documentation; architecture decision records |
+| Skill | Integration Point | How |
+|-------|-------------------|-----|
+| `system-design` | Architecture decisions | Clean Architecture provides the patterns; system design provides the context |
+| `database-design` | Repository implementation | Database schema design is an adapter-layer concern; domain models are separate |
+| `api-design` | Adapter layer | API contracts map to driving adapters; endpoints orchestrate use cases |
+| `testing` | Testability | Clean Architecture's dependency inversion enables testing with mocks at every layer |
+| `debugging` | Layer isolation | When a bug occurs, the layer boundaries tell you exactly where to look |
+| `refactoring` | Architecture improvement | Refactoring to clean architecture follows the layer boundaries progressively |
+| `code-review` | Architecture compliance | Code reviews can check dependency direction and layer violations |
+| `documentation` | Architecture docs | Architecture Decision Records (ADRs) document why specific patterns were chosen |
+| `devops` | Deployment | Infrastructure changes should only affect the outermost (frameworks) layer |
+| `data-cleaning` | Data pipeline architecture | Data pipelines benefit from clean architecture: domain logic independent of ETL tools |
 
 ## Output Format Templates
 
-### Standard Template
+### Standard Template (Architecture Decision Record)
 
 ```markdown
-# Clean Architecture: [Feature]
+# ADR: [Decision Title]
 
-## Domain Model
+## Status
+[Proposed | Accepted | Deprecated | Superseded by ADR-XXX]
+
+## Context
+[What is the issue that we're seeing that motivates this decision?]
+
+## Decision
+[What is the change that we're proposing and/or doing?]
+
+## Consequences
+### Positive
+- [Benefit 1]
+- [Benefit 2]
+
+### Negative
+- [Trade-off 1]
+- [Trade-off 2]
+
+### Risks
+- [Risk 1 and mitigation]
+
+## Alternatives Considered
+- [Alternative 1]: [Why it was rejected]
+- [Alternative 2]: [Why it was rejected]
+```
+
+### Quick Template (Layer Violation Report)
+
+```markdown
+# Architecture Violation Report
+
+## Violations Found
+| Layer | File | Violation | Severity |
+|-------|------|-----------|----------|
+| Domain → Adapter | `order.ts` | Imports `DatabaseConnection` | 🔴 Critical |
+| Use Case → Framework | `create-order.ts` | Imports `express.Request` | 🔴 Critical |
+
+## Recommended Fixes
+1. [Fix 1 with file reference]
+2. [Fix 2 with file reference]
+```
+
+### Deep Template (Architecture Review)
+
+```markdown
+# Architecture Review: [System Name]
+
+## Overview
+[High-level description of the current architecture]
+
+## Layer Analysis
 ### Entities
-| Entity | Identity | Key Properties |
-|--------|----------|----------------|
-| Order | OrderId | status, items, total |
+- **Health:** [Good/Fair/Poor]
+- **Issues:** [List of domain model issues]
 
-### Value Objects
-| Value Object | Properties | Validation |
-|--------------|------------|------------|
-| Money | amount, currency | amount >= 0 |
+### Use Cases
+- **Health:** [Good/Fair/Poor]
+- **Issues:** [List of use case issues]
 
-## Use Cases
-| Use Case | Input | Output | Business Rules |
-|----------|-------|--------|----------------|
-| PlaceOrder | CreateOrderInput | CreateOrderOutput | Must have items |
+### Adapters
+- **Health:** [Good/Fair/Poor]
+- **Issues:** [List of adapter issues]
 
-## Interfaces (Ports)
-| Port | Method | Purpose |
-|------|--------|---------|
-| OrderRepository | findById | Retrieve order |
+### Frameworks
+- **Health:** [Good/Fair/Poor]
+- **Issues:** [List of framework issues]
 
-## Implementation
-[adapter implementations]
+## Dependency Analysis
+- **Dependency violations:** [Count and list]
+- **Coupling score:** [Metric]
+- **Testability score:** [% of domain with unit tests]
 
-## Tests
-[unit/integration test strategy]
+## Recommendations
+1. [High priority fix]
+2. [Medium priority fix]
+3. [Low priority improvement]
+
+## Migration Plan
+| Phase | Scope | Effort | Risk |
+|-------|-------|--------|------|
+| Phase 1 | [What to change] | [Time] | [Risk level] |
+| Phase 2 | [What to change] | [Time] | [Risk level] |
 ```
 
-### Quick Template
+### Agent Template (Architecture Generation)
 
 ```markdown
-# Quick Architecture: [Feature]
+# Architecture Generation Instructions
 
-## Layers
-1. Entities: [list core entities]
-2. Use Cases: [list operations]
-3. Adapters: [list implementations]
-4. Frameworks: [list dependencies]
-
-## Key Interfaces
-- [Interface 1]
-- [Interface 2]
-
-## Dependencies
-- [External service 1]
-- [Database]
-```
-
-### Deep Template
-
-```markdown
-# Comprehensive Architecture Guide: [Feature]
-
-## Domain Analysis
-[DDD diagrams, bounded contexts]
-
-## Architecture Diagram
-[dependency diagram showing layers]
-
-## Entity Design
-[detailed entity specifications]
-
-## Use Case Catalog
-[complete use case documentation]
-
-## Port Definitions
-[all interfaces/contracts]
-
-## Adapter Implementations
-[detailed implementation guides]
-
-## Event Design
-[domain event catalog and flows]
-
-## Migration Strategy
-[how to evolve the architecture]
-
-## Performance Considerations
-[optimization strategies]
-```
-
-### Agent Template
-
-```markdown
-# Architecture Agent Instructions
-
-## Task
-Design and implement [feature] following Clean Architecture.
+## Domain
+- **Name:** [Domain name]
+- **Key entities:** [List of core entities]
+- **Business rules:** [Key invariants and constraints]
+- **External integrations:** [Systems this will connect to]
 
 ## Requirements
-- [ ] Domain model with entities and value objects
-- [ ] Use cases with input/output ports
-- [ ] Repository interfaces in domain layer
-- [ ] Implementations in adapter layer
-- [ ] Dependency injection wiring
-- [ ] Unit tests for use cases
-- [ ] Integration tests for adapters
+- **Layers:** [entities/use-cases/adapters/frameworks]
+- **Patterns:** [repository, unit-of-work, cqrs, domain-events, etc.]
+- **Language:** [TypeScript | Python]
+- **Database:** [PostgreSQL | MongoDB | etc.]
+- **Framework:** [Express | FastAPI | etc.]
 
-## Architecture Rules
-1. Dependencies point inward only
-2. Domain layer has no external dependencies
-3. Use cases orchestrate, not implement business logic
-4. Adapters implement port interfaces
-5. Composition root wires everything
+## Constraints
+- **Max entity complexity:** [Simple/Medium/Complex]
+- **Event sourcing required:** [Yes/No]
+- **CQRS required:** [Yes/No]
+- **Multi-tenancy:** [Yes/No]
 
-## Testing Strategy
-- Entities: Pure unit tests
-- Use Cases: Mock repositories
-- Adapters: Integration tests with real implementations
-- E2E: Full stack through composition root
-
-## Documentation
-- Update architecture docs
-- Add ADRs for decisions
-- Document bounded contexts
+## Output
+- [ ] Entity models with business rules
+- [ ] Repository interfaces
+- [ ] Use case implementations
+- [ ] Adapter implementations
+- [ ] Composition root / DI wiring
+- [ ] Unit tests for domain logic
 ```
 
 ## Rules
 
-1. **Dependency Rule**: Source code dependencies must point only inward toward higher-level policies
-2. **Entities are pure**: No database, framework, or external service dependencies in entities
-3. **Use cases orchestrate**: They coordinate entities and repositories, not implement business logic
-4. **Interfaces at boundaries**: Always use interfaces (ports) when crossing layer boundaries
-5. **Dependency injection**: Never instantiate dependencies directly; inject them
-6. **Test without infrastructure**: Use cases must be testable with in-memory implementations
-7. **Value objects are immutable**: No setters; create new instances for changes
-8. **Aggregate consistency boundaries**: Modify only one aggregate per transaction
-9. **Domain events for cross-aggregate**: Use events for eventual consistency between aggregates
-10. **Keep frameworks at the edge**: UI, database, and frameworks are details; isolate them
-11. **Single responsibility**: Each class/module should have one reason to change
-12. **Interface segregation**: Don't force clients to depend on methods they don't use
-13. **Composition over inheritance**: Favor composition for code reuse
-14. **Explicit over implicit**: Make business rules visible in the domain model
-15. **Continuous refactoring**: Architecture evolves; don't try to get it perfect upfront
+1. **The Dependency Rule is absolute.** Source code dependencies must always point inward. The domain layer knows nothing about the use case layer. The use case layer knows nothing about the adapter layer. Violations accumulate as architectural debt.
+
+2. **Business logic lives in entities, not use cases.** Use cases orchestrate; entities decide. If you find business rules in your controllers or use cases, move them to the entity where they belong.
+
+3. **Interfaces belong to the consumer, not the provider.** Repository interfaces are defined in the domain layer (where they're used), not in the adapter layer (where they're implemented). This is dependency inversion in practice.
+
+4. **The composition root is the only place that knows all concrete types.** Every other layer depends on abstractions. Only the composition root (or DI container) knows which implementation to wire up.
+
+5. **Test at the boundary.** Unit tests for domain logic should have zero external dependencies. Integration tests verify adapters. End-to-end tests verify the full stack. Don't mock what you don't own.
+
+6. **One aggregate, one repository.** Repositories persist and retrieve aggregates (the root entity plus its contained entities), not individual database tables. The aggregate boundary is the transaction boundary.
+
+7. **Domain events represent business facts, not system events.** `ORDER_CREATED` is a business event. `DATABASE_WRITTEN` is a system event. Only business events belong in the domain layer.
+
+8. **Value objects are immutable and self-validating.** If a value can be invalid, it should be impossible to create an invalid instance. Use factory methods that throw on invalid input.
+
+9. **Keep adapters thin.** Adapter code should translate between formats, not contain business logic. If you find business rules in an adapter, it belongs in the domain.
+
+10. **CQRS is optional but powerful.** When read and write patterns diverge significantly, separate them. When they're similar, a single model is simpler. Don't adopt CQRS because it's fashionable—adopt it because it solves a real problem.
+
+11. **Anti-corruption layers are insurance.** When integrating with external systems whose models may change, protect your domain with an adapter that translates between models. The cost is paid once; the benefit compounds.
+
+12. **Event sourcing is a storage strategy, not an architecture.** You can use event sourcing for specific aggregates without making it the foundation of your entire system. Start with CRUD; add event sourcing where the audit trail or temporal queries justify the complexity.
+
+13. **Value objects over primitives.** Use `Money` instead of `number`, `Email` instead of `string`, `OrderId` instead of `string`. Primitive obsession hides business meaning and makes validation inconsistent.
+
+14. **Errors should be domain-specific.** `OrderCannotBeCancelledException` tells you more than `BadRequestError`. Create error types that encode the business rule that was violated.
+
+15. **Refactor incrementally.** Don't rewrite a working system to adopt clean architecture. Move one bounded context at a time. Start with the most complex domain logic. Leave simple CRUD alone.

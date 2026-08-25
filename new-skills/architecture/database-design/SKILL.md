@@ -13,11 +13,11 @@ conflicts: []
 
 # Database Design Skill
 
-## Purpose
+## Overview
 
 Design efficient, normalized, well-structured database schemas with production-grade patterns including multi-tenancy, event sourcing, JSONB modeling, and advanced indexing strategies.
 
-## When to Activate
+## When to Use This Skill
 
 - Designing new database schemas or redesigning existing ones
 - Creating forward and rollback migrations
@@ -27,6 +27,15 @@ Design efficient, normalized, well-structured database schemas with production-g
 - Designing partition strategies for large tables
 - Planning materialized view refresh strategies
 - Architecting JSONB document storage in relational databases
+
+## When NOT to Use This Skill
+
+- Simple in-memory data structures or local storage suffices
+- Data model is already well-defined and requires no changes
+- Working with static configuration files only
+- No database or persistence layer involved
+- Using a third-party managed service with fixed schema (e.g., SaaS APIs)
+- Designing purely UI/frontend components with no data layer
 
 ## Workflow
 

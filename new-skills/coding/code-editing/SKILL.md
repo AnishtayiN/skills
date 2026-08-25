@@ -12,11 +12,11 @@ conflicts: []
 
 # Code Editing Skill
 
-## Purpose
+## Overview
 
 Make precise, minimal changes to existing code. Preserve context, avoid side effects, maintain formatting, and ensure backward compatibility.
 
-## When to Activate
+## When to Use This Skill
 
 - User asks to change a specific line/function/block
 - User wants to update existing behavior
@@ -25,7 +25,7 @@ Make precise, minimal changes to existing code. Preserve context, avoid side eff
 - Merge conflict resolution
 - Batch edits across multiple files
 
-## When NOT to Activate
+## When NOT to Use This Skill
 
 - Writing new code from scratch (→ code-generation)
 - Fixing bugs (→ debugging)
