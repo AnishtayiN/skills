@@ -1,1240 +1,1113 @@
 ---
 name: technical-writing
 description: >-
-  Write clear, effective technical content: tutorials, explainers, deep dives, 
-  comparison posts, post-mortems, and workshop materials.
-  English: technical writing, technical documentation, tutorial writing, explainer articles,
-    deep dives, comparison posts, post-mortems, workshop materials, code narrative,
-    progressive disclosure, audience analysis, Feynman technique, developer documentation,
-    API documentation, architecture decision records, knowledge base articles.
-  فارسی: نگارش فنی، مستندسازی فنی، نوشتن آموزش‌ها، مقالات توضیحی، مقالات عمیق،
-    مقالات مقایسه‌ای، گزارش‌های پس‌مرگ، مواد کارگاهی، روایت کد، تکنیک فاینمن.
-  中文: 技术写作，技术文档，教程编写，解释性文章，深度文章，比较文章，事后分析，
-    工作坊材料，代码叙事，渐进式披露，受众分析，费曼技巧，开发者文档。
+  Technical writing, content creation, and knowledge transfer. Covers tutorial structure
+  (setup→first success→expand), explainer articles, deep dives, comparison posts, post-mortems,
+  workshop materials, Feynman technique (teach to 12-year-old), code narrative flow
+  (setup→inciting incident→climax→resolution), progressive disclosure, audience analysis,
+  anti-info-dump philosophy, version-anchored writing. نگارش فنی، تولید محتوا، آموزش‌نامه‌نویسی،
+  مقاله‌نویسی فنی، مستندسازی. 技术写作，内容创作，教程编写，技术文档，比较文章
 ---
 
-# Technical Writing and Content Creation
+# Technical Writing & Content Creation
 
 ## Overview
 
-Technical writing is the practice of communicating complex information clearly, accurately, and efficiently to a specific audience. Unlike creative writing, technical writing prioritizes utility over beauty — the reader should be able to accomplish something after reading. The best technical writing is invisible: readers absorb the information without noticing the prose.
+Technical writing is the practice of translating complex technical concepts into clear, actionable, and accessible content. Unlike academic writing (which optimizes for rigor) or marketing writing (which optimizes for persuasion), technical writing optimizes for **understanding and action**. The reader should finish your piece knowing something they didn't before, and being able to do something they couldn't before.
 
-The core challenge of technical writing is managing complexity. Every technical topic exists on a spectrum from "total beginner" to "domain expert," and the writer must decide where on that spectrum to target. Writing for too advanced an audience alienates newcomers; writing for too basic an audience bores experts. The Feynman technique — explain the concept as if teaching it to someone with no background — is the writer's most powerful tool for finding this balance.
+This skill covers the full lifecycle of technical content: from audience analysis and structure planning, through writing and revision, to publication and maintenance. It addresses the specific challenges of writing about software—rapidly evolving tools, version-specific behavior, code examples that must actually work, and audiences that range from curious beginners to seasoned architects.
 
-This skill covers the complete technical writing lifecycle: audience analysis, content type selection, structural planning, drafting with code integration, revision for clarity, and publication. It includes templates for every major content type and techniques for making complex topics accessible.
+**Core Philosophy:** Great technical writing is invisible. The reader doesn't admire your prose—they absorb your knowledge. If someone says "that was a really well-written article," you've done well. If they say "I finally understand X," you've done brilliantly.
+
+**The Anti-Info-Dump Principle:** Content is not a database. Dumping every fact you know about a topic is not teaching—it's referential. Teaching means selecting, sequencing, and scaffolding information so the reader builds understanding incrementally. Every paragraph must earn its place by advancing the reader's comprehension.
 
 ## When to Use This Skill
 
-- Writing tutorials that teach readers to build something step-by-step
-- Creating explainer articles that make complex concepts understandable
-- Writing deep dives that explore advanced topics in detail
-- Building comparison posts that help readers choose between options
-- Documenting post-mortems after incidents or project completions
-- Developing workshop materials for hands-on learning sessions
-- Writing architecture decision records (ADRs) for technical decisions
-- Creating developer documentation for APIs, libraries, or frameworks
+- Writing tutorials that guide readers from zero to working implementation
+- Creating explainer articles that demystify complex concepts or architectures
+- Producing deep dives that explore the internals of a system, algorithm, or pattern
+- Writing comparison posts that help readers choose between tools, libraries, or approaches
+- Authoring post-mortems that communicate what went wrong, why, and what was learned
+- Developing workshop materials (labs, exercises, handouts) for live or asynchronous learning
+- Creating technical blog posts for company engineering blogs or personal portfolios
+- Writing API documentation, README files, or inline code documentation
+- Preparing conference talk slides and speaker notes
+- Drafting RFCs, design documents, or architectural decision records
 
 ## When NOT to Use This Skill
 
-- Writing marketing copy or sales-focused content (use copywriting skills)
-- Creating UI/UX microcopy (use UX writing patterns)
-- Writing academic papers (follow academic conventions instead)
-- Composing internal status updates or meeting notes (use summarization skills)
-- Writing legal or compliance documents (requires specialized legal writing)
-
----
+- Writing marketing copy, sales emails, or promotional content (different skill, different goals)
+- Creating legal documents, compliance reports, or formal contracts (requires legal expertise)
+- Authoring academic papers with formal citation requirements (different structure and norms)
+- Writing social media posts shorter than a paragraph (too brief for this framework)
+- Producing video scripts without accompanying text (video has its own grammar)
+- Creating API specifications in OpenAPI/Swagger format (more schema than prose)
 
 ## Workflow
 
 ### Phase 1: Audience Analysis
 
-**Objective:** Determine who you're writing for, what they already know, and what they need to accomplish.
+Before writing a single word, understand who you're writing for.
 
+```python
+audience_profile = {
+    "primary_persona": {
+        "role": "Backend developer with 3 years of experience",
+        "knowledge_level": "Intermediate — knows HTTP, databases, basic design patterns",
+        "goal": "Understand how to implement CQRS in their existing Node.js application",
+        "pain_points": [
+            "Confused by too many blog posts that explain CQRS abstractly without code",
+            "Worried about over-engineering a simple CRUD application",
+            "Needs to justify the approach to their team lead",
+        ],
+        "time_budget": "15-20 minutes to read; 1-2 hours to try the code",
+        "reading_context": "Desktop, focused work session (not mobile, not commute)",
+    },
+    "secondary_persona": {
+        "role": "Team lead evaluating architecture patterns",
+        "knowledge_level": "Advanced — familiar with DDD, knows when patterns apply",
+        "goal": "Quickly assess whether CQRS fits their team's needs",
+        "reading_context": "Skimming for structure and key takeaways, not reading every line",
+    },
+}
+
+def audience_checklist(topic: str) -> list:
+    """Generate questions to answer before writing about a topic."""
+    return [
+        f"Who is the primary reader of '{topic}'?",
+        "What do they already know about this topic?",
+        "What do they NOT know that they need to learn?",
+        "What will they DO with this knowledge after reading?",
+        "How much time will they invest in reading this?",
+        "What is their emotional state? (Frustrated? Curious? Urgent?)",
+        "What alternatives have they already tried or read?",
+        "What objections or skepticism might they have?",
+    ]
+
+# Apply before every piece of content
+questions = audience_checklist("Implementing CQRS in Node.js")
+for q in questions:
+    print(f"  → {q}")
 ```
-Audience Identification → Knowledge Assessment → Goal Mapping → Content Calibration
-```
-
-**Step 1.1 — Identify Primary and Secondary Audiences**
-Who is the intended reader? A junior developer learning a new framework? A senior architect evaluating a technology choice? A product manager understanding a technical constraint? Each audience requires different depth, vocabulary, and examples.
-
-**Step 1.2 — Assess Knowledge Level**
-Map the audience's likely knowledge: What concepts do they already understand? What terminology is familiar? What's the gap between their current knowledge and the article's content? The article should bridge this gap without being condescending or overwhelming.
-
-**Step 1.3 — Define the Reader's Goal**
-What does the reader want to accomplish after reading? "Understand how RAG works" (explainer), "Build a RAG pipeline" (tutorial), "Choose between vector databases" (comparison), or "Learn from our RAG deployment failure" (post-mortem). The goal determines the content type and structure.
-
-**Step 1.4 — Calibrate Content**
-Adjust: vocabulary (jargon vs. plain language), code complexity (complete examples vs. snippets), depth of explanation (why vs. how vs. what), and assumed context (standalone vs. series).
 
 ### Phase 2: Content Type Selection
 
-**Objective:** Choose the content structure that best serves the reader's goal.
+Choose the right format for your goal:
 
-```
-Reader Goal → Content Type → Structure Template → Outline → First Draft
-```
+```python
+CONTENT_TYPES = {
+    "tutorial": {
+        "goal": "Guide reader from zero to working implementation",
+        "structure": "Setup → First Success → Expand → Deepen → Polish",
+        "best_for": "Specific tools, libraries, frameworks, features",
+        "length": "1500-4000 words",
+        "key_principle": "Get to a working result as fast as possible, then iterate",
+    },
+    "explainer": {
+        "goal": "Demystify a concept or idea",
+        "structure": "Hook → Context → Core Concept → Example → Implications",
+        "best_for": "Architecture patterns, design decisions, abstract ideas",
+        "length": "1200-3000 words",
+        "key_principle": "Use concrete analogies before abstract definitions",
+    },
+    "deep_dive": {
+        "goal": "Reveal internals, edge cases, and advanced behavior",
+        "structure": "Surface Overview → Assumptions → Internals → Edge Cases → Advanced",
+        "best_for": "Library internals, algorithm explanations, performance analysis",
+        "length": "3000-6000 words",
+        "key_principle": "Build mental models, not just instructions",
+    },
+    "comparison": {
+        "goal": "Help reader make an informed choice between options",
+        "structure": "Context → Criteria → Head-to-Head → Trade-offs → Recommendation",
+        "best_for": "Library/tool selection, architectural approaches, methodologies",
+        "length": "2000-4000 words",
+        "key_principle": "Be honest about trade-offs; no tool is universally best",
+    },
+    "post_mortem": {
+        "goal": "Share lessons from an incident or failure",
+        "structure": "Timeline → Impact → Root Cause → Fix → Lessons → Prevention",
+        "best_for": "Outages, bugs, failed projects, security incidents",
+        "length": "1500-3000 words",
+        "key_principle": "Blame systems, not people; focus on prevention, not punishment",
+    },
+    "workshop": {
+        "goal": "Enable hands-on learning in a structured session",
+        "structure": "Prerequisites → Setup → Guided Exercises → Challenges → Wrap-up",
+        "best_for": "Training sessions, conference workshops, team learning",
+        "length": "Variable (30 min to full day)",
+        "key_principle": "Every exercise should produce something working; dead ends kill motivation",
+    },
+}
 
-| Content Type | Reader Goal | Structure | Length |
-|---|---|---|---|
-| Tutorial | Learn by building | Steps with code | 1500-4000 words |
-| Explainer | Understand a concept | Definition → Why → How → Examples | 1000-2500 words |
-| Deep Dive | Master advanced topics | Context → Mechanics → Trade-offs → Edge cases | 3000-8000 words |
-| Comparison | Make a decision | Criteria → Side-by-side → Verdict | 2000-4000 words |
-| Post-mortem | Learn from failure | Timeline → Impact → Root cause → Lessons | 2000-5000 words |
-| Workshop | Hands-on learning | Setup → Exercises → Challenges → Solutions | 4000-10000 words |
-| ADR | Document a decision | Context → Decision → Consequences | 500-1500 words |
-
-### Phase 3: Structural Planning
-
-**Objective:** Create a detailed outline that ensures logical flow and completeness.
-
-```
-Key Messages → Logical Sequence → Section Breakdown → Heading Hierarchy → Time Estimates
-```
-
-**Step 3.1 — Define Key Messages**
-What are the 3-5 essential points the reader must take away? Everything in the article should support, elaborate, or exemplify these messages.
-
-**Step 3.2 — Sequence Logically**
-Order sections to build understanding progressively: foundation → application → nuance → mastery. Never assume the reader will read linearly — use headings that work as a table of contents.
-
-**Step 3.3 — Estimate Reading Time**
-Respect the reader's time. A 3000-word article takes ~12 minutes to read. Add code examples and the total engagement time rises to 20-30 minutes. Set expectations with the reader upfront.
-
-### Phase 4: Drafting with Code Integration
-
-**Objective:** Write the first draft with proper code narrative flow and progressive disclosure.
-
-```
-Introduction → Conceptual Foundation → Working Code → Explanation → Variations → Conclusion
-```
-
-**Step 4.1 — Write the Introduction Last**
-The introduction should state: what the reader will learn, why it matters, what they'll build/understand by the end, and prerequisites. Write it after the body so it accurately reflects the content.
-
-**Step 4.2 — Integrate Code Naturally**
-Code should illustrate a concept, not be the concept. Every code block needs: context (what this code does), the code itself (complete and runnable), explanation (what each part does), and expected output. Never show code without explaining it.
-
-**Step 4.3 — Apply Progressive Disclosure**
-Layer information: start with the simplest version that works, then add complexity. Show the 5-line version before the 50-line production version. Explain the concept before the implementation.
-
-### Phase 5: Revision for Clarity
-
-**Objective:** Eliminate confusion, reduce friction, and ensure every sentence serves the reader.
-
-```
-First Draft → Clarity Pass → Technical Accuracy Pass → Readability Pass → Final Polish
-```
-
-**Step 5.1 — Clarity Pass**
-Read every sentence and ask: "Would a member of my target audience understand this on first read?" If not, simplify. Replace passive voice with active voice. Eliminate unnecessary words. Break long sentences.
-
-**Step 5.2 — Technical Accuracy Pass**
-Verify every technical claim, code example, and assertion. Test all code examples. Check version numbers, API names, and command syntax. Have a subject matter expert review if possible.
-
-**Step 5.3 — Readability Pass**
-Check: sentence length (target <25 words average), paragraph length (target <4 sentences), heading hierarchy (H2 > H3, never skip levels), code-to-prose ratio (aim for 40-60% prose), and scanning-friendliness (bullets, tables, bold key terms).
-
-### Phase 6: Publication and Maintenance
-
-**Objective:** Publish in the right format and keep the content accurate over time.
-
-```
-Format Selection → SEO/Discovery → Publication → Feedback Collection → Maintenance Schedule
+def select_content_type(goal: str, audience: str, time_budget: str) -> str:
+    """Recommend the best content type based on constraints."""
+    if "zero to working" in goal.lower() or "tutorial" in goal.lower():
+        return "tutorial"
+    elif "explain" in goal.lower() or "what is" in goal.lower():
+        return "explainer"
+    elif "internals" in goal.lower() or "how it works" in goal.lower():
+        return "deep_dive"
+    elif "compare" in goal.lower() or "vs" in goal.lower() or "which" in goal.lower():
+        return "comparison"
+    elif "incident" in goal.lower() or "postmortem" in goal.lower():
+        return "post_mortem"
+    elif "workshop" in goal.lower() or "hands-on" in goal.lower():
+        return "workshop"
+    return "explainer"  # Default
 ```
 
-**Step 6.1 — Format for Platform**
-Adapt content for the publication platform: blog (Markdown, front matter), documentation site (structured pages, navigation), GitHub (README, docs folder), or workshop (exercises, solutions).
+### Phase 3: The Feynman Technique — Write for a 12-Year-Old
 
-**Step 6.2 — Set Up Maintenance**
-Technical content decays. Set review dates: API docs (every release), tutorials (quarterly), explainers (biannually). Track when referenced tools or versions change.
+Richard Feynman's approach to understanding: if you can't explain it simply, you don't understand it well enough.
 
+```python
+def feynman_check(section_text: str) -> dict:
+    """
+    Analyze a section of text for Feynman technique compliance.
+    Flags jargon, unnecessary complexity, and missing analogies.
+    """
+    jargon_words = [
+        "abstraction", "polymorphism", "idempotent", "eventual consistency",
+        "throughput", "latency", "partitioning", "replication", "serialization",
+        "dependency injection", "inversion of control", "middleware", "schema",
+        "canonical", "entropy", "coupling", "cohesion", "orthogonal",
+    ]
+
+    findings = {"jargon_found": [], "sentences_too_long": [], "missing_analogies": []}
+
+    sentences = section_text.split(".")
+    for sent in sentences:
+        words = sent.split()
+        if len(words) > 30:
+            findings["sentences_too_long"].append(sent.strip()[:80] + "...")
+        for jargon in jargon_words:
+            if jargon.lower() in sent.lower():
+                findings["jargon_found"].append(jargon)
+
+    analogy_indicators = [
+        "think of it like", "imagine", "analogy", "metaphor", "similar to",
+        "like when", "as if", "for example", "for instance", "picture this",
+    ]
+    has_analogy = any(ind in section_text.lower() for ind in analogy_indicators)
+    if not has_analogy and len(section_text) > 500:
+        findings["missing_analogies"].append(
+            "No analogy or concrete example found in a long section"
+        )
+
+    return findings
+
+# The Feynman Test: After writing, ask yourself:
+# "Could I explain this to a smart 12-year-old?"
+# If not, simplify until you can.
+```
+
+### Phase 4: Code Narrative Flow
+
+Structure code-heavy content as a story:
+
+```
+NARRATIVE STRUCTURE:
+1. SETUP — What are we building? Why? What's the starting point?
+2. INCITING INCIDENT — The problem, limitation, or challenge that demands change
+3. RISING ACTION — Step-by-step implementation, each step building on the last
+4. CLIMAX — The "aha!" moment where it all comes together
+5. RESOLUTION — What we've learned, when to use this, when NOT to
+```
+
+```python
+def validate_narrative_flow(outline: dict) -> list:
+    """Validate that an outline follows the code narrative flow."""
+    required_sections = ["setup", "inciting_incident", "rising_action", "climax", "resolution"]
+    issues = []
+    for section in required_sections:
+        if section not in outline or not outline[section]:
+            issues.append(f"Missing section: {section}")
+
+    if "setup" in outline and "climax" in outline:
+        setup_pos = outline.get("setup", {}).get("position", 0)
+        climax_pos = outline.get("climax", {}).get("position", 999)
+        if setup_pos >= climax_pos:
+            issues.append("Setup must come before climax")
+
+    if "rising_action" in outline:
+        has_code = "code" in str(outline["rising_action"]).lower()
+        if not has_code:
+            issues.append("Rising action should include code, not just text")
+
+    return issues
+
+# Example narrative for a CQRS tutorial:
+#
+# SETUP: "You have a simple Express.js app with a /users endpoint.
+#         It queries the same database for reads and writes."
+#
+# INCITING INCIDENT: "Your traffic grows. Reads spike during business hours.
+#                     Writes spike at night during batch imports.
+#                     Your single database can't optimize for both."
+#
+# RISING ACTION: "Step 1: Define separate read and write models.
+#                 Step 2: Create the command handler.
+#                 Step 3: Create the query handler.
+#                 Step 4: Wire it up with event sourcing."
+#
+# CLIMAX: "You run the load test. Read latency drops 10x. Write throughput
+#          triples. The system handles the asymmetric load gracefully."
+#
+# RESOLUTION: "CQRS isn't always the answer. It adds complexity.
+#              Use it when read/write patterns diverge significantly."
+```
+
+### Phase 5: Progressive Disclosure
+
+Layer information from simple to complex:
+
+```python
+PROGRESSIVE_DISCLOSURE_LAYERS = {
+    "layer_1_basics": {
+        "description": "The absolute minimum to understand the concept",
+        "audience": "Everyone who reads the article",
+        "technique": "Simple language, concrete examples, no jargon",
+        "example": "A function that takes two numbers and returns their sum.",
+    },
+    "layer_2_intermediate": {
+        "description": "The practical details needed to use it effectively",
+        "audience": "Readers who want to apply the concept",
+        "technique": "Code examples, configuration options, common patterns",
+        "example": "How to handle edge cases: NaN, overflow, string inputs.",
+    },
+    "layer_3_advanced": {
+        "description": "Internals, edge cases, and optimization",
+        "audience": "Readers who need to master the topic",
+        "technique": "Deep dives, benchmarks, implementation details",
+        "example": "How the compiler optimizes the function, memory layout.",
+    },
+    "layer_4_reference": {
+        "description": "Complete API, all parameters, error codes",
+        "audience": "People who already understand and need a reference",
+        "technique": "Tables, parameter lists, complete examples",
+        "example": "Function signature, all overloads, type constraints.",
+    },
+}
+
+def apply_progressive_disclosure(content: str, layer: str) -> str:
+    """Wrap content in a progressive disclosure container."""
+    if layer == "layer_1_basics":
+        return f"""## Concept
+
+{content}
+
+> **Key takeaway:** [One sentence summary of the core idea]"""
+    elif layer == "layer_2_intermediate":
+        return f"""<details>
+<summary><strong>Dive deeper: Implementation details</strong></summary>
+
+{content}
+
+</details>"""
+    elif layer == "layer_3_advanced":
+        return f"""<details>
+<summary><strong>Advanced: Internals and edge cases</strong></summary>
+
+{content}
+
+</details>"""
+    elif layer == "layer_4_reference":
+        return f"""<details>
+<summary><strong>Reference: Complete API</strong></summary>
+
+{content}
+
+</details>"""
+    return content
+```
+
+### Phase 6: Version-Anchored Writing
+
+Pin content to specific versions to prevent staleness:
+
+```python
+def version_anchor(article: dict) -> str:
+    """Add version anchoring metadata to an article."""
+    return f"""---
+title: {article['title']}
+last_updated: {article.get('last_updated', 'YYYY-MM-DD')}
+versions:
+  primary: {article.get('primary_version', 'v1.0.0')}
+  tested_with:
+{chr(10).join(f'    - {tool}: {ver}' for tool, ver in article.get('tested_with', {}).items())}
+  known_broken_after: {article.get('known_broken_after', 'TBD')}
+  verified_by: {article.get('verified_by', 'author')}
 ---
+
+> **⚠️ Version Note:** This article was written and tested with {article.get('primary_version', 'v1.0.0')}.
+> If you're using a different version, some details may have changed.
+> Last verified: {article.get('last_updated', 'YYYY-MM-DD')}.
+"""
+
+# VERSION ANCHORING CHECKLIST:
+# - Pin every code example to a specific version
+# - Record when the article was last tested
+# - Note known versions where the content breaks
+# - Include a "last verified" date
+# - Use semantic versioning in dependencies
+# - Test on CI before publishing (automated freshness check)
+```
+
+### Phase 7: The Revision Process
+
+```python
+REVISION_CHECKLIST = {
+    "structural": [
+        "Does the title accurately reflect the content?",
+        "Is the introduction hooking? Does it establish why the reader should care?",
+        "Does each section have a clear purpose and flow logically to the next?",
+        "Is there a clear conclusion or next-steps section?",
+        "Are headings descriptive (not clever but vague)?",
+    ],
+    "technical": [
+        "Does every code example actually run? (Test it!)",
+        "Are all commands, APIs, and syntax current for the pinned version?",
+        "Are error scenarios addressed?",
+        "Are there any hidden assumptions about the reader's environment?",
+        "Are the technical claims accurate and verifiable?",
+    ],
+    "clarity": [
+        "Can any sentence be shorter without losing meaning?",
+        "Are there unnecessary adjectives, adverbs, or qualifiers?",
+        "Is every pronoun unambiguous (he/she/it/they/this/that)?",
+        "Are there transitions between paragraphs?",
+        "Would a non-native English speaker understand this?",
+    ],
+    "completeness": [
+        "Are prerequisites explicitly stated?",
+        "Is the reader told what they'll have working by the end?",
+        "Are all pieces of the puzzle introduced before they're used?",
+        "Are there any gaps in the step-by-step flow?",
+        "Is there a way for the reader to verify they've done it correctly?",
+    ],
+    "accessibility": [
+        "Are images described with alt text?",
+        "Is color the only way information is conveyed?",
+        "Are code blocks syntax-highlighted?",
+        "Is the reading level appropriate for the audience?",
+        "Are there multiple entry points for different skill levels?",
+    ],
+}
+
+def run_revision_pass(draft: str, checklist_category: str) -> list:
+    """Simulate running a revision pass against a specific checklist."""
+    issues = []
+    checklist = REVISION_CHECKLIST.get(checklist_category, [])
+    for item in checklist:
+        issues.append({"checklist_item": item, "status": "needs_review"})
+    return issues
+```
 
 ## Advanced Techniques
 
-### 1. The Feynman Technique for Technical Explanations
+### Technique 1: The Hook → Context → Stakes Pattern
 
-Richard Feynman's approach to understanding: explain the concept in simple language, identify gaps in your explanation, go back to the source to fill gaps, and simplify further. This technique is the foundation of great technical writing.
-
-```python
-# Concept: Event-Driven Architecture
-
-# Level 1: Simple Explanation (What a 10-year-old would understand)
-"""
-Instead of one person calling another person and waiting for them to finish 
-before moving on (like a phone call), imagine you send a text message and 
-continue with your day. When the other person replies, you deal with it then. 
-That's event-driven: you send a signal and don't wait around.
-"""
-
-# Level 2: Developer Explanation (What a junior developer needs)
-"""
-Event-driven architecture is a design pattern where components communicate 
-by sending and receiving events. Instead of direct function calls (Request → 
-Response), a component publishes an event (e.g., "OrderPlaced") and other 
-components react to it independently. This decouples the sender from the 
-receiver — the order service doesn't need to know which other services care 
-about new orders.
-"""
-
-# Level 3: Architect Explanation (What a senior architect needs)
-"""
-Event-driven architecture (EDA) uses events as the primary mechanism for 
-inter-service communication in distributed systems. Key patterns include:
-
-- Event Notification: Minimal event payload, consumers fetch details
-- Event-Carried State Transfer: Full state in event, no callback needed  
-- Event Sourcing: Events as the source of truth, state derived from event log
-- CQRS: Separate read and write models, often combined with event sourcing
-
-Trade-offs: EDA improves scalability and resilience but introduces eventual 
-consistency, debugging complexity (distributed tracing), and schema evolution 
-challenges (event versioning). Use when loose coupling and independent scaling 
-matter more than strong consistency.
-"""
-```
-
-### 2. Code Narrative Flow
-
-Every code example should tell a story: setup → action → result → interpretation. Never drop code without context.
+Every article needs a hook that makes the reader want to continue:
 
 ```python
-# BAD: Code without narrative
-"""
-```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-
-embeddings = OpenAIEmbeddings()
-db = Chroma.from_documents(docs, embeddings)
-results = db.similarity_search("query", k=5)
-```
-"""
-
-# GOOD: Code with narrative flow
-"""
-### Step 2: Create the Vector Store
-
-First, we initialize the embedding model. This converts text into 
-1536-dimensional vectors that capture semantic meaning:
-
-```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-
-# Initialize the embedding model
-# Each text chunk will be converted to a 1536-dimensional vector
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-```
-
-Next, we create the vector store from our chunked documents. This 
-embeds each chunk and stores it for efficient similarity search:
-
-```python
-# Create vector store from documents
-# This step: embed each chunk → store vectors + metadata
-db = Chroma.from_documents(
-    documents=chunks,      # Our preprocessed document chunks
-    embedding=embeddings,  # The embedding model
-    persist_directory="./chroma_db"  # Save to disk for persistence
-)
-
-print(f"Indexed {db._collection.count()} chunks")
-# Output: Indexed 1,247 chunks
-```
-
-Finally, we can search for relevant documents. The query is embedded 
-using the same model, and we find the 5 most similar chunks:
-
-```python
-# Search for relevant chunks
-results = db.similarity_search(
-    "How do I configure authentication?",  # The user's query
-    k=5  # Return top 5 results
-)
-
-# Display results with metadata
-for i, doc in enumerate(results):
-    print(f"[{i+1}] Source: {doc.metadata['source']}")
-    print(f"    {doc.page_content[:200]}...")
-    print()
-```
-
-The results are ranked by cosine similarity — higher scores mean 
-more relevant to the query. In the next step, we'll use these 
-results to generate a grounded response.
-"""
-```
-
-### 3. Progressive Disclosure in Technical Content
-
-Start with the simplest version that works, then layer complexity. This respects cognitive load and serves multiple audience levels.
-
-```python
-# LEVEL 1: Minimal Working Example (5 lines)
-"""
-The simplest way to build a RAG pipeline:
-
-```python
-from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores import Chroma
-from langchain.chains import RetrievalQA
-
-db = Chroma.from_documents(docs, OpenAIEmbeddings())
-qa = RetrievalQA.from_chain_type(
-    llm=ChatOpenAI(model="gpt-4"),
-    retriever=db.as_retriever()
-)
-answer = qa.invoke("What is RAG?")
-```
-
-This works, but lacks control over chunking, retrieval quality, and 
-citation. Let's add those one at a time.
-"""
-
-# LEVEL 2: Added Chunking Control (20 lines)
-"""
-```python
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-# Step 1: Control how documents are split
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=512,      # Max tokens per chunk
-    chunk_overlap=50,    # Overlap between chunks (preserves context)
-    separators=["\n\n", "\n", ". ", " "],  # Split at these boundaries
-    length_function=len,  # Use character count (or tiktoken for tokens)
-)
-chunks = splitter.split_documents(documents)
-print(f"Split {len(documents)} docs into {len(chunks)} chunks")
-"""
-"""
-
-# LEVEL 3: Production-Ready (50+ lines, with metadata, hybrid search, citations)
-"""
-Now let's build a production pipeline with metadata, hybrid search, 
-and source citations. This adds 30 lines but 10x the reliability...
-
-[Full production example with all features]
-"""
-```
-
-### 4. Post-Mortem Writing Framework
-
-Write post-mortems that are blameless, actionable, and educational. The goal is learning, not punishment.
-
-```markdown
-# Post-Mortem Template
-
-## Title: {Incident Name} — {Date}
-
-### TL;DR
-{One paragraph: what happened, impact, resolution, root cause}
-
-### Impact
-- **Duration:** {start_time} to {end_time} ({total_duration})
-- **Affected Services:** {list}
-- **Affected Users:** {number or percentage}
-- **Revenue Impact:** ${amount} (if applicable)
-- **SLA Impact:** {SLO breached, error budget consumed}
-
-### Timeline (UTC)
-| Time | Event |
-|------|-------|
-| {t0} | {Trigger event — what started the incident} |
-| {t1} | {Detection — when monitoring alerted} |
-| {t2} | {Response start — who acknowledged} |
-| {t3} | {Investigation — what was discovered} |
-| {t4} | {Mitigation — what was done to stop the bleeding} |
-| {t5} | {Resolution — what fixed the root cause} |
-| {t6} | {Verification — confirmed the fix works} |
-
-### Root Cause
-{Technical explanation of why this happened. Focus on systems, not people. 
-Use the "5 Whys" technique to get to the actual root cause.}
-
-### What Went Well
-- {Thing 1 that worked as designed}
-- {Thing 2 that helped}
-
-### What Went Wrong
-- {Thing 1 that failed or was inadequate}
-- {Thing 2 that was missing}
-
-### Where We Got Lucky
-- {Thing that could have been much worse}
-
-### Action Items
-| Priority | Action | Owner | Due Date | Status |
-|----------|--------|-------|----------|--------|
-| P0 | {Immediate fix} | {person} | {date} | {status} |
-| P1 | {Prevention measure} | {person} | {date} | {status} |
-| P2 | {Long-term improvement} | {person} | {date} | {status} |
-
-### Lessons Learned
-1. {Lesson 1}
-2. {Lesson 2}
-3. {Lesson 3}
-```
-
-### 5. Comparison Post Framework
-
-Write fair, evidence-based comparisons that help readers make informed decisions.
-
-```markdown
-# Comparison Post Template
-
-## {Option A} vs {Option B}: {Subtitle} ({Year})
-
-### TL;DR
-{One sentence verdict: "Choose {A} if {condition}, choose {B} if {condition}."}
-
-### Quick Comparison
-| Criteria | {Option A} | {Option B} | Winner |
-|----------|-----------|-----------|--------|
-| Performance | {metric} | {metric} | {A/B/Tie} |
-| Learning Curve | {description} | {description} | {A/B/Tie} |
-| Ecosystem | {description} | {description} | {A/B/Tie} |
-| Cost | {price} | {price} | {A/B/Tie} |
-| Scalability | {description} | {description} | {A/B/Tie} |
-| Community | {description} | {description} | {A/B/Tie} |
-
-### Deep Dive: {Key Criterion 1}
-{Detailed analysis with benchmarks, examples, and nuance}
-
-### Deep Dive: {Key Criterion 2}
-{Detailed analysis with benchmarks, examples, and nuance}
-
-### When to Choose {Option A}
-- {Scenario 1}
-- {Scenario 2}
-- {Scenario 3}
-
-### When to Choose {Option B}
-- {Scenario 1}
-- {Scenario 2}
-- {Scenario 3}
-
-### Migration Guide
-{If relevant: how to switch from one to the other}
-
-### Conclusion
-{Restate the verdict with nuance. Acknowledge that neither option is universally better.}
-```
-
-### 6. Workshop Material Design
-
-Design workshops that keep participants engaged through active learning, not passive reading.
-
-```python
-# Workshop Design Pattern
-
-"""
-## Workshop: Building a RAG Pipeline (3 hours)
-
-### Prerequisites (30 min)
-- Install Python 3.11+, pip, git
-- Clone the starter repo: `git clone {url}`
-- Run `pip install -r requirements.txt`
-- Verify: `python verify_setup.py` (should print "Ready!")
-
-### Module 1: Foundations (45 min)
-**Goal:** Understand RAG architecture
-**Format:** Live coding + explanation
-
-Exercise 1.1: Load and chunk a document (15 min)
-- Starter code: `exercises/module1/ex1_chunking.py`
-- Task: Load `data/sample.pdf`, chunk it, print chunk count
-- Checkpoint: `python check_module1_1.py`
-
-Exercise 1.2: Create embeddings and search (15 min)
-- Starter code: `exercises/module1/ex2_embedding.py`
-- Task: Embed chunks, run a similarity search, display results
-- Checkpoint: `python check_module1_2.py`
-
-Exercise 1.3: Build a basic QA chain (15 min)
-- Starter code: `exercises/module1/ex3_qa.py`
-- Task: Connect retrieval to LLM, ask a question, get an answer
-- Checkpoint: `python check_module1_3.py`
-
-### Module 2: Production Patterns (60 min)
-**Goal:** Add metadata, hybrid search, and citations
-**Format:** Pair programming
-
-Exercise 2.1: Add metadata to chunks (20 min)
-Exercise 2.2: Implement hybrid search (20 min)
-Exercise 2.3: Add source citations to responses (20 min)
-
-### Module 3: Advanced Topics (45 min)
-**Goal:** Reranking, query decomposition, evaluation
-**Format:** Group exercise
-
-Exercise 3.1: Implement reranking (15 min)
-Exercise 3.2: Multi-query retrieval (15 min)
-Exercise 3.3: RAGAS evaluation (15 min)
-
-### Bonus Challenges
-- Implement streaming responses
-- Add conversation history
-- Deploy to production
-
-### Solutions
-Available in `solutions/` directory (unzip after workshop)
-"""
-```
-
-### 7. Architecture Decision Record (ADR) Writing
-
-ADRs capture technical decisions with context and rationale, creating institutional knowledge.
-
-```markdown
-# ADR Template
-
-## ADR-{number}: {Title}
-
-**Status:** {Proposed | Accepted | Deprecated | Superseded by ADR-XXX}
-**Date:** {YYYY-MM-DD}
-**Deciders:** {list of people involved}
-**Technical Story:** {link to issue/ticket}
-
-### Context
-{What is the issue that we're seeing that is motivating this decision? 
-What are the forces at play (technical, business, political, social)? 
-Include constraints and requirements.}
-
-### Decision
-{What is the change that we're proposing and/or doing? 
-Be specific and unambiguous. State what IS being done, not just what 
-options were considered.}
-
-### Consequences
-
-#### Positive
-- {benefit 1}
-- {benefit 2}
-
-#### Negative
-- {cost 1}
-- {cost 2}
-
-#### Risks
-- {risk 1} — Mitigation: {how}
-
-### Alternatives Considered
-
-#### {Alternative 1}
-- **Pros:** {pros}
-- **Cons:** {cons}
-- **Reason for rejection:** {why}
-
-#### {Alternative 2}
-- **Pros:** {pros}
-- **Cons:** {cons}
-- **Reason for rejection:** {why}
-
-### References
-- {link 1}
-- {link 2}
-```
-
-### 8. Anti-Info-Dump Philosophy
-
-The anti-info-dump philosophy is the principle that technical content should present information in the order the reader needs it, not in the order the author learned it. Info dumps happen when writers front-load everything they know before getting to the point. The reader drowns in context before reaching the single fact they came for.
-
-**Why info dumps fail:**
-- Readers arrive with a specific question; dumping unrelated context first forces them to wade through noise.
-- Cognitive overload: too much information at once makes none of it stick.
-- Trust erosion: if the first 500 words don't answer the question, readers leave.
-
-**How to avoid info dumps:**
-
-```markdown
-# BAD: Info Dump
-
-## Authentication System
-
-The authentication system was built in Q3 2023. It uses JSON Web Tokens (JWT)
-with RS256 signing. The system supports multiple providers including OAuth 2.0,
-SAML, and password-based authentication. JWT tokens have a configurable expiry
-defaulting to 15 minutes. Refresh tokens are stored in HTTP-only cookies with
-a 7-day expiry. The system also supports MFA via TOTP and SMS. Rate limiting
-is applied at 100 requests per minute per IP. The system was built using Node.js
-with Express and PostgreSQL for token storage.
-
-Now, if you want to know how to add a new authentication provider...
-
-# GOOD: Answer First, Context After
-
-## Adding a New Authentication Provider
-
-**Quick answer:** Create a new class implementing `AuthProvider` interface,
-register it in `auth-config.ts`, and add the provider to the login UI.
-
-### Step-by-Step
-
-1. **Create the provider class:**
-```typescript
-// src/auth/providers/saml-provider.ts
-export class SAMLProvider implements AuthProvider {
-  async authenticate(credentials: Credentials): Promise<AuthResult> {
-    // ...
-  }
+HOOK_PATTERNS = {
+    "problem_first": {
+        "structure": "Start with a relatable problem, then promise a solution.",
+        "example": """Every time you deploy, your tests pass locally but fail in production.
+You've checked the code. You've checked the config. You've checked the environment.
+The problem isn't in any of those—it's in the assumptions they share.
+Here's how to surface hidden assumptions before they surface as outages.""",
+        "best_for": "Tutorials, how-to guides, debugging articles",
+    },
+    "surprising_fact": {
+        "structure": "Lead with something counterintuitive or surprising.",
+        "example": """Your database is 10x slower on reads than it needs to be,
+and the fix has nothing to do with indexes, caching, or query optimization.
+It's about the shape of your data—and most developers never think about it.""",
+        "best_for": "Deep dives, explainer articles, performance analysis",
+    },
+    "story_first": {
+        "structure": "Open with a brief narrative, then extract the lesson.",
+        "example": """At 3 AM on a Tuesday, our API started returning 500 errors
+for exactly 12% of requests. Not 11%. Not 13%. Exactly 12%.
+It took us three days to find the cause: a leap-year bug in a date library
+we didn't even know we were using.""",
+        "best_for": "Post-mortems, war stories, experience reports",
+    },
+    "question_first": {
+        "structure": "Pose a question the reader wants answered.",
+        "example": """What's the difference between a library that handles 100 requests/second
+and one that handles 100,000? It's not the algorithm. It's not the language.
+It's the architecture—and it's simpler than you think.""",
+        "best_for": "Comparison posts, explainer articles, architecture discussions",
+    },
 }
 ```
 
-2. **Register in config:**
-```typescript
-// src/auth/auth-config.ts
-providers: {
-  saml: new SAMLProvider(config.saml),
+### Technique 2: The "Show, Don't Tell" Principle for Code
+
+```python
+# BAD: Telling without showing
+bad_example = """
+Caching improves performance by storing frequently accessed data in memory.
+You should use caching when your application reads the same data repeatedly.
+Redis is a popular caching solution that supports various data structures.
+"""
+
+# GOOD: Showing with a narrative
+good_example = """
+Every time a user visits their dashboard, your API makes this query:
+
+```sql
+SELECT * FROM dashboard_widgets WHERE user_id = ? ORDER BY position;
+```
+
+That query hits the database 50,000 times per hour. The data doesn't change
+between deploys. Here's what happens when we cache it:
+
+| Metric | Before | After |
+|--------|--------|-------|
+| p50 latency | 45ms | 2ms |
+| p99 latency | 230ms | 8ms |
+| DB connections | 340 | 89 |
+
+The change? One line in the query handler:
+"""
+
+# Show the actual code change
+# Show the actual benchmark results
+# Let the reader draw the conclusion
+```
+
+### Technique 3: The Anti-Info-Dump Framework
+
+```python
+def filter_info_dump(paragraphs: list) -> list:
+    """
+    Review paragraphs and flag those that are informational without being instructional.
+    Each paragraph should advance the reader's understanding, not just state facts.
+    """
+    filtered = []
+    for i, para in enumerate(paragraphs):
+        advances = any([
+            "here's how" in para.lower(),
+            "this means" in para.lower(),
+            "because" in para.lower(),
+            "the result is" in para.lower(),
+            "you can now" in para.lower(),
+            "notice that" in para.lower(),
+            "this works because" in para.lower(),
+            "```" in para,
+        ])
+
+        purely_informational = all([
+            not advances,
+            para.count(";") > 2,
+            "supports" in para.lower() and "and" in para.lower(),
+            len(para) > 200 and para.count(".") < 3,
+        ])
+
+        if purely_informational:
+            filtered.append(f"⚠️ INFO DUMP (paragraph {i+1}): Consider removing or adding context")
+        else:
+            filtered.append(para)
+
+    return filtered
+
+# THE ANTI-INFO-DUMP RULES:
+# 1. Every fact needs a "so what?" — Why does the reader care?
+# 2. Every feature needs a use case — When would someone use this?
+# 3. Every capability needs a comparison — How does it compare to the alternative?
+# 4. Every option needs a recommendation — Which should the reader choose?
+# 5. Every abstraction needs a concrete example — Show, don't just describe.
+```
+
+### Technique 4: Headings as Navigation
+
+```python
+def validate_headings(headings: list) -> dict:
+    """Validate that headings form a clear navigation structure."""
+    issues = []
+    suggestions = []
+
+    for i, heading in enumerate(headings):
+        vague_words = ["introduction", "overview", "background", "miscellaneous", "other", "notes"]
+        if any(vw in heading.lower() for vw in vague_words):
+            issues.append(f"Heading '{heading}' is vague — consider being more specific")
+
+        if heading.strip().endswith("?"):
+            suggestions.append(f"Consider rephrasing '{heading}' as a statement instead of a question")
+
+        if heading and heading[0].islower():
+            suggestions.append(f"Heading '{heading}' should start with a capital letter")
+
+        if len(heading.split()) > 10:
+            issues.append(f"Heading '{heading}' is too long — aim for 3-7 words")
+
+    return {"issues": issues, "suggestions": suggestions}
+
+# GOOD HEADING PATTERNS:
+# ✅ "Setting Up the Development Environment" (action-oriented)
+# ✅ "Why CQRS Fails for Simple CRUD" (specific claim)
+# ✅ "Comparing Redis, Memcached, and MemSQL" (concrete)
+# ❌ "Introduction" (vague, adds no value)
+# ❌ "Some Thoughts on Performance" (unclear scope)
+# ❌ "The" (incomplete)
+```
+
+### Technique 5: Writing for Skimmers (The 80/20 Rule)
+
+```python
+SKIMMER_OPTIMIZATION = {
+    "summary_box": {
+        "placement": "Immediately after the introduction",
+        "content": "3-5 bullet points covering: what this is, why it matters, when to use it, key trade-off",
+        "template": """
+## TL;DR
+- **What:** [One sentence description]
+- **Why:** [One sentence motivation]
+- **When to use:** [One sentence criteria]
+- **Key trade-off:** [One sentence honesty]
+- **Time to implement:** [Estimate]
+""",
+    },
+    "section_summaries": {
+        "placement": "First sentence of each section",
+        "content": "A single sentence that captures the section's main point",
+        "rationale": "A skimmer reading only first sentences should get the gist",
+    },
+    "code_highlighting": {
+        "technique": "Add comments to code blocks highlighting the key lines",
+        "example": """
+# THIS IS THE KEY LINE — everything else is boilerplate
+result = cache.get_or_set(f"user:{user_id}", lambda: db.query(user_id), ttl=300)
+""",
+    },
+    "bold_key_phrases": {
+        "technique": "Bold the most important phrase in each paragraph",
+        "rationale": "A skimmer reading only bold text should understand the core argument",
+        "example": """
+**CQRS separates read and write models.** This means your read database can be
+optimized for fast queries, while your write database ensures consistency.
+**The trade-off is complexity.** You now have two schemas to maintain.
+""",
+    },
 }
 ```
 
-### How the Auth System Works
+### Technique 6: Version-Specific Code Examples
 
-If you want to understand the full auth architecture (JWT, refresh tokens,
-MFA, rate limiting), read on...
+```python
+def generate_versioned_code_block(code: str, version: str, notes: list = None) -> str:
+    """Wrap code in a versioned container with compatibility notes."""
+    block = f"""```python
+# Tested with: {version}
+{code}
+```"""
+    if notes:
+        block += "\n\n"
+        for note in notes:
+            block += f"> **Note ({note.get('version', 'latest')}):** {note['text']}\n"
+    return block
+
+# VERSION ANCHORING PATTERNS:
+# 1. Pin the language/runtime version: "Python 3.11+"
+# 2. Pin library versions: "pip install fastapi==0.104.1"
+# 3. Pin OS/environment: "Ubuntu 22.04, Node 20 LTS"
+# 4. Note breaking changes: "⚠️ This API changed in v3.0"
+# 5. Provide migration paths: "If upgrading from v2, see migration guide"
 ```
 
-**Key principles:**
-1. **Answer first, explain after** — Lead with the actionable information. Context follows.
-2. **Progressive layers** — Start with the minimum viable answer, then expand for those who need depth.
-3. **Let the reader choose depth** — Use collapsible sections (`<details>`) or "read more" links.
-4. **Separate reference from tutorial** — Reference docs (what does this API do?) are different from tutorials (how do I build X?). Don't mix them.
-5. **Respect the "just tell me" impulse** — Many readers just want the answer. Make it impossible to miss.
+### Technique 7: The "Explain Like I'm 5" Cascade
 
-### 9. Version-Anchored Writing
-
-Every piece of technical content should be anchored to specific versions of the tools, languages, and frameworks it describes. This prevents readers from following instructions that don't apply to their version, and it helps content authors know when to update.
-
-**Implementation:**
-
-```markdown
----
-title: "Deploying with Docker Compose"
-last_updated: 2024-07-10
-tested_with:
-  docker: "27.0.3"
-  docker_compose: "2.28.1"
-  ubuntu: "24.04"
-  python: "3.12.4"
----
-
-# Deploying with Docker Compose
-
-> **Version note:** This guide was written for Docker Compose v2.28.1
-> (the `docker compose` plugin, not the legacy `docker-compose` v1).
-> If you're using an older version, some commands may differ.
+```python
+EXPLAIN_CASCADE = {
+    "level_1_intuition": {
+        "goal": "Give a gut-level understanding",
+        "technique": "Use a real-world analogy",
+        "example": "A load balancer is like a restaurant hostess — it distributes incoming "
+                    "customers (requests) to available tables (servers) so no single table "
+                    "gets overwhelmed.",
+        "word_count": "2-3 sentences",
+    },
+    "level_2_concept": {
+        "goal": "Explain the mechanism",
+        "technique": "Describe how it works in plain language",
+        "example": "When a request arrives, the load balancer checks which backend server is "
+                    "least busy and routes the request there. If a server goes down, the load "
+                    "balancer stops sending traffic to it.",
+        "word_count": "1 paragraph",
+    },
+    "level_3_technical": {
+        "goal": "Provide implementation details",
+        "technique": "Show code and configuration",
+        "example": "Here's an nginx load balancer config with round-robin and health checks...",
+        "word_count": "1-2 paragraphs with code",
+    },
+    "level_4_expert": {
+        "goal": "Cover edge cases and internals",
+        "technique": "Discuss algorithms, failure modes, and advanced configuration",
+        "example": "Session affinity uses consistent hashing to ensure that a user's requests "
+                    "always hit the same backend, which matters for WebSocket connections and "
+                    "in-memory session stores.",
+        "word_count": "As needed",
+    },
+}
 ```
-
-**Version-anchoring rules:**
-
-1. **State versions in the introduction** — Don't bury version requirements in a prerequisites section the reader might skip.
-2. **Use version ranges when appropriate** — "Docker 24.0+ (tested with 27.0.3)" is more useful than just "Docker 27.0.3."
-3. **Mark version-sensitive content** — When a feature or API changed between versions, note which version introduced or deprecated it.
-4. **Date your content** — "Last updated: YYYY-MM-DD" helps readers assess freshness.
-5. **Test against stated versions** — If you say "tested with Python 3.12.4," actually test with that version.
-6. **Plan for decay** — Add a "review by" date. Tutorial content should be reviewed quarterly. API docs should be reviewed with each release.
-
----
 
 ## Common Patterns
 
-### Pattern 1: Tutorial Structure with Checkpoints
+### Pattern 1: The Tutorial Template
 
 ```markdown
-# How to Build {Thing}: A Step-by-Step Tutorial
-
-## What You'll Build
-{Screenshot or diagram of the final product}
+# [Title: What You'll Build]
 
 ## What You'll Learn
-- {Skill 1}
-- {Skill 2}
-- {Skill 3}
+By the end of this tutorial, you will have [specific outcome].
+Estimated time: [X] minutes.
 
 ## Prerequisites
-- {Requirement 1}
-- {Requirement 2}
-- Estimated time: {X} minutes
+- [Requirement 1]
+- [Requirement 2]
+- [What the reader should already know]
 
-## Step 1: {Action}
+## Step 1: [Setup / Getting Started]
+[Establish the working environment. Keep it minimal.]
+```bash
+# The ONE command to get started
+[command]
+```
 
-{Brief explanation of what we're doing and why}
+## Step 2: [First Success — The Smallest Useful Thing]
+[Get something working that proves the approach. This is the most important step.]
+```[language]
+# This should produce visible output within 30 seconds of pasting
+[code]
+```
+Expected output:
+```
+[what they should see]
+```
 
-{Code block}
+## Step 3: [Expand — Build On the Foundation]
+[Add one more feature or capability. Each step builds on the previous.]
 
-{Expected output}
+## Step 4: [Deepen — Handle Real-World Concerns]
+[Error handling, edge cases, performance considerations.]
 
-✅ **Checkpoint:** You should see {expected result}. If not, {troubleshooting}.
+## Step 5: [Polish — Production Readiness]
+[Testing, monitoring, deployment considerations.]
 
-## Step 2: {Action}
-{Repeat pattern}
-
-## Step 3: {Action}
-{Repeat pattern}
+## What You've Learned
+- [Key takeaway 1]
+- [Key takeaway 2]
+- [Key takeaway 3]
 
 ## Next Steps
-- {Extension 1}
-- {Extension 2}
+- [Link to related tutorial]
+- [Link to deep dive on the topic]
+- [Link to production checklist]
 
 ## Troubleshooting
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| {error message} | {why it happens} | {how to fix} |
+| Problem | Likely Cause | Solution |
+|---------|--------------|----------|
+| [common error] | [cause] | [fix] |
 ```
 
-### Pattern 2: Concept Explainer with Analogies
+### Pattern 2: The Comparison Post Template
 
 ```markdown
-# {Concept}: A Clear Explanation
+# [Tool A] vs [Tool B]: When to Use Which
 
-## The One-Line Explanation
-{Concept} is {simplest possible definition}.
+## The Quick Answer
+| Criterion | [Tool A] | [Tool B] |
+|-----------|----------|----------|
+| Best for | [scenario] | [scenario] |
+| Learning curve | [easy/medium/hard] | [easy/medium/hard] |
+| Performance | [characteristic] | [characteristic] |
+| Community | [size/support level] | [size/support level] |
 
-## The Analogy
-Think of {concept} like {everyday analogy}.
-{Explain the analogy in 2-3 sentences, mapping each part to the technical concept}
+## The Detailed Breakdown
 
-## How It Actually Works
-{Technical explanation with diagram}
+### Performance
+[Quantified benchmarks with methodology]
 
-## Why It Matters
-- {Reason 1 with concrete example}
-- {Reason 2 with concrete example}
+### Developer Experience
+[Subjective but honest assessment]
 
-## Code Example
-{Working code with detailed comments}
+### Ecosystem & Integrations
+[Plugin availability, library support]
 
-## Common Misconceptions
-- ❌ {Misconception 1} → ✅ {Reality}
-- ❌ {Misconception 2} → ✅ {Reality}
+### When to Choose [Tool A]
+- [Specific scenario 1]
+- [Specific scenario 2]
 
-## Further Reading
-- {Resource 1} — {why it's useful}
-- {Resource 2} — {why it's useful}
+### When to Choose [Tool B]
+- [Specific scenario 1]
+- [Specific scenario 2]
+
+### When to Choose Neither
+[Alternative that might be better]
+
+## The Honest Truth
+[What neither tool's marketing page will tell you]
 ```
 
-### Pattern 3: Deep Dive with Layered Complexity
+### Pattern 3: The Post-Mortem Template
 
 ```markdown
-# {Advanced Topic}: A Deep Dive
-
-## Who This Is For
-This article assumes you {prerequisites}. If you're not familiar with 
-{concept}, read {prerequisite article} first.
-
-## The Big Picture
-{High-level overview with architecture diagram}
-
-## Part 1: {Subtopic} — The Basics
-{Foundational explanation}
-
-## Part 2: {Subtopic} — Under the Hood
-{Implementation details with source code references}
-
-## Part 3: {Subtopic} — Edge Cases and Failure Modes
-{What goes wrong and how to handle it}
-
-## Part 4: {Subtopic} — Production Considerations
-{Real-world deployment concerns, monitoring, scaling}
-
-## Performance Analysis
-| Configuration | Throughput | Latency (p99) | Memory |
-|---------------|-----------|---------------|--------|
-| {config_1} | {metric} | {metric} | {metric} |
-| {config_2} | {metric} | {metric} | {metric} |
-
-## Decision Framework
-{When to use this, when not to, alternatives}
+# Post-Mortem: [Incident Title]
 
 ## Summary
-{Key takeaways as bullet points}
-```
-
-### Pattern 4: Post-Mortem with 5 Whys
-
-```markdown
-# Post-Mount: {Incident Name}
-
-## Summary
-{One paragraph: what, when, impact, how resolved}
+- **Date:** [date]
+- **Duration:** [hours/minutes]
+- **Impact:** [what users experienced, how many affected]
+- **Severity:** [P0/P1/P2/P3]
+- **Author:** [name]
+- **Status:** [investigating/identified/resolved/prevented]
 
 ## Timeline
-{Chronological event list}
-
-## 5 Whys Analysis
-
-**Why did {symptom} occur?**
-→ Because {immediate cause}
-
-**Why did {immediate cause} happen?**
-→ Because {underlying cause 1}
-
-**Why did {underlying cause 1} happen?**
-→ Because {underlying cause 2}
-
-**Why did {underlying cause 2} happen?**
-→ Because {systemic cause}
-
-**Why wasn't this caught earlier?**
-→ Because {detection gap}
+| Time (UTC) | Event |
+|------------|-------|
+| HH:MM | [What happened] |
+| HH:MM | [What was detected] |
+| HH:MM | [What action was taken] |
+| HH:MM | [Resolution] |
 
 ## Root Cause
-{Synthesized root cause from 5 Whys}
+[Clear, blameless explanation of WHY this happened.
+Focus on the systemic conditions that allowed the failure.]
+
+## What Went Well
+- [Thing 1 that worked]
+- [Thing 2 that worked]
+
+## What Went Wrong
+- [Thing 1 that failed]
+- [Thing 2 that failed]
+
+## Where We Got Lucky
+- [Thing that could have been much worse]
 
 ## Action Items
-{Table of actions with owners and deadlines}
+| # | Action | Owner | Priority | Status |
+|---|--------|-------|----------|--------|
+| 1 | [Concrete action] | [person] | [high/med/low] | [status] |
+| 2 | [Concrete action] | [person] | [high/med/low] | [status] |
 
-## Lessons
-{Numbered list of key takeaways}
+## Lessons Learned
+- [Lesson 1]
+- [Lesson 2]
 ```
 
-### Pattern 5: Workshop Exercise Card
+### Pattern 4: The Explainer Article Structure
 
 ```markdown
-## Exercise {N}: {Title}
+# [Concept]: A Complete Guide
 
-**Time:** {X} minutes
-**Goal:** {What the participant will accomplish}
-**Starting point:** `{file path}`
+## The One-Sentence Summary
+[What is this, in plain language?]
+
+## Why Should You Care?
+[The problem this solves or the opportunity it creates.
+Make it concrete: "If your app does X, this matters because Y."]
+
+## The Analogy
+[A real-world analogy that captures the essence.
+"The easiest way to think about it is..." or "Imagine you're..."]
+
+## How It Works (The Core Concept)
+[2-3 paragraphs explaining the mechanism. Use diagrams if possible.]
+
+## A Working Example
+[Complete, runnable code that demonstrates the concept.
+Start simple, then add complexity.]
+
+## When to Use It
+- [Specific scenario 1]
+- [Specific scenario 2]
+- [Specific scenario 3]
+
+## When NOT to Use It
+- [Scenario where it's overkill]
+- [Scenario where it makes things worse]
+
+## Common Misconceptions
+- **Myth:** [Common wrong belief]
+  **Reality:** [Correct understanding]
+
+## Further Reading
+- [Link to official docs]
+- [Link to advanced tutorial]
+- [Link to related concept]
+```
+
+### Pattern 5: The Workshop/Lab Template
+
+```markdown
+# Workshop: [Title]
+
+## Duration: [X] hours
+## Level: [Beginner/Intermediate/Advanced]
+## Participants: [Number]
+
+## What You'll Build
+[End-state description with screenshot or demo link]
+
+## Prerequisites
+### Required Software
+- [Software 1]: [version] — [install link]
+- [Software 2]: [version] — [install link]
+
+### Required Knowledge
+- [Concept the reader should already understand]
+
+### Pre-Workshop Setup (do this BEFORE the session)
+```bash
+[setup commands]
+```
+Verify it works:
+```bash
+[verification command]
+```
+
+## Lab 1: [Title] (XX minutes)
+### Goal
+[What the participant will accomplish]
 
 ### Instructions
-1. {Step 1}
-2. {Step 2}
-3. {Step 3}
+1. [Step 1 with exact commands]
+2. [Step 2 with expected output]
+3. [Step 3]
 
-### Hints
-<details>
-<summary>Hint 1 (click to expand)</summary>
-{Hint text}
-</details>
-
-<details>
-<summary>Hint 2 (click to expand)</summary>
-{Hint text}
-</details>
-
-### Expected Result
+### Checkpoint
+Your output should look like this:
 ```
-{Expected output}
+[expected output]
 ```
+If it doesn't: [common issue] → [fix]
 
-### Solution
-<details>
-<summary>Click to reveal solution</summary>
+### Discussion Questions
+- [Question that connects the exercise to the bigger picture]
 
-```python
-# Solution code
+## Lab 2: [Title] (XX minutes)
+[Same structure as Lab 1]
+
+## Lab 3: [Title] (XX minutes)
+[Same structure as Lab 1]
+
+## Bonus Challenges (for fast finishers)
+- [Challenge 1]
+- [Challenge 2]
+
+## Wrap-Up
+### Key Takeaways
+- [Takeaway 1]
+- [Takeaway 2]
+- [Takeaway 3]
+
+### Resources for Continued Learning
+- [Resource 1]
+- [Resource 2]
+
+### Feedback
+[Link to feedback form]
 ```
-
-**Key concepts:** {list of concepts demonstrated}
-</details>
-```
-
----
 
 ## Edge Cases & Pitfalls
 
-### 1. Writing for Yourself, Not the Reader
-**Problem:** Experts write at their own knowledge level, making content inaccessible to the target audience.
-**Solution:** Apply the Feynman technique. Have someone from the target audience read it. If they can't follow it, simplify.
+1. **Writing Before Outlining:** Jumping straight to prose leads to wandering, unfocused articles. Always outline first—even a rough bullet list provides essential structure.
 
-### 2. Code Examples That Don't Run
-**Problem:** Code snippets with missing imports, outdated API calls, or context-dependent variables that readers can't reproduce.
-**Solution:** Every code example must be complete and runnable. Test all code before publishing. Include all imports.
+2. **Assuming Too Much Knowledge:** If you use a term, define it. If you reference a tool, link to its installation guide. Your reader's time is valuable; don't make them Google basics.
 
-### 3. The "Curse of Knowledge"
-**Problem:** Once you understand something, it's hard to remember what it was like not to understand it. This leads to skipping steps and undefined terms.
-**Solution:** Define every technical term on first use. Never assume the reader knows abbreviations or jargon.
+3. **Code Without Context:** Pasting code without explaining WHY each line matters is not teaching—it's a reference manual. Every code block should be preceded by intent and followed by explanation.
 
-### 4. Tutorial Hell (Step-by-Step Without Understanding)
-**Problem:** Tutorials that work perfectly but teach readers to follow instructions, not to think. Readers can't adapt when their situation differs.
-**Solution:** After each step, explain WHY this step is necessary and what alternatives exist. Include "try modifying X" prompts.
+4. **The "Everything is Great" Bias:** Comparison posts and tool reviews that only list positives are marketing, not writing. Readers trust honest trade-off analysis more than cheerleading.
 
-### 5. Overloading the Introduction
-**Problem:** Putting too much context, motivation, and background in the introduction before getting to the point.
-**Solution:** Keep introductions under 200 words. State what the reader will learn and why it matters, then start the content.
+5. **Outdated Code Examples:** The #1 source of reader frustration. Test every code example. Pin versions. Add "last verified" dates. Consider CI pipelines that test your article's code.
 
-### 6. Missing Error Handling in Examples
-**Problem:** Code examples that only show the happy path, leaving readers unprepared for errors.
-**Solution:** Show error handling for critical operations. At minimum, mention what can go wrong and how to handle it.
+6. **Wall of Text Syndrome:** More than 4-5 paragraphs without a heading, code block, image, or list creates cognitive overload. Break up dense text with structural variety.
 
-### 7. Inconsistent Naming Conventions
-**Problem:** Using different variable names, terminology, or formatting styles across the same article.
-**Solution:** Create a terminology glossary for the article. Use find-and-replace to ensure consistency.
+7. **Premature Optimization in Writing:** Don't add advanced topics "just in case." Start simple. Use progressive disclosure. Let readers self-select their depth.
 
-### 8. Wall-of-Text Syndrome
-**Problem:** Long paragraphs without visual breaks, making content hard to scan and intimidating to read.
-**Solution:** Break text into short paragraphs (3-4 sentences max). Use bullets, tables, code blocks, and headings to create visual rhythm.
+8. **Forgetting the "Why":** Explaining WHAT to do without explaining WHY builds followers, not understanding. Readers who understand the "why" can adapt when your specific instructions become outdated.
 
-### 9. Forgetting Mobile Readers
-**Problem:** Long code lines that overflow on mobile screens, tables that don't scroll, and images that are too small to read.
-**Solution:** Keep code lines under 80 characters. Use horizontal scroll for wide tables. Ensure images are high-resolution.
+9. **Passive Voice Overuse:** "The data is processed by the system" vs "The system processes the data." Active voice is clearer, shorter, and more engaging. Use it by default.
 
-### 10. Not Updating Outdated Content
-**Problem:** Publishing a tutorial that references deprecated APIs, old versions, or discontinued tools.
-**Solution:** Add "Last updated: {date}" to every article. Set calendar reminders to review content quarterly.
+10. **Too Many Options:** "You can use A, B, C, D, or E" is not helpful. Recommend one default, explain when to deviate, and leave the rest as a reference footnote.
 
-### 11. Burying the Lead
-**Problem:** Making the reader wade through paragraphs before revealing the key information or answer.
-**Solution:** Use the inverted pyramid: most important information first, details last. TL;DR at the top.
+11. **Missing Error Paths:** Tutorials that only show the happy path leave readers stranded when things go wrong. Always include "If you see X error, it means Y, and you can fix it by Z."
 
-### 12. Overusing Screenshots
-**Problem:** Screenshots of code instead of actual code blocks, making content unsearchable and uncopyable.
-**Solution:** Always use text code blocks, not images of code. Use screenshots only for UI/visualization output.
+12. **Inconsistent Terminology:** Using "user," "customer," "client," and "account" interchangeably creates confusion. Pick one term and use it consistently throughout.
 
-### 13. Neglecting Prerequisites
-**Problem:** Assuming readers have the right environment set up without explicitly stating what's needed.
-**Solution:** Include a prerequisites section with exact versions, installation commands, and a verification step.
+13. **No Visual Aids:** Architecture and data flow concepts are poorly served by text alone. Use diagrams (Mermaid, Excalidraw, or even ASCII art) for anything structural.
 
-### 14. Excessive Qualification
-**Problem:** Hedging every statement with "generally," "usually," "in most cases," which dilutes the message and bores the reader.
-**Solution:** Be confident when the statement is generally true. Add qualifications only when the exception is common and important.
+14. **Ignoring Mobile Readers:** Code blocks that require horizontal scrolling, tiny fonts, and wide tables make content unusable on mobile. Test responsive rendering.
 
-### 15. No Call to Action
-**Problem:** The article ends without telling the reader what to do next, leaving them with knowledge but no direction.
-**Solution:** End with: next steps to try, resources to explore, a community to join, or a project to build.
-
----
+15. **Publishing Without Review:** Even experienced writers miss errors. Have someone else read your work—ideally someone who matches your target audience. Fresh eyes catch what yours miss.
 
 ## Integration with Other Skills
 
-| Skill | Integration Type | Description |
-|---|---|---|
-| **Data Analysis** | Content Source | Statistical findings and analysis results are common subjects for technical articles |
-| **RAG Implementation** | Content Subject | Many technical articles explain RAG concepts, patterns, and implementations |
-| **Data Cleaning** | Content Source | Data cleaning techniques and patterns are frequently documented for teams |
-| **Summarization** | Complementary | Summarize long technical content for quick reference or executive summaries |
-| **Code Review** | Companion | Technical writing often accompanies code review processes and architecture docs |
-| **Knowledge Management** | Output | Technical writing creates the knowledge base that teams rely on |
-| **Presentation Skills** | Related | Workshop materials often become presentation decks; parallel skill development |
-
----
+| Skill | Integration Point | How |
+|-------|-------------------|-----|
+| `data-cleaning` | Documentation of pipelines | Technical writing documents cleaning processes for team knowledge transfer |
+| `summarization` | Content condensation | Summarization techniques help create TL;DR sections and executive summaries |
+| `clean-architecture` | Architecture documentation | Writing about system design requires clear explanation of architectural decisions |
+| `code-explanation` | Inline documentation | The same "explain clearly" principles apply to code comments and docstrings |
+| `prompt-engineering` | AI-assisted writing | LLMs can help draft, structure, and refine technical content |
+| `documentation` | Doc generation | Technical writing is the prose layer of documentation systems |
+| `api-design` | API documentation | Good API docs require both technical accuracy and clear writing |
+| `system-design` | Design documents | Architecture Decision Records (ADRs) are technical writing artifacts |
+| `testing` | Test documentation | Test plans, test strategies, and bug reports all benefit from clear writing |
+| `git-workflow` | Commit messages and PRs | Good commit messages and PR descriptions follow the same clarity principles |
 
 ## Output Format Templates
 
-### Standard Tutorial
+### Standard Template (Blog Post)
 
 ```markdown
 ---
-title: "How to {Action}: A Step-by-Step Tutorial"
-description: "Learn to {goal} with this comprehensive tutorial. Covers {topics}."
-date: {YYYY-MM-DD}
-author: {Author}
-tags: [{tag1}, {tag2}]
-estimated_time: {X} minutes
-difficulty: {beginner|intermediate|advanced}
+title: [Descriptive Title with Keywords]
+date: YYYY-MM-DD
+author: [Name]
+tags: [tag1, tag2, tag3]
+reading_time: [X] minutes
+version_tested: [vX.Y.Z]
 ---
 
-# How to {Action}: A Step-by-Step Tutorial
+# [Title]
 
-> **TL;DR:** {One sentence summary of what you'll build/learn}
+**TL;DR:** [2-3 sentence summary of the entire article]
 
-## Prerequisites
-- {requirement_1}
-- {requirement_2}
+## Introduction
+[Hook → Context → What the reader will learn → Why it matters]
 
-## What You'll Learn
-- ✅ {learning_1}
-- ✅ {learning_2}
-- ✅ {learning_3}
+## [Main Section 1]
+[Content with code examples, diagrams, and explanations]
 
-## Step 1: {Action}
-{explanation}
+## [Main Section 2]
+[Content building on Section 1]
 
-```{language}
-{code}
+## [Main Section 3]
+[Content completing the narrative arc]
+
+## Conclusion
+[Key takeaways → Next steps → Call to action]
+
+## Further Reading
+- [Related resource 1]
+- [Related resource 2]
 ```
 
-{expected output}
-
-## Step 2: {Action}
-{explanation}
-
-```{language}
-{code}
-```
-
-## Summary
-{recap key points}
-
-## Next Steps
-- {extension_1}
-- {extension_2}
-```
-
-### Quick Explainer
+### Quick Template (Social/Preview)
 
 ```markdown
----
-title: "{Concept} Explained"
-description: "What is {concept} and why does it matter? A clear, concise explanation."
-estimated_time: {X} minutes
----
+# [Title]
 
-# {Concept} Explained
+**What:** [One sentence]
+**Why:** [One sentence]
+**When:** [One sentence]
+**Time:** [X minutes to read]
 
-**{Concept}** is {one-sentence definition}.
-
-## Why It Matters
-{2-3 sentences on importance}
-
-## How It Works
-{diagram or code example}
-
-## Key Takeaways
-- {takeaway_1}
-- {takeaway_2}
-- {takeaway_3}
+[Link to full article]
 ```
 
-### Deep Dive Article
+### Deep Template (Long-form Analysis)
 
 ```markdown
----
-title: "{Advanced Topic}: A Deep Dive"
-description: "Master {topic} with this comprehensive guide covering {subtopics}."
-estimated_time: {X} minutes
-difficulty: advanced
----
+# [Title]: A Deep Dive
 
-# {Advanced Topic}: A Deep Dive
+## Abstract
+[3-5 sentence executive summary]
 
-> **Prerequisites:** This article assumes familiarity with {prerequisites}. 
-> If you're new to {topic}, start with {prerequisite_article}.
+## Table of Contents
+[Linked TOC for navigation]
 
-## The Big Picture
-{overview with architecture diagram}
+## Background & Context
+[Why this topic matters now]
 
-## Part 1: {Subtopic}
-{detailed content}
+## Analysis
+### [Sub-section 1]
+[Detailed analysis with data]
 
-## Part 2: {Subtopic}
-{detailed content}
+### [Sub-section 2]
+[Detailed analysis with evidence]
 
-## Part 3: {Subtopic}
-{detailed content}
+### [Sub-section 3]
+[Detailed analysis with benchmarks]
 
-## Production Considerations
-{deployment, monitoring, scaling advice}
+## Implications
+[What this means for the field]
 
-## Decision Framework
-{when to use, when not to, alternatives}
+## Recommendations
+[Prioritized, actionable advice]
 
-## Summary
-{key takeaways}
+## Methodology
+[How the analysis was conducted]
+
+## Appendix
+[Supporting data, raw numbers, extended examples]
 ```
 
-### Post-Mortem
+### Agent Template (AI-Generated Content)
 
 ```markdown
----
-title: "Post-Mortem: {Incident Name}"
-date: {YYYY-MM-DD}
-status: {draft|published}
-severity: {SEV1|SEV2|SEV3}
----
+# Content Generation Instructions
 
-# Post-Mortem: {Incident Name}
+## Metadata
+- **Type:** [tutorial | explainer | deep_dive | comparison | post_mortem | workshop]
+- **Audience:** [persona description]
+- **Goal:** [what the reader should know/do after reading]
+- **Tone:** [professional | conversational | academic | playful]
+- **Length:** [target word count]
+- **Version:** [pinned software/tool versions]
 
-## TL;DR
-{One paragraph summary}
+## Structure
+[Exact section outline with expected content for each]
 
-## Impact
-- Duration: {X hours}
-- Users affected: {number}
-- Revenue impact: ${amount}
+## Constraints
+- Maximum code block length: [X] lines
+- Required sections: [list]
+- Forbidden jargon: [list]
+- Must include: [diagrams | benchmarks | comparisons | alternatives]
 
-## Timeline
-{chronological list}
-
-## Root Cause
-{technical explanation}
-
-## Action Items
-| Action | Owner | Due | Priority |
-|--------|-------|-----|----------|
-| {action} | {owner} | {date} | {P0-P3} |
-
-## Lessons Learned
-1. {lesson}
-2. {lesson}
+## Quality Gates
+- [ ] Every code example tested and verified
+- [ ] All claims backed by evidence or clearly marked as opinion
+- [ ] Headings form a navigation structure for skimmers
+- [ ] No section exceeds 500 words without a visual break
+- [ ] Introduction establishes "why should I care?" within 3 sentences
 ```
-
-### Blog Post
-
-```markdown
----
-title: "{Compelling Title That Promises Value}"
-description: "{SEO-friendly description, 150-160 chars}"
-date: {YYYY-MM-DD}
-author: {Author Name}
-tags: [{tag1}, {tag2}, {tag3}]
-reading_time: {X} min
-hero_image: {url or path}
----
-
-# {Compelling Title}
-
-> {One sentence that captures the core promise of this article.}
-
-{1-2 paragraphs: Hook the reader with a relatable problem, surprising fact,
-or bold claim. Then state what this article covers and who it's for.}
-
-**In this article, you'll learn:**
-- {takeaway 1}
-- {takeaway 2}
-- {takeaway 3}
-
----
-
-## {Section 1: The Problem}
-
-{Describe the problem. Make the reader feel understood.}
-
-```{language}
-// Example of the problem
-{code that illustrates the challenge}
-```
-
-## {Section 2: The Solution}
-
-{Introduce the approach. Explain the concept before the implementation.}
-
-```{language}
-// Solution code with clear comments
-{complete, runnable code}
-```
-
-## {Section 3: Going Deeper}
-
-{Advanced variations, edge cases, or production considerations.}
-
-## {Section 4: Results and Trade-offs}
-
-| Aspect | Result |
-|--------|--------|
-| {metric 1} | {before → after} |
-
-## Summary
-
-{3-5 bullet points recapping key takeaways.}
-
-## What's Next
-
-- {follow-up topic}
-- {related technique}
-- {community resource}
-
----
-
-*Last updated: {YYYY-MM-DD} | Tested with: {versions}*
-```
-
-### Multi-Part Series
-
-```markdown
----
-series: "{Series Title}"
-part: {N}
-total_parts: {M}
-description: "Part {N} of {M}: {subtitle}"
----
-
-# Part {N}: {Title} — {Subtitle}
-
-> **This is Part {N} of the "{Series Title}" series.**
-> - [Part 1: {Title}]({url}) — {one-line summary}
-> - [Part 2: {Title}]({url}) — {one-line summary}
-> - **Part {N}: {Title}** ← You are here
-> - [Part {N+1}: {Title}]({url}) — {one-line summary} (coming {date})
-
-{Introduction connecting to previous part and previewing this part.}
-
-**What you'll learn in this part:**
-- {specific outcome 1}
-- {specific outcome 2}
-
-**Prerequisites:**
-- Completion of Parts 1-{N-1}, or familiarity with {concepts}
-
----
-
-## {Section 1}
-{Content building on the series foundation}
-
-## {Section 2}
-{New material for this part}
-
-## Series Recap So Far
-After Parts 1-{N}, you now know:
-- ✅ {concept from Part 1}
-- ✅ **New:** {what this part added}
-
-## Up Next
-In **Part {N+1}: {Title}**, you'll learn:
-- {preview of next content}
-
----
-
-*Last updated: {YYYY-MM-DD} | Series started: {date}*
-```
-
-### Workshop Module
-
-```markdown
----
-title: "Workshop: {Topic}"
-duration: {X} hours
-level: {beginner|intermediate|advanced}
----
-
-# Workshop: {Topic}
-
-## Setup (30 min)
-{prerequisites, installation, verification}
-
-## Module 1: {Title} ({X} min)
-**Goal:** {what participants will accomplish}
-
-### Exercise 1.1: {Title}
-- **Time:** {X} min
-- **Instructions:** {steps}
-- **Expected result:** {output}
-
-### Exercise 1.2: {Title}
-- **Time:** {X} min
-- **Instructions:** {steps}
-- **Expected result:** {output}
-
-## Module 2: {Title} ({X} min)
-{repeat pattern}
-
-## Bonus Challenges
-- {challenge_1}
-- {challenge_2}
-
-## Solutions
-{available after workshop}
-```
-
----
 
 ## Rules
 
-1. **Know your audience** — Write for a specific knowledge level, not for everyone. A tutorial for beginners is different from a deep dive for experts. State prerequisites explicitly.
-2. **Lead with value** — State what the reader will learn or build in the first paragraph. Respect their time by being upfront about the payoff.
-3. **Every code example must run** — Test all code before publishing. Include imports, context, and expected output. Broken code destroys trust.
-4. **Use the Feynman technique** — Explain concepts as if teaching someone with no background. If you can't explain it simply, you don't understand it well enough.
-5. **Progressive disclosure** — Start simple, add complexity gradually. Show the 5-line version before the 50-line version. Don't overwhelm.
-6. **Code needs narrative** — Every code block needs: what it does (context), the code itself, what each part does (explanation), and what happens (output). Never drop code without context.
-7. **Break text visually** — Short paragraphs (3-4 sentences), bullets, tables, code blocks, and headings. No walls of text. Target a 40-60% code-to-prose ratio.
-8. **Define every term** — Don't assume the reader knows jargon, abbreviations, or acronyms. Define on first use.
-9. **Include error handling** — Show what happens when things go wrong, not just the happy path. Readers will encounter errors.
-10. **Make it scannable** — Use headings that work as a table of contents. Bold key terms. Use TL;DR sections. Readers scan before they read.
-11. **Update regularly** — Technical content decays. Add "Last updated" dates. Set review schedules. Remove or update deprecated information.
-12. **End with next steps** — Don't leave the reader stranded. Suggest what to learn, build, or read next.
-13. **Be blameless in post-mortems** — Focus on systems and processes, not people. The goal is learning and prevention.
-14. **Test your tutorials** — Have someone unfamiliar with the topic follow your tutorial step by step. Where they get stuck, your writing needs improvement.
-15. **Write the introduction last** — The introduction should accurately reflect the content. Write it after the body so it doesn't promise something the article doesn't deliver.
+1. **Outline before you write.** Every article, no matter how short, benefits from a structure. The outline is your contract with the reader—it tells them what they'll learn and in what order.
+
+2. **Get to the point in the first three sentences.** Your introduction must answer: What is this about? Why should I care? What will I learn? If it doesn't, readers will leave.
+
+3. **Every code example must be tested.** Untested code in a tutorial is a landmine. It will waste hours of your readers' time and destroy their trust. Test on a clean environment before publishing.
+
+4. **Show the result before the process.** Tell readers what they'll build or understand, then show them how. Context before mechanism, always.
+
+5. **One concept per section.** If a section covers multiple ideas, split it. Each heading should map to exactly one learning objective.
+
+6. **Use active voice by default.** "The system validates the input" is clearer than "The input is validated by the system." Reserve passive voice for when the action matters more than the actor.
+
+7. **Write headings that work as a table of contents.** A skimmer reading only headings should understand the article's structure and find what they need. Vague headings like "Overview" or "Details" are navigation failures.
+
+8. **Be honest about trade-offs.** No tool, pattern, or approach is perfect. Readers trust writers who acknowledge limitations more than those who only promote benefits.
+
+9. **Version-pin everything.** Software changes. Your article's code examples will break if you don't pin versions. Add "last verified" dates and test on CI.
+
+10. **The Feynman Test applies.** If you can't explain a concept in simple language, you don't understand it well enough to write about it. Simplify until a smart 12-year-old could follow.
+
+11. **Progressive disclosure over info-dumping.** Layer information from simple to complex. Use collapsible sections, "advanced" callouts, and reference footnotes to serve multiple audience levels.
+
+12. **Every paragraph must earn its place.** If a paragraph doesn't advance the reader's understanding, remove it. Content density is respect for the reader's time.
+
+13. **Write for skimmers first, readers second.** Bold key phrases, use bullet lists, add section summaries. The 80/20 rule: 80% of readers will scan; give them what they need.
+
+14. **End with action, not summary.** Don't just restate what you taught. Give readers a next step: a project to try, a resource to read, a question to consider.
+
+15. **Revise in passes.** Structure first, then clarity, then polish. Don't try to fix grammar in a paragraph that might be deleted. Work top-down: big picture to small details.

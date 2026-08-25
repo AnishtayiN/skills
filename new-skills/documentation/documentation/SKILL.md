@@ -1221,6 +1221,223 @@ MD045:
   alt_style: descriptive  # Images must have alt text
 ```
 
+### 10. Incremental Documentation Strategy
+
+Don't try to document everything at once. Build documentation incrementally, starting with the highest-value content and expanding as the project matures. This prevents documentation paralysis and ensures effort matches value.
+
+```markdown
+# Documentation Roadmap — Incremental Strategy
+
+## Phase 1: Foundation (Week 1-2)
+Priority: HIGH — Blocking new contributors and users
+
+- [ ] README with Quick Start (badges, install, first usage)
+- [ ] CONTRIBUTING.md with development setup
+- [ ] LICENSE file
+- [ ] Basic API reference (endpoints, parameters, responses)
+- [ ] Code of Conduct (for open-source)
+
+## Phase 2: Core Content (Week 3-4)
+Priority: HIGH — Reducing support burden
+
+- [ ] Getting Started tutorial (setup → first success → expand → next steps)
+- [ ] Configuration reference (all options with defaults and examples)
+- [ ] Top 5 troubleshooting guides (from support ticket analysis)
+- [ ] Deployment guide (staging + production)
+- [ ] Changelog (Keep a Changelog format)
+
+## Phase 3: Depth (Week 5-8)
+Priority: MEDIUM — Enabling advanced use cases
+
+- [ ] Architecture Decision Records for key decisions
+- [ ] Runbooks for critical operations (top 3 incidents)
+- [ ] SDK documentation with working examples
+- [ ] Performance tuning guide
+- [ ] Migration guides for breaking changes
+- [ ] FAQ from common support questions
+
+## Phase 4: Polish (Week 9-12)
+Priority: LOW — Improving discoverability and completeness
+
+- [ ] Diagrams as documentation (architecture, data flow, sequence)
+- [ ] i18n framework for international docs
+- [ ] Interactive examples and playgrounds
+- [ ] Video walkthroughs for complex tutorials
+- [ ] Documentation CI pipeline (lint, test, deploy)
+
+## Phase 5: Maintenance (Ongoing)
+Priority: ONGOING — Preventing documentation decay
+
+- [ ] Quarterly documentation review
+- [ ] Deprecation notice process (30-day sunset policy)
+- [ ] Documentation freshness monitoring (stale pages alert)
+- [ ] User feedback integration (support tickets → doc improvements)
+- [ ] Analytics tracking (which pages are visited, where users drop off)
+```
+
+**Key principles:**
+1. **Start with what blocks people** — If new users can't install the project, write the README first. If operators can't fix outages, write runbooks first.
+2. **Write only what's needed** — Don't document internal implementation details nobody looks up. Focus on the surface area people interact with.
+3. **Iterate, don't perfect** — A 200-line README published today is better than a 2000-line guide published never.
+4. **Let usage guide investment** — Track which documentation pages get the most traffic and invest in those first.
+5. **Build the pipeline early** — Set up linting, testing, and CI in Phase 1. Every doc you write after that gets quality checks automatically.
+
+### 11. i18n Documentation Workflow
+
+Internationalize documentation without duplicating source management. Use a layered approach: source language in the main branch, translations in language-specific directories, with automated sync when source content changes.
+
+```
+docs/
+├── en/                    # Source language (English)
+│   ├── getting-started.md
+│   ├── api-reference.md
+│   └── runbooks/
+├── fa/                    # فارسی (Farsi)
+│   ├── getting-started.md
+│   └── api-reference.md
+├── zh/                    # 中文 (Chinese)
+│   ├── getting-started.md
+│   └── api-reference.md
+├── i18n/
+│   ├── config.yml         # Translation configuration
+│   ├── glossary.yml       # Technical term translations
+│   └── style-guide.yml    # Translation style rules
+└── .github/
+    └── workflows/
+        └── sync-translations.yml
+```
+
+```yaml
+# docs/i18n/config.yml
+source_language: en
+target_languages:
+  - code: fa
+    name: فارسی
+    direction: rtl
+    status: partial       # 40% translated
+  - code: zh
+    name: 中文
+    direction: ltr
+    status: partial       # 60% translated
+  - code: ja
+    name: 日本語
+    direction: ltr
+    status: not_started
+
+translation_sync:
+  method: parallel        # Sync source changes to translation branches
+  auto_create_pr: true    # Create PR when source docs change
+  alert_after_days: 30    # Alert if translation is >30 days stale
+  required_for_release: false  # Don't block releases on translations
+```
+
+```yaml
+# docs/i18n/glossary.yml
+terms:
+  - en: "API Key"
+    fa: "کلید API"
+    zh: "API 密钥"
+  - en: "Endpoint"
+    fa: "نقطه پایانی"
+    zh: "端点"
+  - en: "Deprecation"
+    fa: "منسوخ شدن"
+    zh: "弃用"
+  - en: "Runbook"
+    fa: "کتابچه راهنما"
+    zh: "运行手册"
+```
+
+**i18n best practices:**
+1. **Write source docs with translation in mind** — Avoid idioms, cultural references, and sentence structures that don't translate well.
+2. **Use a glossary** — Define technical term translations once and enforce consistency across all languages.
+3. **Don't block releases on translations** — Translations should lag behind source content, not gate releases.
+4. **Monitor staleness** — Alert when translations are more than 30 days behind the source.
+5. **Design for RTL** — Farsi and Arabic require right-to-left layout. Test your documentation site with RTL languages before adding them.
+
+### 12. Diagrams as Documentation (Mermaid, PlantUML)
+
+Diagrams communicate complex relationships faster than text. Version-control diagrams alongside code using text-based formats (Mermaid, PlantUML) that render in GitHub, GitLab, and documentation sites.
+
+```markdown
+## Architecture Diagram (Mermaid)
+
+```mermaid
+graph TB
+    Client[Client App] --> Gateway[API Gateway]
+    Gateway --> Auth[Auth Service]
+    Gateway --> Users[User Service]
+    Gateway --> Orders[Order Service]
+    Orders --> Payments[Payment Service]
+    Payments --> Stripe[Stripe API]
+    Orders --> DB[(PostgreSQL)]
+    Users --> DB
+    Auth --> Redis[(Redis Cache)]
+    Notifications --> Kafka[Kafka]
+```
+
+## Sequence Diagram (Mermaid)
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant G as Gateway
+    participant O as Order Service
+    participant P as Payment Service
+
+    C->>G: POST /orders
+    G->>O: Create order
+    O->>P: Process payment
+    P-->>O: Payment confirmed
+    O-->>G: 201 Created
+    G-->>C: 201 Created
+```
+
+## Data Flow (Mermaid)
+
+```mermaid
+flowchart LR
+    A[User Request] --> B[API Gateway]
+    B --> C{Auth Check}
+    C -->|Valid| D[Business Logic]
+    C -->|Invalid| E[401 Error]
+    D --> F[Database]
+    F --> G[Response]
+```
+
+## Class Diagram (PlantUML)
+
+```plantuml
+@startuml
+class PaymentClient {
+  -apiKey: string
+  +createPayment(amount, currency): Payment
+  +getPayment(id): Payment
+}
+class Payment {
+  +id: string
+  +amount: int
+  +status: PaymentStatus
+}
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+PaymentClient --> Payment : creates
+Payment --> PaymentStatus : has
+@enduml
+```
+```
+
+**Diagram best practices:**
+1. **Use text-based formats** — Mermaid and PlantUML are version-controllable, diffable, and renderable. Avoid embedded images for architecture diagrams.
+2. **Keep diagrams focused** — One diagram per concept. A single diagram with 50 nodes communicates nothing.
+3. **Label everything** — Every node, edge, and relationship should have a descriptive label.
+4. **Use consistent notation** — Pick a style (rectangles for services, cylinders for databases, diamonds for decisions) and stick with it.
+5. **Include diagrams in the same PR as code changes** — Architecture diagrams should be updated in the same PR that changes the architecture.
+
 ## Common Patterns
 
 ### Pattern 1: Living Documentation
