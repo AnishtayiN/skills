@@ -5,82 +5,107 @@
 ### Step 1: Check if Needed
 
 Before creating a new skill:
-1. Does an existing skill cover this?
+1. Does an existing skill cover this? Check [SKILL-MATRIX.md](SKILL-MATRIX.md)
 2. Can it be merged with an existing skill?
 3. Is it relevant for a coding agent?
 
-### Step 2: Follow the Standard
-
-Every skill MUST have:
+### Step 2: Follow the Frontmatter Standard
 
 ```yaml
 ---
 name: skill-name
 description: >-
-  Trigger phrases in English and Farsi.
-  When to activate this skill.
+  {2-line description of what the skill does}.
+  TRIGGERS: {8+ English trigger phrases},
+  {6+ Farsi trigger phrases},
+  {5+ Chinese trigger phrases}
 priority: P0/P1/P2/P3
-dependencies: [other-skills]
-conflicts: [conflicting-skills]
+dependencies: [other-skill-names]
+conflicts: [conflicting-skill-names]
 ---
 ```
 
+**Rules:**
+- `dependencies` must reference skills that actually exist in this repo
+- `conflicts` lists skills that should not run at the same time
+- Triggers must be specific enough to avoid false activation
+
 ### Step 3: Required Sections
 
-Every skill MUST include:
+Every skill MUST include these 10 sections, in this order:
 
-1. **Purpose** — Why this skill exists
-2. **When to Activate** — Specific trigger conditions
-3. **When NOT to Activate** — When to skip this skill
-4. **Inputs Required** — What information is needed
-5. **Preconditions** — What must be true before starting
-6. **Workflow** — Step-by-step instructions
-7. **Decision Tree** — How to choose between approaches
-8. **Execution Rules** — Hard rules to follow
-9. **Verification** — How to verify success
-10. **Failure Handling** — What to do when things go wrong
-11. **Safety Constraints** — What NOT to do
-12. **Output Format** — How to present results
-13. **Anti-Patterns** — Common mistakes to avoid
-14. **Skill Interactions** — How this skill relates to others
+| # | Section | Requirement |
+|---|---------|-------------|
+| 1 | `## Overview` | 2–3 sentences on what & why |
+| 2 | `## When to Use This Skill` | 6–9 concrete bullets |
+| 3 | `## When NOT to Use This Skill` | 5–7 bullets |
+| 4 | `## Workflow` | Multi-phase with `### Step N` + code |
+| 5 | `## Advanced Techniques` | ≥ 7 numbered (`### 1. Name`) with code |
+| 6 | `## Common Patterns` | ≥ 5 (`### Pattern N:`) with production-ready code |
+| 7 | `## Edge Cases & Pitfalls` | ≥ 15 numbered cases (problem → solution) |
+| 8 | `## Integration with Other Skills` | Markdown table: Skill / When / How |
+| 9 | `## Output Format Templates` | ≥ 4 templates (Standard / Detailed / Quick / Agent-friendly) |
+| 10 | `## Rules` | ≥ 10 numbered rules |
 
 ### Step 4: Quality Standards
 
-- [ ] Triggers are specific (not too broad)
-- [ ] Workflow is actionable (not vague)
-- [ ] Verification is defined
-- [ ] Anti-patterns are listed
-- [ ] Dependencies are correct
-- [ ] No duplicate with existing skills
-- [ ] Token-efficient (not bloated)
+- [ ] Minimum 500 lines
+- [ ] Triggers in all three languages (English + فارسی + 中文)
+- [ ] Code examples are production-ready and runnable
+- [ ] Workflow is actionable, not vague
+- [ ] Dependencies reference existing skills only
+- [ ] No duplicate coverage with an existing skill
+- [ ] UTF-8 encoded, valid YAML frontmatter
+- [ ] Token-efficient prose — examples carry the weight
 
-### Step 5: Test
+### Step 5: Verify Before PR
 
-1. Does the skill activate correctly?
-2. Does the workflow work?
-3. Does the verification catch issues?
-4. Is it token-efficient?
+Run against your new skill:
+```bash
+# frontmatter has priority?
+grep -c "^priority:" <skill>/SKILL.md        # must be 1
+
+# all 10 sections present?
+grep -c "^## " <skill>/SKILL.md              # >= 10
+
+# trilingual triggers present?
+grep -P "[\x{0600}-\x{06FF}]" <skill>/SKILL.md   # Farsi found
+grep -P "[\x{4E00}-\x{9FFF}]" <skill>/SKILL.md   # Chinese found
+```
+
+Then confirm the installer still counts correctly:
+```bash
+./install.sh --help    # runs without error
+```
 
 ## Naming Conventions
 
-- Use kebab-case: `my-skill-name`
-- Use lowercase: `debugging`, not `Debugging`
-- Be descriptive: `code-review`, not `review`
+- Kebab-case directories: `code-review`, `testing-e2e`
+- Lowercase everywhere: `debugging`, not `Debugging`
+- One skill per directory: `<skill-name>/SKILL.md`
+- Place the skill inside the correct category directory (`ai/`, `coding/`, …)
 
 ## Priority Guidelines
 
-| Priority | Use When |
-|----------|----------|
-| P0 | Critical for correctness/security |
-| P1 | Important for most tasks |
-| P2 | Normal development tasks |
-| P3 | Nice to have |
+| Priority | Meaning | Examples |
+|----------|---------|----------|
+| **P0** | Critical for correctness/security | debugging, verification, security-audit |
+| **P1** | Important for most tasks | code-generation, testing, code-review |
+| **P2** | Normal development tasks | refactoring, api-design, caching |
+| **P3** | Specialized / nice to have | documentation, deployment, seo |
 
 ## File Structure
 
 ```
-skill-name/
-├── SKILL.md          # Main skill file
-└── references/       # Optional reference files
-    └── patterns.md
+<repo-root>/
+├── ai/ coding/ quality/ ...     # category directories
+│   └── skill-name/
+│       └── SKILL.md             # main skill file
+├── ROUTER.md                    # how agents pick skills
+├── AGENT.md                     # agent behavior rules
+├── SKILL-MATRIX.md              # full skill reference table
+├── install.sh                   # interactive installer
+└── index.html                   # GitHub Pages site
 ```
+
+After adding a skill, update **SKILL-MATRIX.md**, the count in **README.md**, and the grid in **index.html**.

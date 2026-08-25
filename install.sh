@@ -123,7 +123,7 @@ show_menu() {
         fi
         
         echo -e "    ${sel_mark}${BLUE}$i)${NC} $name          $inst_mark"
-        ((i++))
+        i=$((i+1))
     done
     
     echo ""
@@ -428,14 +428,14 @@ uninstall_hermes() {
 
 install_selected() {
     local installed=0
-    
-    [ "${SELECTED[claude]:-0}" = "1" ] && install_claude "." && ((installed++))
-    [ "${SELECTED[cursor]:-0}" = "1" ] && install_cursor "." && ((installed++))
-    [ "${SELECTED[windsurf]:-0}" = "1" ] && install_windsurf "." && ((installed++))
-    [ "${SELECTED[aider]:-0}" = "1" ] && install_aider "." && ((installed++))
-    [ "${SELECTED[continue]:-0}" = "1" ] && install_continue "." && ((installed++))
-    [ "${SELECTED[hermes]:-0}" = "1" ] && install_hermes "." && ((installed++))
-    
+
+    if [ "${SELECTED[claude]:-0}" = "1" ]; then install_claude "."; installed=$((installed+1)); fi
+    if [ "${SELECTED[cursor]:-0}" = "1" ]; then install_cursor "."; installed=$((installed+1)); fi
+    if [ "${SELECTED[windsurf]:-0}" = "1" ]; then install_windsurf "."; installed=$((installed+1)); fi
+    if [ "${SELECTED[aider]:-0}" = "1" ]; then install_aider "."; installed=$((installed+1)); fi
+    if [ "${SELECTED[continue]:-0}" = "1" ]; then install_continue "."; installed=$((installed+1)); fi
+    if [ "${SELECTED[hermes]:-0}" = "1" ]; then install_hermes "."; installed=$((installed+1)); fi
+
     echo ""
     if [ $installed -gt 0 ]; then
         print_success "Successfully installed $installed agent(s)"
@@ -446,14 +446,14 @@ install_selected() {
 
 update_selected() {
     local updated=0
-    
-    [ "${SELECTED[claude]:-0}" = "1" ] && install_claude "." && ((updated++))
-    [ "${SELECTED[cursor]:-0}" = "1" ] && install_cursor "." && ((updated++))
-    [ "${SELECTED[windsurf]:-0}" = "1" ] && install_windsurf "." && ((updated++))
-    [ "${SELECTED[aider]:-0}" = "1" ] && install_aider "." && ((updated++))
-    [ "${SELECTED[continue]:-0}" = "1" ] && install_continue "." && ((updated++))
-    [ "${SELECTED[hermes]:-0}" = "1" ] && install_hermes "." && ((updated++))
-    
+
+    if [ "${SELECTED[claude]:-0}" = "1" ]; then install_claude "."; updated=$((updated+1)); fi
+    if [ "${SELECTED[cursor]:-0}" = "1" ]; then install_cursor "."; updated=$((updated+1)); fi
+    if [ "${SELECTED[windsurf]:-0}" = "1" ]; then install_windsurf "."; updated=$((updated+1)); fi
+    if [ "${SELECTED[aider]:-0}" = "1" ]; then install_aider "."; updated=$((updated+1)); fi
+    if [ "${SELECTED[continue]:-0}" = "1" ]; then install_continue "."; updated=$((updated+1)); fi
+    if [ "${SELECTED[hermes]:-0}" = "1" ]; then install_hermes "."; updated=$((updated+1)); fi
+
     echo ""
     if [ $updated -gt 0 ]; then
         print_success "Successfully updated $updated agent(s)"
@@ -464,14 +464,14 @@ update_selected() {
 
 uninstall_selected() {
     local uninstalled=0
-    
-    [ "${SELECTED[claude]:-0}" = "1" ] && uninstall_claude "." && ((uninstalled++))
-    [ "${SELECTED[cursor]:-0}" = "1" ] && uninstall_cursor "." && ((uninstalled++))
-    [ "${SELECTED[windsurf]:-0}" = "1" ] && uninstall_windsurf "." && ((uninstalled++))
-    [ "${SELECTED[aider]:-0}" = "1" ] && uninstall_aider "." && ((uninstalled++))
-    [ "${SELECTED[continue]:-0}" = "1" ] && uninstall_continue "." && ((uninstalled++))
-    [ "${SELECTED[hermes]:-0}" = "1" ] && uninstall_hermes "." && ((uninstalled++))
-    
+
+    if [ "${SELECTED[claude]:-0}" = "1" ]; then uninstall_claude "."; uninstalled=$((uninstalled+1)); fi
+    if [ "${SELECTED[cursor]:-0}" = "1" ]; then uninstall_cursor "."; uninstalled=$((uninstalled+1)); fi
+    if [ "${SELECTED[windsurf]:-0}" = "1" ]; then uninstall_windsurf "."; uninstalled=$((uninstalled+1)); fi
+    if [ "${SELECTED[aider]:-0}" = "1" ]; then uninstall_aider "."; uninstalled=$((uninstalled+1)); fi
+    if [ "${SELECTED[continue]:-0}" = "1" ]; then uninstall_continue "."; uninstalled=$((uninstalled+1)); fi
+    if [ "${SELECTED[hermes]:-0}" = "1" ]; then uninstall_hermes "."; uninstalled=$((uninstalled+1)); fi
+
     echo ""
     if [ $uninstalled -gt 0 ]; then
         print_success "Successfully uninstalled $uninstalled agent(s)"
