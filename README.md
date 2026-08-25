@@ -2,8 +2,9 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
-![Skills](https://img.shields.io/badge/skills-31-green)
+![Version](https://img.shields.io/badge/version-2.2.0-blue)
+![Skills](https://img.shields.io/badge/skills-49-green)
+![Total Size](https://img.shields.io/badge/size-1.2MB-purple)
 ![Languages](https://img.shields.io/badge/languages-Farsi%20%7C%20English-purple)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
@@ -20,6 +21,7 @@
 - [What Are Skills?](#what-are-skills)
 - [Why Use This Collection?](#why-use-this-collection)
 - [Installation](#-installation)
+  - [One-Command Install (Recommended)](#one-command-install-recommended)
   - [Claude Code](#claude-code)
   - [Hermes Agent](#hermes-agent)
   - [Cursor AI](#cursor-ai)
@@ -71,6 +73,33 @@ Think of skills as **professional playbooks** for your AI agent. Instead of the 
 ---
 
 ## 🚀 Installation
+
+### One-Command Install (Recommended)
+
+The fastest way to install skills for your agent:
+
+```bash
+# Clone the repo
+git clone https://github.com/AnishtayiN/skills.git
+cd skills
+
+# Install for your agent
+./install.sh claude      # For Claude Code
+./install.sh hermes      # For Hermes Agent
+./install.sh cursor      # For Cursor AI
+./install.sh windsurf    # For Windsurf
+./install.sh aider       # For Aider
+./install.sh continue    # For Continue.dev
+./install.sh all         # Install for all supported agents
+```
+
+The installer will:
+1. ✅ Detect your project type
+2. ✅ Copy the appropriate skill files
+3. ✅ Configure your agent's settings
+4. ✅ Verify the installation
+
+---
 
 ### Prerequisites
 
@@ -468,6 +497,8 @@ def create_skill_tool(skills_dir: str):
 | **[test-generation](skills/test-generation/SKILL.md)** | Generate unit, integration, and E2E tests | write tests, generate tests, نوشتن تست، تست واحد |
 | **[explain-code](skills/explain-code/SKILL.md)** | Layered code explanation (summary → details) | explain code, what does this do, توضیح کد، تحلیل کد |
 | **[self-correction](skills/self-correction/SKILL.md)** | Review and correct AI outputs systematically | check your work, verify, خود اصلاحی، بررسی خروجی |
+| **[code-migration](skills/code-migration/SKILL.md)** | Migrate between frameworks, languages, and architectures | code migration, migrate, مهاجرت کد، ارتقای کد |
+| **[regex](skills/regex/SKILL.md)** | Write, debug, and optimize regular expressions | regex, pattern matching, عبارت باقاعده، الگوی متنی |
 
 ### 🏗️ Architecture & Design Skills
 
@@ -479,6 +510,8 @@ def create_skill_tool(skills_dir: str):
 | **[system-design](skills/system-design/SKILL.md)** | Scalable system design with diagrams and trade-offs | system design, architecture, طراحی سیستم، معماری |
 | **[database-schema](skills/database-schema/SKILL.md)** | Database design, ER modeling, SQL schema generation | database design, schema, طراحی دیتابیس، مدل‌سازی داده |
 | **[prompt-engineering](skills/prompt-engineering/SKILL.md)** | Write, optimize, and critique LLM prompts | prompt engineering, prompt design, نوشتن پرامپت |
+| **[graphql](skills/graphql/SKILL.md)** | GraphQL API design, resolvers, federation | GraphQL, schema design, طراحی GraphQL، ری‌الور |
+| **[microservices](skills/microservices/SKILL.md)** | Service decomposition, patterns, and distributed systems | microservices, service mesh, معماری میکروسرویس، الگوهای توزیع‌شده |
 
 ### 🚀 DevOps & Infrastructure Skills
 
@@ -489,6 +522,14 @@ def create_skill_tool(skills_dir: str):
 | **[ci-cd-pipeline](skills/ci-cd-pipeline/SKILL.md)** | CI/CD pipeline setup (GitHub Actions, GitLab CI) | CI/CD, pipeline, پایپ‌لاین، اتوماسیون استقرار |
 | **[cloud-deployment](skills/cloud-deployment/SKILL.md)** | Deploy to AWS, GCP, Azure with IaC | deploy cloud, AWS, استقرار ابری، استقرار در ابر |
 | **[security-audit](skills/security-audit/SKILL.md)** | Code security review & vulnerability assessment | security audit, vulnerability, بررسی امنیتی، آسیب‌پذیری |
+| **[serverless](skills/serverless/SKILL.md)** | Lambda, Cloud Functions, event-driven architecture | serverless, Lambda, سرورلس، توابع ابری |
+
+### 📊 Monitoring & Operations Skills
+
+| Skill | Description | Triggers (EN/FA) |
+|-------|-------------|-------------------|
+| **[monitoring-observability](skills/monitoring-observability/SKILL.md)** | Logging, metrics, tracing, and alerting setup | monitoring, observability, مانیتورینگ، لاگینگ |
+| **[incident-response](skills/incident-response/SKILL.md)** | RCA, post-mortem, and incident management | incident response, post-mortem, واکنش به حادثه، پست‌مورتوم |
 
 ### 🧠 AI & Data Skills
 
@@ -499,6 +540,7 @@ def create_skill_tool(skills_dir: str):
 | **[data-cleaning](skills/data-cleaning/SKILL.md)** | Raw data preprocessing and quality assurance | clean data, preprocess, پاکسازی داده، پیش‌پردازش |
 | **[web-scraping](skills/web-scraping/SKILL.md)** | Extract structured data from websites | web scraping, scrape, اسکرپینگ وب، استخراج داده |
 | **[browser-automation](skills/browser-automation/SKILL.md)** | Playwright, Puppeteer, E2E testing scripts | browser automation, Playwright, اتوماسیون مرورگر |
+| **[algorithm-design](skills/algorithm-design/SKILL.md)** | Data structures, complexity analysis, and algorithm patterns | algorithm, Big O, الگوریتم، ساختمان داده، پیچیدگی زمانی |
 
 ### 📝 Communication & Documentation Skills
 
@@ -516,6 +558,42 @@ def create_skill_tool(skills_dir: str):
 | **[chain-of-thought](skills/chain-of-thought/SKILL.md)** | Step-by-step reasoning techniques | think step by step, CoT, استدلال گام به گام |
 | **[brainstorming](skills/brainstorming/SKILL.md)** | Structured ideation and alternative exploration | brainstorm, ideas, ایده‌پردازی، طوفان فکری |
 | **[task-planning](skills/task-planning/SKILL.md)** | Project decomposition and roadmapping | plan project, breakdown, شکستن پروژه، برنامه‌ریزی |
+
+### 🤖 Agent & Automation Skills
+
+| Skill | Description | Triggers (EN/FA) |
+|-------|-------------|-------------------|
+| **[agent-orchestration](skills/agent-orchestration/SKILL.md)** | Multi-agent systems, task delegation, and orchestration | agent orchestration, multi-agent, هماهنگی اجنت، سیستم چنداجنتی |
+
+### ⚡ Performance & Quality Skills
+
+| Skill | Description | Triggers (EN/FA) |
+|-------|-------------|-------------------|
+| **[performance-optimization](skills/performance-optimization/SKILL.md)** | CPU/memory profiling, database optimization, caching | performance, bottleneck, بهینه‌سازی عملکرد، کندی |
+| **[accessibility](skills/accessibility/SKILL.md)** | WCAG compliance, ARIA patterns, screen reader support | accessibility, a11y, WCAG, دسترسی‌پذیری |
+| **[feature-flag](skills/feature-flag/SKILL.md)** | Feature toggles, A/B testing, progressive rollouts | feature flag, A/B test, پرچم ویژگی، تست A/B |
+| **[caching](skills/caching/SKILL.md)** | Redis, CDN, browser cache, invalidation strategies | caching, Redis, CDN, کشینگ، حافظه کش |
+
+### 🧪 Testing Skills
+
+| Skill | Description | Triggers (EN/FA) |
+|-------|-------------|-------------------|
+| **[testing-e2e](skills/testing-e2e/SKILL.md)** | End-to-end testing with Playwright and Cypress | E2E testing, Playwright, Cypress, تست E2E، تست مرورگر |
+
+### 📱 Platform Skills
+
+| Skill | Description | Triggers (EN/FA) |
+|-------|-------------|-------------------|
+| **[mobile-development](skills/mobile-development/SKILL.md)** | React Native, Flutter, and native app development | mobile app, React Native, Flutter, توسعه موبایل، اپلیکیشن |
+| **[seo](skills/seo/SKILL.md)** | Technical SEO, meta tags, structured data, Core Web Vitals | SEO, search optimization, سئو، بهینه‌سازی موتور جستجو |
+| **[i18n](skills/i18n/SKILL.md)** | Internationalization, RTL support, locale detection | i18n, internationalization, بین‌المللی‌سازی، ترجمه |
+| **[email-template](skills/email-template/SKILL.md)** | Responsive HTML email design | email template, HTML email, قالب ایمیل، طراحی ایمیل |
+
+### 🔀 Queue & Messaging Skills
+
+| Skill | Description | Triggers (EN/FA) |
+|-------|-------------|-------------------|
+| **[queue](skills/queue/SKILL.md)** | Message queues, event streaming, async processing | message queue, RabbitMQ, Kafka, صف پیام، پردازش ناهمگام |
 
 ---
 
@@ -739,36 +817,56 @@ We welcome contributions! To add or improve a skill:
 
 ## 📊 Skill Comparison Matrix
 
-| Skill | Complexity | Best For | Estimated Lines |
-|-------|-----------|----------|----------------|
-| debug | ⭐⭐⭐⭐⭐ | Any code issue | 400+ |
-| code-review | ⭐⭐⭐⭐ | Code quality | 350+ |
-| security-audit | ⭐⭐⭐⭐⭐ | Security issues | 400+ |
-| system-design | ⭐⭐⭐⭐⭐ | Architecture | 400+ |
-| api-design | ⭐⭐⭐⭐ | API development | 350+ |
-| refactor | ⭐⭐⭐⭐ | Code cleanup | 300+ |
-| test-generation | ⭐⭐⭐⭐ | Testing | 300+ |
-| rag-implementation | ⭐⭐⭐⭐⭐ | AI/ML systems | 400+ |
-| prompt-engineering | ⭐⭐⭐⭐ | AI prompts | 350+ |
-| dockerization | ⭐⭐⭐⭐ | Containerization | 300+ |
-| ci-cd-pipeline | ⭐⭐⭐⭐ | Automation | 300+ |
-| cloud-deployment | ⭐⭐⭐⭐⭐ | Cloud infrastructure | 350+ |
-| database-schema | ⭐⭐⭐⭐ | Data modeling | 300+ |
-| chain-of-thought | ⭐⭐⭐ | Reasoning tasks | 300+ |
-| task-planning | ⭐⭐⭐ | Project planning | 250+ |
-| brainstorming | ⭐⭐⭐ | Ideation | 250+ |
-| documentation | ⭐⭐⭐ | Project docs | 250+ |
-| technical-writing | ⭐⭐⭐ | Content creation | 250+ |
-| summarization | ⭐⭐⭐ | Content condensing | 250+ |
-| explain-code | ⭐⭐⭐ | Code understanding | 250+ |
-| git-workflow | ⭐⭐⭐ | Git problems | 250+ |
-| self-correction | ⭐⭐⭐ | Error detection | 250+ |
-| data-analysis | ⭐⭐⭐⭐ | Data insights | 300+ |
-| data-cleaning | ⭐⭐⭐ | Data preparation | 250+ |
-| web-scraping | ⭐⭐⭐ | Data extraction | 250+ |
-| browser-automation | ⭐⭐⭐⭐ | E2E testing | 300+ |
-| api-integration | ⭐⭐⭐⭐ | External services | 300+ |
-| changelog | ⭐⭐ | Release notes | 200+ |
+| Skill | Category | Complexity | Lines | Size |
+|-------|----------|-----------|-------|------|
+| debug | Coding | ⭐⭐⭐⭐⭐ | 695 | 24KB |
+| code-review | Coding | ⭐⭐⭐⭐ | 424 | 15KB |
+| refactor | Coding | ⭐⭐⭐⭐ | 559 | 15KB |
+| test-generation | Coding | ⭐⭐⭐⭐ | 715 | 20KB |
+| explain-code | Coding | ⭐⭐⭐ | 407 | 14KB |
+| self-correction | Coding | ⭐⭐⭐ | 440 | 15KB |
+| code-migration | Coding | ⭐⭐⭐⭐ | 500+ | 18KB |
+| regex | Coding | ⭐⭐⭐ | 450+ | 17KB |
+| api-design | Architecture | ⭐⭐⭐⭐ | 785 | 22KB |
+| api-integration | Architecture | ⭐⭐⭐⭐ | 700+ | 28KB |
+| clean-architecture | Architecture | ⭐⭐⭐⭐ | 600+ | 24KB |
+| system-design | Architecture | ⭐⭐⭐⭐⭐ | 800+ | 30KB |
+| database-schema | Architecture | ⭐⭐⭐⭐ | 600+ | 25KB |
+| prompt-engineering | Architecture | ⭐⭐⭐⭐ | 450+ | 17KB |
+| graphql | Architecture | ⭐⭐⭐⭐ | 500+ | 18KB |
+| microservices | Architecture | ⭐⭐⭐⭐⭐ | 500+ | 18KB |
+| git-workflow | DevOps | ⭐⭐⭐ | 1085 | 28KB |
+| dockerization | DevOps | ⭐⭐⭐⭐ | 1185 | 29KB |
+| ci-cd-pipeline | DevOps | ⭐⭐⭐⭐ | 1126 | 27KB |
+| cloud-deployment | DevOps | ⭐⭐⭐⭐⭐ | 838 | 21KB |
+| security-audit | DevOps | ⭐⭐⭐⭐⭐ | 1069 | 29KB |
+| serverless | DevOps | ⭐⭐⭐⭐ | 450+ | 16KB |
+| monitoring-observability | Operations | ⭐⭐⭐⭐ | 500+ | 20KB |
+| incident-response | Operations | ⭐⭐⭐⭐ | 400+ | 16KB |
+| rag-implementation | AI/Data | ⭐⭐⭐⭐⭐ | 1500+ | 50KB |
+| data-analysis | AI/Data | ⭐⭐⭐⭐ | 800+ | 31KB |
+| data-cleaning | AI/Data | ⭐⭐⭐ | 600+ | 19KB |
+| web-scraping | AI/Data | ⭐⭐⭐ | 500+ | 20KB |
+| browser-automation | AI/Data | ⭐⭐⭐⭐ | 1165 | 30KB |
+| algorithm-design | AI/Data | ⭐⭐⭐⭐⭐ | 600+ | 22KB |
+| documentation | Docs | ⭐⭐⭐ | 600+ | 24KB |
+| technical-writing | Docs | ⭐⭐⭐ | 500+ | 21KB |
+| summarization | Docs | ⭐⭐⭐ | 450+ | 17KB |
+| changelog | Docs | ⭐⭐ | 400+ | 16KB |
+| chain-of-thought | Reasoning | ⭐⭐⭐ | 500+ | 20KB |
+| brainstorming | Reasoning | ⭐⭐⭐ | 500+ | 20KB |
+| task-planning | Reasoning | ⭐⭐⭐ | 500+ | 21KB |
+| agent-orchestration | Agent | ⭐⭐⭐⭐⭐ | 600+ | 24KB |
+| performance-optimization | Performance | ⭐⭐⭐⭐ | 500+ | 20KB |
+| accessibility | Quality | ⭐⭐⭐⭐ | 500+ | 17KB |
+| feature-flag | Quality | ⭐⭐⭐⭐ | 500+ | 18KB |
+| caching | Performance | ⭐⭐⭐⭐ | 450+ | 16KB |
+| testing-e2e | Testing | ⭐⭐⭐⭐ | 500+ | 18KB |
+| mobile-development | Platform | ⭐⭐⭐⭐ | 500+ | 18KB |
+| seo | Platform | ⭐⭐⭐ | 450+ | 16KB |
+| i18n | Platform | ⭐⭐⭐ | 450+ | 16KB |
+| email-template | Platform | ⭐⭐⭐ | 400+ | 16KB |
+| queue | Messaging | ⭐⭐⭐⭐ | 500+ | 17KB |
 
 ---
 
