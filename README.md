@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-4.0.0-blue)
-![Skills](https://img.shields.io/badge/skills-39-green)
-![Lines](https://img.shields.io/badge/lines-28%2C779-purple)
+![Version](https://img.shields.io/badge/version-5.0.0-blue)
+![Skills](https://img.shields.io/badge/skills-57-green)
+![Lines](https://img.shields.io/badge/lines-60%2C000+-purple)
 ![Languages](https://img.shields.io/badge/triggers-EN%20%7C%20FA%20%7C%20ZH-orange)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
@@ -43,7 +43,7 @@ cd skills
 ```
 
 Interactive menu features:
-- Auto-detects installed agents and shows `(Installed) [n/39 skills]`
+- Auto-detects installed agents and shows `(Installed) [n/57 skills]`
 - Toggle selection with keys `1-6`, Select All `7`, Deselect All `8`
 - Install Selected `9`, Update Selected `10`, Uninstall Selected `11`
 
@@ -61,86 +61,111 @@ Supported agents: **Claude Code, Cursor AI, Windsurf, Aider, Continue.dev, Herme
 
 ---
 
-## 📋 Skills (39 Total)
+## 📋 Skills (57 Total · 10 Categories)
 
 ### 🎯 Core Analysis (3 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **project-analysis** | 461 | Understand project structure & tech stack |
-| **requirement-analysis** | 515 | Clarify requirements & acceptance criteria |
-| **task-planning** | 695 | Break work into ordered, verifiable steps |
+The entry point for every non-trivial task: understand → clarify → plan.
+
+| Skill | Purpose |
+|-------|---------|
+| **project-analysis** | Understand project structure & tech stack |
+| **requirement-analysis** | Clarify requirements & acceptance criteria |
+| **task-planning** | Break work into ordered, verifiable steps |
 
 ### 🧠 AI & Reasoning (8 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **prompt-engineering** | 353 | Write & optimize LLM prompts |
-| **chain-of-thought** | 441 | Step-by-step reasoning techniques |
-| **self-correction** | 467 | Fix AI output errors automatically |
-| **brainstorming** | 570 | Structured ideation (SCAMPER, Six Hats) |
-| **rag-implementation** | 772 | Build RAG pipelines with vector DBs |
-| **tool-management** | 835 | Tool call validation & retry |
-| **context-management** | 985 | Token budget & context optimization |
-| **agent-orchestration** | 1,205 | Multi-agent coordination |
+| Skill | Purpose |
+|-------|---------|
+| **prompt-engineering** | Write & optimize LLM prompts |
+| **chain-of-thought** | Step-by-step reasoning techniques |
+| **self-correction** | Fix AI output errors automatically |
+| **brainstorming** | Structured ideation (SCAMPER, Six Hats) |
+| **rag-implementation** | Build RAG pipelines with vector DBs |
+| **tool-management** | Tool call validation & retry |
+| **context-management** | Token budget & context optimization |
+| **agent-orchestration** | Multi-agent coordination |
 
-### 💻 Coding (9 skills)
+### 💻 Coding (16 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **code-editing** | 431 | Modify code with minimal diffs |
-| **code-explanation** | 534 | Multi-level code walkthrough |
-| **code-generation** | 648 | Write new code (framework-aware) |
-| **debugging** | 579 | Evidence-driven bug fixing |
-| **refactoring** | 679 | Code smell catalog + SOLID |
-| **web-scraping** | 722 | Extract data from websites |
-| **api-integration** | 791 | Connect to external APIs (OAuth, webhooks) |
-| **browser-automation** | 886 | Playwright/Puppeteer automation |
-| **clean-architecture** | 1,269 | SOLID, hexagonal, CQRS |
+| Skill | Purpose |
+|-------|---------|
+| **code-editing** | Modify code with minimal diffs |
+| **code-explanation** | Multi-level code walkthrough |
+| **code-generation** | Write new code (framework-aware) |
+| **debugging** | Evidence-driven bug fixing |
+| **refactoring** | Code smell catalog + SOLID |
+| **web-scraping** | Extract data from websites |
+| **api-integration** | Connect to external APIs (OAuth, webhooks) |
+| **browser-automation** | Playwright/Puppeteer automation |
+| **clean-architecture** | SOLID, hexagonal, CQRS |
+| **algorithm-design** | Algorithms & data structures done right |
+| **code-migration** | Move code between languages/frameworks |
+| **email-template** | HTML emails that survive Outlook & Gmail |
+| **i18n** | Internationalization & localization |
+| **mobile-development** | Cross-platform mobile apps |
+| **regex** | Regular expressions mastery |
+| **seo** | Technical SEO & Core Web Vitals |
 
-### ✅ Quality (5 skills)
+### ✅ Quality (7 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **code-review** | 495 | 5-pass review + STRIDE threat model |
-| **verification** | 603 | Build → lint → type → test → manual |
-| **testing** | 658 | Unit/integration/E2E + property-based |
-| **data-analysis** | 1,143 | Statistical analysis + A/B testing |
-| **data-cleaning** | 1,328 | Preprocessing + imputation |
+| Skill | Purpose |
+|-------|---------|
+| **code-review** | 5-pass review + STRIDE threat model |
+| **verification** | Build → lint → type → test → manual |
+| **testing** | Unit/integration/E2E + property-based |
+| **testing-e2e** | Deep E2E strategy (Playwright/Cypress) |
+| **accessibility** | WCAG 2.2 AA & inclusive UI |
+| **data-analysis** | Statistical analysis + A/B testing |
+| **data-cleaning** | Preprocessing + imputation |
 
-### 🏗️ Architecture (3 skills)
+### 🏗️ Architecture (6 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **database-design** | 490 | Multi-tenancy + event sourcing |
-| **system-design** | 628 | Bounded context + back-of-envelope |
-| **api-design** | 766 | REST + GraphQL + versioning |
+| Skill | Purpose |
+|-------|---------|
+| **database-design** | Multi-tenancy + event sourcing |
+| **system-design** | Bounded context + back-of-envelope |
+| **api-design** | REST + GraphQL + versioning |
+| **graphql** | Schema design, DataLoader, federation |
+| **microservices** | Boundaries, sagas, strangler fig |
+| **queue** | Message queues & async processing |
 
-### 🔧 DevOps (4 skills)
+### 🔧 DevOps (7 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **git-workflow** | 549 | Gitflow + conflict resolution |
-| **dockerization** | 684 | BuildKit + distroless + GPU |
-| **ci-cd** | 786 | GitHub Actions + GitLab CI |
-| **deployment** | 918 | Blue-green + canary + feature flags |
+| Skill | Purpose |
+|-------|---------|
+| **git-workflow** | Gitflow + conflict resolution |
+| **dockerization** | BuildKit + distroless + GPU |
+| **ci-cd** | GitHub Actions + GitLab CI |
+| **deployment** | Blue-green + canary + feature flags |
+| **feature-flag** | Progressive delivery & kill switches |
+| **incident-response** | On-call, runbooks, postmortems |
+| **monitoring-observability** | Metrics/logs/traces, SLOs |
+| **serverless** | Lambda patterns & cost control |
 
-### 🔒 Security & Performance (3 skills)
+### ⚡ Performance (4 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **security-audit** | 596 | OWASP Top 10 + supply chain |
-| **performance-analysis** | 684 | Profiling + caching + optimization |
-| **concurrency-debugging** | 828 | Race conditions + deadlocks |
+| Skill | Purpose |
+|-------|---------|
+| **performance-analysis** | Profiling + caching + optimization |
+| **performance-optimization** | Make slow code fast, evidence-driven |
+| **caching** | Redis/CDN/browser strategies |
+| **concurrency-debugging** | Race conditions + deadlocks |
+
+### 🔒 Security (1 skill)
+
+| Skill | Purpose |
+|-------|---------|
+| **security-audit** | OWASP Top 10 + supply chain |
 
 ### 📝 Documentation (4 skills)
 
-| Skill | Lines | Purpose |
-|-------|------:|---------|
-| **changelog** | 402 | Conventional Commits + release notes |
-| **summarization** | 929 | Meetings + PRs + codebase overviews |
-| **technical-writing** | 979 | Tutorials + deep dives + post-mortems |
-| **documentation** | 1,475 | README + API docs + ADRs + runbooks |
+| Skill | Purpose |
+|-------|---------|
+| **changelog** | Conventional Commits + release notes |
+| **summarization** | Meetings + PRs + codebase overviews |
+| **technical-writing** | Tutorials + deep dives + post-mortems |
+| **documentation** | README + API docs + ADRs + runbooks |
 
 ---
 
@@ -153,6 +178,7 @@ Request → Classify → Detect Skills → Sort Priority
 ```
 
 Every skill declares its `priority` (P0–P3), `dependencies`, and `conflicts` in YAML frontmatter.
+See [ROUTER.md](ROUTER.md), [AGENT.md](AGENT.md), and [SKILL-MATRIX.md](SKILL-MATRIX.md).
 
 ---
 
@@ -172,21 +198,9 @@ Every skill passes the same verification checklist:
 
 ---
 
-## 📊 Statistics
-
-| Metric | Value |
-|--------|------:|
-| Total Skills | **39** |
-| Total Lines | **28,806** |
-| Avg Lines/Skill | **738** |
-| Categories | **10** |
-| Trigger Languages | **3** (EN + FA + ZH) |
-
----
-
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](new-skills/CONTRIBUTING.md) for the skill format standard.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the skill format standard.
 
 ## 📄 License
 

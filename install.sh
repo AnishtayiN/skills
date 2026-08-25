@@ -6,7 +6,8 @@
 set -e
 
 SKILLS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NEW_SKILLS_DIR="$SKILLS_DIR/new-skills"
+# Skills live in categorized dirs at the repo root: ai/ coding/ quality/ ...
+NEW_SKILLS_DIR="$SKILLS_DIR"
 
 # Colors
 RED='\033[0;31m'
@@ -26,9 +27,9 @@ print_banner() {
     echo -e "${CYAN}"
     echo "╔══════════════════════════════════════════════════════════════════╗"
     echo "║                                                                ║"
-    echo "║           🧠 Coding Agent Skill Library - v3.0.0              ║"
+    echo "║           🧠 Coding Agent Skill Library - v5.0.0              ║"
     echo "║                                                                ║"
-    echo "║           25 Professional Skills for Coding Agents             ║"
+    echo "║           57 Professional Skills for Coding Agents             ║"
     echo "║           Evidence First • Minimal Fix • Verification          ║"
     echo "║                                                                ║"
     echo "╚══════════════════════════════════════════════════════════════════╝"
@@ -81,9 +82,9 @@ count_installed_skills() {
     [ -d "$skills_dir" ] && find "$skills_dir" -name "SKILL.md" -type f 2>/dev/null | wc -l | tr -d ' ' || echo "0"
 }
 
-# Count available skills
+# Count available skills (exclude v2/ reference pack and hidden dirs)
 count_available_skills() {
-    find "$NEW_SKILLS_DIR" -name "SKILL.md" -type f 2>/dev/null | wc -l | tr -d ' '
+    find "$NEW_SKILLS_DIR" -path "$NEW_SKILLS_DIR/v2" -prune -o -name "SKILL.md" -type f -print 2>/dev/null | wc -l | tr -d ' '
 }
 
 # Show menu with selection status
