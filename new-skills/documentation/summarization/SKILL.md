@@ -1,126 +1,129 @@
 ---
 name: summarization
 description: >-
-  Generate intelligent, structured summaries of documents, meetings, code, logs, and content.
-  English: summarization, text summarization, extractive summarization, abstractive summarization,
-    meeting summaries, PR summaries, codebase overview, log summarization, document summarization,
-    executive summary, literature review, research summary, content distillation,
-    hierarchical summarization, confidence-flagged summaries, action-first summarization,
-    sentiment-aware summarization, key point extraction.
-  فارسی: خلاصه‌سازی، خلاصه‌سازی استخراجی، خلاصه‌سازی انتزاعی، خلاصه جلسات، خلاصه PR،
-    مرور کد، خلاصه لاگ، خلاصه سند، خلاصه اجرایی، مرور ادبیات، استخراج نکات کلیدی.
-  中文: 摘要生成，提取式摘要，生成式摘要，会议摘要，PR摘要，代码库概览，日志摘要，
-    文档摘要，执行摘要，文献综述，关键点提取，分层摘要，置信度标记摘要。
+  Create clear, accurate summaries of documents, articles, conversations, and code.
+  English: summarization, text summarization, executive summary, abstract generation,
+    content distillation, key point extraction, TL;DR, digest, briefing, recap,
+    meeting notes summary, article summary, book summary, research summary.
+  فارسی: خلاصه‌سازی، خلاصه متن، خلاصه اجرایی، استخراج نکات کلیدی، چکیده،
+    بازبینی، یادداشت جلسات، خلاصه مقاله، خلاصه کتاب، خلاصه پژوهش.
+  中文: 摘要生成，文本摘要，执行摘要，关键点提取，内容提炼，会议纪要摘要，
+    文章摘要，书籍摘要，研究摘要，简报。
 ---
 
-# Intelligent Summarization
+# Summarization
 
 ## Overview
 
-Summarization is the process of distilling large volumes of information into concise, accurate, and useful representations. Unlike simple truncation or excerpting, intelligent summarization preserves the essential meaning, key decisions, action items, and critical context while removing noise, redundancy, and irrelevant detail.
+Summarization is the process of distilling a source document into a shorter version that preserves the essential meaning, key points, and critical information. A good summary enables the reader to understand the source's main ideas without reading the full text, while a bad summary either omits critical information or introduces misinterpretation.
 
-The core challenge is **information compression with fidelity**: reducing 10,000 words to 500 without losing the 3 sentences that matter most. This requires understanding the content's structure, identifying what's important (which varies by audience and purpose), and representing the result in a format that enables quick comprehension and action.
+The two fundamental approaches are **extractive** (selecting the most important sentences or phrases directly from the source) and **abstractive** (generating new sentences that capture the meaning, potentially using different words and structure). Most effective summarization combines both: extract key information, then rephrase for clarity and conciseness.
 
-This skill covers both extractive summarization (selecting key passages from the source) and abstractive summarization (generating new text that captures the essence), applied across diverse content types: documents, meetings, code, logs, PRs, research papers, and more. Each content type has unique structural patterns, key information locations, and audience needs.
+This skill covers summarization across diverse content types: research papers, articles, books, meetings, code, conversations, and reports. Each type has different structural conventions, key information locations, and audience expectations for the summary.
 
 ## When to Use This Skill
 
-- Summarizing long documents, reports, or papers for quick comprehension
-- Creating meeting summaries with action items, decisions, and key discussion points
-- Writing PR summaries that explain changes, risks, and testing notes
-- Generating codebase overviews for onboarding or architecture reviews
-- Detecting patterns in log files and creating actionable summaries
-- Creating executive summaries from technical reports
-- Distilling research papers into literature reviews
-- Summarizing support tickets or customer feedback
-- Compressing code reviews into actionable feedback
+- Creating executive summaries of reports or proposals
+- Summarizing research papers or articles for quick comprehension
+- Writing meeting notes and action item summaries
+- Generating abstracts for academic papers
+- Creating TL;DR sections for long documents
+- Distilling technical specifications into decision briefs
+- Summarizing books, chapters, or long-form content
+- Creating digests or newsletters from multiple sources
+- Producing code summaries or architecture overviews
 
 ## When NOT to Use This Skill
 
-- Simple keyword extraction (use keyword extraction patterns)
-- Full document translation (use translation skills)
-- Creative rewriting or paraphrasing for style (use content writing skills)
-- Real-time streaming summarization (use streaming patterns)
-- When the source content is too short to summarize (under 500 words)
+- Full-text translation (use translation skills)
+- Creative rewriting or rephrasing for style (use paraphrasing skills)
+- Detailed analysis or critique (use analytical skills)
+- When the source is too short to summarize meaningfully (< 200 words)
+- When verbatim quotes are required (use citation skills)
+- Real-time summarization of live events (use note-taking skills)
 
 ---
 
 ## Workflow
 
-### Phase 1: Content Analysis
+### Phase 1: Source Analysis
 
-**Objective:** Understand the source material's structure, type, and key information patterns.
-
-```
-Source Content → Type Detection → Structure Analysis → Key Information Extraction → Priority Assessment
-```
-
-**Step 1.1 — Content Type Detection**
-Identify the content type: document (report, paper, article), meeting (transcript, notes), code (PR, codebase, function), log (application, system, audit), or structured data (table, JSON). Each type has different summarization strategies.
-
-**Step 1.2 — Structure Analysis**
-Map the content's structure: headings, sections, paragraphs, code blocks, timestamps, speaker turns, commit messages. Key information often lives in specific structural locations (e.g., abstracts, conclusions, first sentences of paragraphs).
-
-**Step 1.3 — Key Information Extraction**
-Identify the most important information: main claims, decisions, action items, metrics, errors, and recommendations. Use position-based heuristics (first/last paragraph), cue phrases ("the key finding is", "we decided to"), and structural markers (headings, bullet points).
-
-**Step 1.4 — Priority Assessment**
-Determine what matters most for the target audience: an executive needs decisions and business impact, an engineer needs technical details and action items, a researcher needs methodology and findings.
-
-### Phase 2: Summarization Strategy Selection
-
-**Objective:** Choose the right summarization approach based on content type, length, and audience needs.
+**Objective:** Understand the source document's structure, type, and key information before attempting to summarize.
 
 ```
-Content Type → Strategy Selection → Method Configuration → Compression Ratio → Output Format
+Source Document → Type Identification → Structure Analysis → Key Point Extraction → Audience Consideration
 ```
 
-| Content Type | Primary Strategy | Compression Ratio | Key Elements |
+**Step 1.1 — Identify Source Type**
+Different content types have different summarization patterns:
+- **Research paper:** Abstract, introduction, methods, results, discussion, conclusion
+- **News article:** Lead paragraph, supporting details, background, quotes
+- **Meeting transcript:** Agenda items, discussions, decisions, action items
+- **Book chapter:** Thesis, arguments, evidence, conclusions
+- **Technical document:** Overview, specifications, implementation details, examples
+
+**Step 1.2 — Analyze Structure**
+Map the document's structure: headings, sections, paragraphs, key sentences (topic sentences), supporting evidence, conclusions. Identify the hierarchy of importance.
+
+**Step 1.3 — Extract Key Points**
+Identify the main ideas, supporting arguments, key data points, conclusions, and action items. Use position-based heuristics (first/last sentences, heading text) and content-based heuristics (signal words like "the key finding is," "in conclusion," "we recommend").
+
+**Step 1.4 — Consider Audience**
+Adjust summary depth and vocabulary based on the target reader. An executive needs business impact and decisions. A researcher needs methodology and findings. A developer needs implementation details and trade-offs.
+
+### Phase 2: Summary Strategy Selection
+
+**Objective:** Choose the right summarization approach based on content type and purpose.
+
+```
+Content Type → Purpose → Strategy → Length Target → Format Selection
+```
+
+| Content Type | Purpose | Strategy | Length Target |
 |---|---|---|---|
-| Research Paper | Hierarchical (abstract → sections) | 10-20% | Claims, methods, findings, limitations |
-| Meeting Transcript | Action-first | 5-15% | Decisions, action items, key discussion |
-| PR/Code Review | Structured extraction | 10-25% | Changes, risks, testing, context |
-| Codebase | Architecture-first | 5-15% | Structure, patterns, key components |
-| Log Files | Pattern detection | 1-5% | Errors, anomalies, trends, frequency |
-| Executive Report | Inverted pyramid | 10-20% | Bottom line, key metrics, recommendations |
-| Support Tickets | Issue-action format | 15-30% | Problem, impact, resolution, follow-up |
+| Research paper | Quick overview | Structured abstract format | 150-300 words |
+| News article | Inform | Inverted pyramid | 2-3 paragraphs |
+| Meeting | Track decisions | Action-oriented | Bullet points |
+| Book chapter | Understand | Concept extraction | 200-500 words |
+| Technical doc | Implement | Task-oriented | Steps + context |
+| Report | Decide | Executive brief | 1 page |
 
-### Phase 3: Summarization Execution
+### Phase 3: Summary Generation
 
-**Objective:** Generate the summary using the selected strategy.
-
-```
-Source Content → Preprocessing → Key Point Extraction → Ordering → Compression → Post-processing
-```
-
-**Step 3.1 — Preprocessing**
-For text: normalize whitespace, remove boilerplate headers/footers, identify sections. For code: parse structure, extract function signatures, identify dependencies. For logs: parse timestamps, extract error patterns, aggregate by type.
-
-**Step 3.2 — Key Point Extraction**
-Extract the most important information using: position-based extraction (first/last sentences), frequency-based extraction (terms that appear in multiple sections), importance-based extraction (entities, numbers, decisions), and cue-phrase extraction ("the key insight", "we decided", "the root cause is").
-
-**Step 3.3 — Ordering and Compression**
-Order key points by importance (most important first for executive summaries, chronological for meeting summaries). Compress by removing redundancy, merging similar points, and simplifying language while preserving meaning.
-
-**Step 3.4 — Post-processing**
-Add structure (headers, bullet points, tables), verify completeness (all major topics covered), check accuracy (no misrepresentation of source), and add confidence flags (mark uncertain inferences).
-
-### Phase 4: Validation and Refinement
-
-**Objective:** Ensure the summary is accurate, complete, and useful.
+**Objective:** Create the summary using the selected strategy and structure.
 
 ```
-Completeness Check → Accuracy Verification → Audience Calibration → Final Polish
+Key Points → Organization → Drafting → Compression → Polish
 ```
 
-**Step 4.1 — Completeness Check**
-Verify that all major topics in the source are represented in the summary. No critical information should be missing. For action-oriented summaries, verify all action items are captured.
+**Step 3.1 — Organize Key Points**
+Arrange key points in order of importance (deductive) or logical flow (inductive). For most technical content, use deductive order: conclusion first, then supporting evidence.
 
-**Step 4.2 — Accuracy Verification**
-Check that the summary doesn't misrepresent the source. Verify that numbers, dates, names, and technical terms are correct. Ensure that inferences are clearly marked as such.
+**Step 3.2 — Draft the Summary**
+Write the summary sentence by sentence. Each sentence should convey one key point. Avoid redundancy. Use the source's terminology for accuracy but simplify complex sentences.
 
-**Step 4.3 — Audience Calibration**
-Adjust language, depth, and format for the target audience. An executive summary should be jargon-free with business impact. A technical summary should include implementation details and trade-offs.
+**Step 3.3 — Compress and Refine**
+Review for length. Remove unnecessary words, combine related points, and eliminate examples unless they're essential for understanding. Every word should earn its place.
+
+**Step 3.4 — Final Polish**
+Check for accuracy (does the summary faithfully represent the source?), completeness (are all key points covered?), and clarity (could a reader understand the summary without the source?).
+
+### Phase 4: Quality Verification
+
+**Objective:** Ensure the summary is accurate, complete, and appropriate for its purpose.
+
+```
+Accuracy Check → Completeness Check → Bias Check → Final Approval
+```
+
+**Step 4.1 — Accuracy Check**
+Compare the summary against the source. Verify that no claims are made in the summary that aren't supported by the source. Check that key numbers, names, and dates are correct.
+
+**Step 4.2 — Completeness Check**
+Verify that all major points from the source are represented. Check that the summary doesn't omit important caveats, limitations, or counter-arguments.
+
+**Step 4.3 — Bias Check**
+Ensure the summary doesn't introduce bias by selectively representing only certain viewpoints or emphasizing minor points over major ones.
 
 ---
 
@@ -128,984 +131,799 @@ Adjust language, depth, and format for the target audience. An executive summary
 
 ### 1. Hierarchical Summarization
 
-Create summaries at multiple levels of detail: a one-line overview, a paragraph summary, and a detailed section-by-section summary. This lets readers choose their depth of engagement.
+Create summaries at multiple levels of detail, allowing readers to choose their depth of engagement.
 
 ```python
-def hierarchical_summary(document, llm, levels=None):
+def hierarchical_summary(document, levels=None):
     """
-    Create a multi-level summary: TL;DR → Paragraph → Detailed.
-    
-    Each level provides progressively more detail, allowing readers 
-    to choose their depth of engagement.
+    Create a multi-level summary:
+    - Level 1: One-line TL;DR (1 sentence)
+    - Level 2: Brief summary (1 paragraph, 3-5 sentences)
+    - Level 3: Detailed summary (key points with supporting details)
+    - Level 4: Structured overview (section-by-section summary)
     """
     if levels is None:
-        levels = {
-            "tldr": {"max_tokens": 50, "instruction": "One sentence that captures the single most important point."},
-            "paragraph": {"max_tokens": 150, "instruction": "One paragraph (3-5 sentences) covering the key points, decisions, and outcomes."},
-            "detailed": {"max_tokens": 500, "instruction": "A structured summary with: Key Points (bullet list), Decisions Made, Action Items, and Notable Details."},
-        }
+        levels = [1, 2, 3, 4]
+    
+    # Extract key information
+    key_points = extract_key_points(document)
+    main_argument = extract_main_argument(document)
+    supporting_evidence = extract_supporting_evidence(document)
+    conclusions = extract_conclusions(document)
     
     summary = {}
-    for level_name, config in levels.items():
-        prompt = f"""{config['instruction']}
-
-Source document:
-{document}
-
-Summary ({level_name}):"""
-        
-        response = llm.generate(prompt, max_tokens=config["max_tokens"], temperature=0)
-        summary[level_name] = response.strip()
     
-    # Add structural metadata
-    summary["metadata"] = {
-        "source_length": len(document),
-        "compression_ratio": {k: len(v) / len(document) for k, v in summary.items() if isinstance(v, str)},
-        "word_counts": {k: len(v.split()) for k, v in summary.items() if isinstance(v, str)}
-    }
+    if 1 in levels:
+        # One-line TL;DR
+        summary['tldr'] = f"{main_argument['claim']}. {conclusions['primary']}"
+    
+    if 2 in levels:
+        # Brief paragraph summary
+        sentences = [
+            main_argument['claim'],
+            f"The key evidence shows: {supporting_evidence[0]}",
+            f"This leads to the conclusion that {conclusions['primary']}",
+        ]
+        if main_argument.get('limitation'):
+            sentences.append(f"The authors note that {main_argument['limitation']}")
+        summary['brief'] = ' '.join(sentences)
+    
+    if 3 in levels:
+        # Detailed summary with key points
+        summary['detailed'] = {
+            'main_argument': main_argument,
+            'key_findings': supporting_evidence[:5],
+            'conclusions': conclusions,
+            'limitations': extract_limitations(document),
+            'implications': extract_implications(document)
+        }
+    
+    if 4 in levels:
+        # Section-by-section summary
+        sections = extract_sections(document)
+        summary['section_by_section'] = {}
+        for section in sections:
+            summary['section_by_section'][section['title']] = {
+                'key_point': section['main_idea'],
+                'supporting': section['supporting_points'][:3]
+            }
     
     return summary
 
-# Usage
-summary = hierarchical_summary(long_report, llm)
-print(summary["tldr"])        # One sentence
-print(summary["paragraph"])   # One paragraph
-print(summary["detailed"])    # Full structured summary
+def extract_key_points(document):
+    """Extract the most important points from a document."""
+    sentences = split_into_sentences(document)
+    
+    # Score sentences by importance signals
+    scores = []
+    for sent in sentences:
+        score = 0
+        # Position bonus (first/last sentences often important)
+        if sentences.index(sent) < 3:
+            score += 2
+        if sentences.index(sent) >= len(sentences) - 2:
+            score += 2
+        
+        # Signal words
+        signal_phrases = [
+            'the key finding', 'in conclusion', 'we show that',
+            'the main result', 'importantly', 'significantly',
+            'the authors argue', 'the evidence suggests'
+        ]
+        for phrase in signal_phrases:
+            if phrase in sent.lower():
+                score += 3
+                break
+        
+        # Length bonus (not too short, not too long)
+        word_count = len(sent.split())
+        if 10 <= word_count <= 30:
+            score += 1
+        
+        # Contains numbers or data
+        import re
+        if re.search(r'\d+\.?\d*', sent):
+            score += 1
+        
+        scores.append((sent, score))
+    
+    # Return top sentences
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return [s[0] for s in scores[:10]]
 ```
 
-### 2. Confidence-Flagged Summaries
+### 2. Confidence-Flagged Summarization
 
-Mark claims in the summary with confidence levels based on how directly they're supported by the source material. This prevents the summary from presenting inferences as facts.
+Explicitly mark which parts of the summary are directly stated in the source vs. inferred or interpreted.
 
 ```python
-import re
-
-def confidence_flagged_summary(document, llm):
+def confidence_flagged_summary(document):
     """
-    Generate a summary where each claim is flagged with a confidence level.
-    
-    Confidence levels:
-    - HIGH: Directly stated in the source
-    - MEDIUM: Strongly implied by multiple source passages
-    - LOW: Inferred or extrapolated from limited evidence
-    - SPECULATIVE: Reasonable but not directly supported
+    Create a summary where each claim is tagged with its confidence level:
+    - DIRECT: Explicitly stated in the source
+    - INFERRED: Reasonably implied but not directly stated
+    - INTERPRETED: Requires reader judgment or domain knowledge
     """
+    key_points = extract_key_points(document)
     
-    prompt = f"""Summarize the following document. For EACH claim or statement in your 
-summary, include a confidence tag in brackets at the end of the sentence:
-
-[HIGH] - Directly stated in the source document
-[MEDIUM] - Strongly implied by the source
-[LOW] - Inferred from limited evidence
-[SPECULATIVE] - Reasonable but not directly supported
-
-Format each point as a bullet point with its confidence tag.
-
-Source document:
-{document}
-
-Summary with confidence flags:"""
+    summary = []
     
-    response = llm.generate(prompt, temperature=0)
-    
-    # Parse and analyze confidence distribution
-    lines = response.strip().split('\n')
-    summary_points = []
-    confidence_distribution = {"HIGH": 0, "MEDIUM": 0, "LOW": 0, "SPECULATIVE": 0}
-    
-    for line in lines:
-        line = line.strip()
-        if not line or not line.startswith('-'):
-            continue
+    for point in key_points:
+        # Determine confidence level
+        confidence = classify_confidence(point, document)
         
-        # Extract confidence tag
-        tag_match = re.search(r'\[(HIGH|MEDIUM|LOW|SPECULATIVE)\]', line)
-        if tag_match:
-            confidence = tag_match.group(1)
-            claim = re.sub(r'\[(HIGH|MEDIUM|LOW|SPECULATIVE)\]', '', line).strip().lstrip('- ')
-            summary_points.append({"claim": claim, "confidence": confidence})
-            confidence_distribution[confidence] += 1
+        summary.append({
+            'claim': point,
+            'confidence': confidence,
+            'source_location': find_source_location(point, document),
+            'supporting_quote': find_supporting_quote(point, document)
+        })
     
-    # Calculate overall confidence score
-    weights = {"HIGH": 1.0, "MEDIUM": 0.7, "LOW": 0.4, "SPECULATIVE": 0.1}
-    total = sum(confidence_distribution.values())
-    overall_score = sum(
-        confidence_distribution[k] * weights[k] for k in weights
-    ) / total if total > 0 else 0
+    return summary
+
+def classify_confidence(claim, document):
+    """
+    Classify whether a claim is directly stated, inferred, or interpreted.
+    """
+    claim_lower = claim.lower()
+    doc_lower = document.lower()
     
-    return {
-        "summary_points": summary_points,
-        "confidence_distribution": confidence_distribution,
-        "overall_confidence_score": round(overall_score, 2),
-        "confidence_interpretation": (
-            "High confidence — most claims directly supported" if overall_score > 0.8 else
-            "Good confidence — majority of claims well-supported" if overall_score > 0.6 else
-            "Moderate confidence — some claims are inferred" if overall_score > 0.4 else
-            "Low confidence — many claims are speculative"
-        )
-    }
+    # Check for direct quotes or near-quotes
+    claim_words = claim_lower.split()
+    for i in range(len(claim_words) - 3):
+        phrase = ' '.join(claim_words[i:i+4])
+        if phrase in doc_lower:
+            return 'DIRECT'
+    
+    # Check for signal words indicating inference
+    inference_signals = ['suggests', 'implies', 'indicates', 'appears to', 'seems']
+    if any(signal in claim_lower for signal in inference_signals):
+        return 'INFERRED'
+    
+    # Default to interpreted
+    return 'INTERPRETED'
 ```
 
 ### 3. Action-First Summarization
 
-For meetings, PRs, and operational content, lead with actions and decisions, not narrative. The reader needs to know "what do I do next?" before "what happened?"
+For documents with decisions or action items, lead with what needs to be done, not what was discussed.
 
 ```python
-def action_first_summary(content, content_type="meeting", llm=None):
+def action_first_summary(meeting_notes):
     """
-    Generate action-first summaries that lead with what matters:
-    decisions, action items, and outcomes.
-    
-    Content types: meeting, pr, incident, review
+    Summarize meeting notes by leading with action items and decisions,
+    followed by context and discussion.
     """
+    # Extract action items
+    action_items = extract_action_items(meeting_notes)
     
-    type_specific_prompts = {
-        "meeting": """Summarize this meeting transcript with the following structure:
-
-## DECISIONS MADE
-- List each decision with who made it
-
-## ACTION ITEMS  
-| Action | Owner | Due Date | Priority |
-|--------|-------|----------|----------|
-| {action} | {person} | {date} | {P0-P3} |
-
-## KEY DISCUSSION POINTS
-- {topic}: {one-line summary of discussion and outcome}
-
-## OPEN QUESTIONS
-- {questions that need follow-up}
-
-## ATTENDEES
-- {list of participants and their roles}
-
-Meeting transcript:
-{content}""",
-
-        "pr": """Summarize this pull request with the following structure:
-
-## WHAT Changed
-{one paragraph: what this PR does and why}
-
-## CHANGES
-| File | Change Type | Description |
-|------|-------------|-------------|
-| {file} | {add/modify/delete} | {what changed} |
-
-## RISK ASSESSMENT
-- **Risk Level:** {Low/Medium/High}
-- **Reason:** {why this risk level}
-- **Rollback Plan:** {how to revert if needed}
-
-## TESTING
-- [ ] Unit tests pass
-- [ ] Integration tests pass
-- [ ] Manual testing completed
-- {test coverage impact}
-
-## DEPENDENCIES
-- {depends on PR #X}
-- {blocks PR #Y}
-
-## REVIEWER NOTES
-{specific areas that need attention}
-
-PR diff:
-{content}""",
-
-        "incident": """Summarize this incident report with the following structure:
-
-## SEVERITY & IMPACT
-- **Severity:** {SEV1-SEV4}
-- **Duration:** {start} to {end}
-- **Users Affected:** {number/percentage}
-- **Services Impacted:** {list}
-
-## TIMELINE
-| Time | Event |
-|------|-------|
-| {time} | {event} |
-
-## ROOT CAUSE
-{technical explanation}
-
-## RESOLUTION
-{what fixed it}
-
-## ACTION ITEMS
-| Action | Owner | Due | Priority |
-|--------|-------|-----|----------|
-| {action} | {owner} | {date} | {priority} |
-
-## LESSONS
-1. {lesson}
-
-Incident report:
-{content}"""
-    }
+    # Extract decisions
+    decisions = extract_decisions(meeting_notes)
     
-    prompt = type_specific_prompts.get(content_type, type_specific_prompts["meeting"])
-    
-    if llm:
-        return llm.generate(prompt.format(content=content), temperature=0)
-    
-    return prompt.format(content=content)
-```
-
-### 4. Sentiment-Aware Summarization
-
-Track the emotional tone and sentiment shifts throughout the content, and include this in the summary. Particularly useful for customer feedback, reviews, and support tickets.
-
-```python
-def sentiment_aware_summary(content, llm=None):
-    """
-    Generate a summary that tracks sentiment throughout the content.
-    
-    Useful for:
-    - Customer feedback analysis
-    - Support ticket summaries
-    - Review aggregation
-    - Survey response analysis
-    """
-    
-    prompt = f"""Analyze the following content and provide a summary that includes 
-both the key points AND the overall sentiment trajectory.
-
-## OVERALL SENTIMENT
-- **Primary Sentiment:** {{Positive | Negative | Neutral | Mixed}}
-- **Sentiment Score:** {{-1.0 to 1.0}}
-- **Confidence:** {{High | Medium | Low}}
-
-## SENTIMENT JOURNEY
-Track how sentiment changes through the content:
-| Section/Topic | Sentiment | Key Phrases | Score |
-|---------------|-----------|-------------|-------|
-| {{topic_1}} | {{pos/neg/neu}} | {{representative phrases}} | {{-1 to 1}} |
-
-## KEY POSITIVE POINTS
-- {{positive point with supporting quote}}
-
-## KEY NEGATIVE POINTS  
-- {{negative point with supporting quote}}
-
-## PAIN POINTS (if negative sentiment detected)
-1. {{pain point with severity: Critical/High/Medium/Low}}
-
-## PRAISE POINTS (if positive sentiment detected)
-1. {{praise point with context}}
-
-## RECOMMENDATIONS
-Based on the sentiment analysis:
-1. {{actionable recommendation to address negative sentiment}}
-2. {{actionable recommendation to amplify positive sentiment}}
-
-## SUMMARY
-{{2-3 sentence summary incorporating both content and sentiment}}
-
-Content to analyze:
-{content}"""
-    
-    return prompt
-```
-
-### 5. Log Pattern Detection and Summarization
-
-Detect patterns, anomalies, and trends in log files, then summarize them in a human-readable format.
-
-```python
-import re
-from collections import Counter
-from datetime import datetime
-
-def summarize_logs(log_content, time_window="1h"):
-    """
-    Analyze log files and create a structured summary with:
-    - Error patterns and frequencies
-    - Time-based trends
-    - Anomalies
-    - Root cause candidates
-    """
-    lines = log_content.strip().split('\n')
-    
-    # Parse log entries
-    entries = []
-    error_pattern = re.compile(r'(ERROR|FATAL|CRITICAL|WARN|WARNING)', re.IGNORECASE)
-    timestamp_pattern = re.compile(r'(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2})')
-    
-    errors = []
-    warnings = []
-    by_hour = Counter()
-    by_component = Counter()
-    error_messages = Counter()
-    
-    for line in lines:
-        # Extract timestamp
-        ts_match = timestamp_pattern.search(line)
-        if ts_match:
-            try:
-                ts = datetime.fromisoformat(ts_match.group(1))
-                by_hour[ts.strftime('%Y-%m-%d %H:00')] += 1
-            except ValueError:
-                pass
-        
-        # Classify log level
-        level_match = error_pattern.search(line)
-        if level_match:
-            level = level_match.group(1).upper()
-            if level in ('ERROR', 'FATAL', 'CRITICAL'):
-                errors.append(line)
-                # Extract error message (after the level)
-                msg = re.sub(r'^.*?(ERROR|FATAL|CRITICAL)[:\s]+', '', line).strip()
-                error_messages[msg[:100]] += 1
-            elif level in ('WARN', 'WARNING'):
-                warnings.append(line)
-    
-    # Detect anomalies (hours with significantly more entries than average)
-    hourly_counts = list(by_hour.values())
-    if hourly_counts:
-        avg = sum(hourly_counts) / len(hourly_counts)
-        anomaly_threshold = avg * 2
-        anomalous_hours = [
-            hour for hour, count in by_hour.items() 
-            if count > anomaly_threshold
-        ]
-    else:
-        anomaly_threshold = 0
-        anomalous_hours = []
-    
-    # Build summary
-    total_lines = len(lines)
-    error_rate = len(errors) / total_lines * 100 if total_lines > 0 else 0
+    # Extract key discussion points
+    discussion_points = extract_discussion_points(meeting_notes)
     
     summary = {
-        "overview": {
-            "total_lines": total_lines,
-            "errors": len(errors),
-            "warnings": len(warnings),
-            "error_rate": f"{error_rate:.2f}%",
-            "time_span": f"{min(by_hour.keys()) if by_hour else 'N/A'} to {max(by_hour.keys()) if by_hour else 'N/A'}"
-        },
-        "top_errors": [
-            {"message": msg, "count": count, "pct": f"{count/len(errors)*100:.1f}%" if errors else "0%"}
-            for msg, count in error_messages.most_common(10)
-        ],
-        "anomalies": {
-            "anomalous_hours": anomalous_hours,
-            "threshold": anomaly_threshold,
-            "severity": "HIGH" if error_rate > 5 else "MEDIUM" if error_rate > 1 else "LOW"
-        },
-        "recommendations": []
+        'action_items': [],
+        'decisions': [],
+        'key_discussion': [],
+        'next_meeting': None
     }
     
-    # Generate recommendations
-    if error_rate > 5:
-        summary["recommendations"].append(
-            f"HIGH PRIORITY: Error rate of {error_rate:.1f}% is critically high. "
-            f"Investigate top error patterns immediately."
-        )
-    if anomalous_hours:
-        summary["recommendations"].append(
-            f"Anomalous activity detected during: {', '.join(anomalous_hours[:5])}. "
-            f"Correlate with deployment or infrastructure changes."
-        )
-    if error_messages:
-        top_error = error_messages.most_common(1)[0]
-        summary["recommendations"].append(
-            f"Most frequent error ({top_error[1]} occurrences): '{top_error[0][:50]}...' "
-            f"This is likely a systemic issue."
-        )
+    # Prioritize action items by urgency
+    for item in action_items:
+        summary['action_items'].append({
+            'action': item['description'],
+            'owner': item.get('owner', 'Unassigned'),
+            'deadline': item.get('deadline', 'Not set'),
+            'priority': item.get('priority', 'Medium'),
+            'context': item.get('context', '')
+        })
+    
+    # Sort by priority
+    priority_order = {'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3}
+    summary['action_items'].sort(
+        key=lambda x: priority_order.get(x['priority'], 2)
+    )
+    
+    # Add decisions with rationale
+    for decision in decisions:
+        summary['decisions'].append({
+            'decision': decision['content'],
+            'rationale': decision.get('rationale', ''),
+            'dissent': decision.get('dissent', None)
+        })
+    
+    # Add key discussion points (what influenced the decisions)
+    summary['key_discussion'] = [
+        {
+            'topic': point['topic'],
+            'consensus': point.get('consensus', 'TBD'),
+            'key_insight': point.get('insight', '')
+        }
+        for point in discussion_points[:5]
+    ]
     
     return summary
 ```
 
-### 6. Codebase Overview Generation
+### 4. Sentiment-Aware Summarization
 
-Generate a high-level overview of a codebase suitable for onboarding new team members or architecture reviews.
+For reviews, feedback, or opinion-heavy content, summarize while preserving sentiment distribution and key emotional themes.
 
 ```python
-def generate_codebase_overview(codebase_files, llm=None):
+def sentiment_aware_summary(document):
     """
-    Generate a structured codebase overview covering:
-    - Architecture and structure
-    - Key components and their responsibilities
-    - Dependencies and integrations
-    - Patterns and conventions
-    - Entry points and data flow
+    Create a summary that preserves the sentiment distribution 
+    of the source document.
     """
+    from collections import Counter
     
-    # Categorize files
-    categories = {
-        "config": [],
-        "entry_points": [],
-        "models": [],
-        "services": [],
-        "controllers": [],
-        "utils": [],
-        "tests": [],
-        "docs": [],
-        "other": []
+    sentences = split_into_sentences(document)
+    
+    # Classify sentiment for each sentence
+    sentiment_groups = {'positive': [], 'negative': [], 'neutral': []}
+    
+    for sent in sentences:
+        sentiment = classify_sentiment(sent)
+        sentiment_groups[sentiment].append(sent)
+    
+    # Calculate proportions
+    total = len(sentences)
+    sentiment_distribution = {
+        k: len(v) / total if total > 0 else 0 
+        for k, v in sentiment_groups.items()
     }
     
-    for file_path, content in codebase_files.items():
-        path_lower = file_path.lower()
-        if any(x in path_lower for x in ['config', 'settings', '.env']):
-            categories["config"].append((file_path, content))
-        elif any(x in path_lower for x in ['main', 'app', 'index', 'server']):
-            categories["entry_points"].append((file_path, content))
-        elif any(x in path_lower for x in ['model', 'schema', 'entity']):
-            categories["models"].append((file_path, content))
-        elif any(x in path_lower for x in ['service', 'handler', 'business']):
-            categories["services"].append((file_path, content))
-        elif any(x in path_lower for x in ['controller', 'route', 'api', 'endpoint']):
-            categories["controllers"].append((file_path, content))
-        elif any(x in path_lower for x in ['util', 'helper', 'common', 'lib']):
-            categories["utils"].append((file_path, content))
-        elif 'test' in path_lower:
-            categories["tests"].append((file_path, content))
-        elif any(x in path_lower for x in ['readme', 'doc', 'changelog']):
-            categories["docs"].append((file_path, content))
-        else:
-            categories["other"].append((file_path, content))
+    # Create balanced summary that reflects proportions
+    summary_parts = []
     
-    overview = {
-        "structure": {
-            "total_files": len(codebase_files),
-            "by_category": {k: len(v) for k, v in categories.items()}
-        },
-        "architecture": None,
-        "key_components": [],
-        "dependencies": [],
-        "patterns": [],
-        "entry_points": [],
-        "data_flow": None
+    # Lead with the dominant sentiment
+    dominant = max(sentiment_distribution, key=sentiment_distribution.get)
+    if sentiment_groups[dominant]:
+        summary_parts.append(f"[Overall sentiment: {dominant}]")
+        # Include top sentences from dominant sentiment
+        for sent in sentiment_groups[dominant][:2]:
+            summary_parts.append(sent)
+    
+    # Include notable points from other sentiments
+    for sentiment in ['positive', 'negative', 'neutral']:
+        if sentiment != dominant and sentiment_groups[sentiment]:
+            # Include the strongest statement from each other sentiment
+            strongest = max(
+                sentiment_groups[sentiment],
+                key=lambda s: sentiment_strength(s)
+            )
+            summary_parts.append(strongest)
+    
+    return {
+        'summary': ' '.join(summary_parts),
+        'sentiment_distribution': sentiment_distribution,
+        'dominant_sentiment': dominant,
+        'key_positive_points': sentiment_groups['positive'][:3],
+        'key_negative_points': sentiment_groups['negative'][:3],
     }
-    
-    if llm:
-        # Generate architecture description
-        entry_content = "\n".join([
-            f"--- {path} ---\n{content[:500]}" 
-            for path, content in categories["entry_points"]
-        ])
-        
-        model_content = "\n".join([
-            f"--- {path} ---\n{content[:500]}" 
-            for path, content in categories["models"][:5]
-        ])
-        
-        overview["architecture"] = llm.generate(
-            f"""Based on these entry points and model files from a codebase, 
-describe the overall architecture in 3-5 bullet points.
-
-Entry points:
-{entry_content}
-
-Models:
-{model_content}
-
-Architecture overview:""",
-            temperature=0
-        )
-    
-    return overview
 ```
 
-### 7. Meeting Summary with Decision Tracking
+### 5. Code and Architecture Summarization
+
+Summarize codebases, pull requests, or technical implementations for quick comprehension.
 
 ```python
-def meeting_summary(transcript, participants=None, llm=None):
+def summarize_codebase(structure, key_files):
     """
-    Generate a comprehensive meeting summary with:
-    - Decisions made (with who decided)
-    - Action items (with owners and deadlines)
-    - Key discussion points
-    - Unresolved questions
-    - Sentiment assessment per topic
+    Create a high-level summary of a codebase structure.
+    """
+    summary = {
+        'overview': '',
+        'architecture': '',
+        'key_components': [],
+        'entry_points': [],
+        'dependencies': [],
+        'patterns_used': []
+    }
+    
+    # Analyze structure
+    total_files = sum(len(files) for files in structure.values())
+    languages = detect_languages(structure)
+    
+    summary['overview'] = (
+        f"This codebase contains {total_files} files across "
+        f"{len(structure)} directories. Primary languages: "
+        f"{', '.join(languages[:3])}."
+    )
+    
+    # Identify key components
+    for path, files in structure.items():
+        if any(kw in path.lower() for kw in ['src', 'lib', 'core']):
+            summary['key_components'].append({
+                'path': path,
+                'purpose': infer_purpose(path, files),
+                'file_count': len(files)
+            })
+    
+    # Identify entry points
+    for path, files in structure.items():
+        for f in files:
+            if any(name in f.lower() for name in ['main', 'index', 'app', 'server']):
+                summary['entry_points'].append(f"{path}/{f}")
+    
+    # Analyze key files for patterns
+    for file_path, content in key_files.items():
+        patterns = detect_patterns(content)
+        summary['patterns_used'].extend(patterns)
+    
+    summary['patterns_used'] = list(set(summary['patterns_used']))
+    
+    return summary
+
+def detect_patterns(content):
+    """Detect common code patterns in source files."""
+    patterns = []
+    
+    if 'class ' in content and 'def __init__' in content:
+        patterns.append('OOP')
+    if 'async def' in content or 'await ' in content:
+        patterns.append('async/await')
+    if '@app.route' in content or '@router' in content:
+        patterns.append('REST API')
+    if 'class.*TestCase' in content or 'def test_' in content:
+        patterns.append('unit testing')
+    if 'try:' in content and 'except' in content:
+        patterns.append('error handling')
+    if 'logging' in content or 'logger' in content:
+        patterns.append('structured logging')
+    
+    return patterns
+```
+
+### 6. Multi-Document Summarization
+
+Synthesize information from multiple sources into a coherent, unified summary.
+
+```python
+def multi_document_summary(documents, topic=None):
+    """
+    Create a unified summary from multiple documents on the same topic.
+    Handles conflicting information and identifies consensus vs. disagreement.
     """
     
-    prompt = f"""Analyze this meeting transcript and create a structured summary.
-
-Meeting participants: {', '.join(participants) if participants else 'Unknown'}
-
-Create the summary with these EXACT sections:
-
-## MEETING INFO
-- **Date:** {{date if detectable}}
-- **Duration:** {{duration if detectable}}
-- **Participants:** {{list}}
-- **Meeting Type:** {{status update | brainstorming | decision | retrospective | other}}
-
-## DECISIONS
-List every decision made, including who made it:
-| # | Decision | Made By | Rationale |
-|---|----------|---------|-----------|
-| 1 | {{decision}} | {{person}} | {{why}} |
-
-## ACTION ITEMS
-| # | Action | Owner | Due Date | Priority | Status |
-|---|--------|-------|----------|----------|--------|
-| 1 | {{action}} | {{person}} | {{date}} | {{P0-P3}} | {{new}} |
-
-## KEY DISCUSSION POINTS
-### Topic 1: {{topic}}
-- **Summary:** {{what was discussed}}
-- **Consensus:** {{yes/partially/no}}
-- **Next steps:** {{if any}}
-
-### Topic 2: {{topic}}
-{{repeat}}
-
-## OPEN QUESTIONS
-Questions that were raised but not answered:
-1. {{question}} (raised by {{person}})
-
-## RISKS & BLOCKERS
-Identified risks or blockers mentioned:
-1. {{risk/blocker}} — {{mitigation if discussed}}
-
-## NEXT MEETING
-- **Date:** {{if discussed}}
-- **Agenda items:** {{if discussed}}
-
-Transcript:
-{transcript}"""
+    # Extract key points from each document
+    all_points = []
+    for doc in documents:
+        points = extract_key_points(doc['content'])
+        for point in points:
+            all_points.append({
+                'point': point,
+                'source': doc['title'],
+                'confidence': classify_confidence(point, doc['content'])
+            })
     
-    return prompt
+    # Cluster similar points
+    clusters = cluster_similar_points(all_points)
+    
+    # Build consensus summary
+    summary = {
+        'consensus_points': [],
+        'conflicting_points': [],
+        'unique_points': [],
+        'coverage_analysis': {}
+    }
+    
+    for cluster in clusters:
+        if len(cluster) >= 3:
+            # Consensus: mentioned by multiple sources
+            summary['consensus_points'].append({
+                'claim': cluster[0]['point'],
+                'sources': [p['source'] for p in cluster],
+                'source_count': len(cluster)
+            })
+        elif len(cluster) == 1:
+            # Unique: mentioned by only one source
+            summary['unique_points'].append(cluster[0])
+    
+    # Detect conflicts
+    summary['conflicting_points'] = detect_conflicts(all_points)
+    
+    # Coverage analysis
+    total_sources = len(documents)
+    summary['coverage_analysis'] = {
+        'total_sources': total_sources,
+        'points_by_source': {
+            doc['title']: len([p for p in all_points if p['source'] == doc['title']])
+            for doc in documents
+        }
+    }
+    
+    return summary
+```
+
+### 7. Progressive Summarization
+
+Create summaries that build in detail, allowing readers to expand sections they want to explore.
+
+```python
+def progressive_summary(document, depth=3):
+    """
+    Create a progressive summary with expandable sections.
+    
+    Depth 1: Executive summary (1 paragraph)
+    Depth 2: Key points (bullet list)
+    Depth 3: Detailed section summaries
+    Depth 4: Full analysis with evidence
+    """
+    
+    sections = extract_sections(document)
+    
+    result = {}
+    
+    # Depth 1: Executive summary
+    result['executive_summary'] = create_executive_summary(document)
+    
+    # Depth 2: Key points
+    result['key_points'] = [
+        extract_key_point(section) 
+        for section in sections
+    ]
+    
+    # Depth 3: Section details (if requested)
+    if depth >= 3:
+        result['section_details'] = {}
+        for section in sections:
+            result['section_details'][section['title']] = {
+                'summary': summarize_section(section),
+                'key_evidence': extract_evidence(section)[:3],
+                'supporting_points': extract_supporting_points(section)[:5]
+            }
+    
+    # Depth 4: Full analysis (if requested)
+    if depth >= 4:
+        result['full_analysis'] = {
+            'methodology': assess_methodology(document),
+            'strengths': identify_strengths(document),
+            'weaknesses': identify_weaknesses(document),
+            'implications': extract_implications(document),
+            'further_reading': suggest_related_work(document)
+        }
+    
+    return result
 ```
 
 ---
 
 ## Common Patterns
 
-### Pattern 1: Extractive Summarization with TF-IDF Ranking
+### Pattern 1: Research Paper Summary
 
 ```python
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
-def extractive_summary(text, num_sentences=5):
+def summarize_research_paper(paper):
     """
-    Extractive summarization: select the most important sentences 
-    from the source text based on TF-IDF relevance scoring.
+    Create a structured summary of a research paper.
+    Follows the standard academic structure.
     """
-    # Split into sentences
-    sentences = [s.strip() for s in text.replace('\n', ' ').split('.') if s.strip()]
     
-    if len(sentences) <= num_sentences:
-        return '. '.join(sentences) + '.'
-    
-    # Compute TF-IDF
-    vectorizer = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = vectorizer.fit_transform(sentences)
-    
-    # Compute document vector (centroid of all sentence vectors)
-    doc_vector = tfidf_matrix.mean(axis=0)
-    
-    # Score each sentence by similarity to document centroid
-    scores = cosine_similarity(tfidf_matrix, doc_vector).flatten()
-    
-    # Add position bonus (first and last sentences often important)
-    position_bonus = np.zeros(len(sentences))
-    position_bonus[0] = 0.3  # First sentence bonus
-    position_bonus[-1] = 0.2  # Last sentence bonus
-    for i in range(1, min(3, len(sentences))):
-        position_bonus[i] = 0.1  # Early sentences bonus
-    
-    final_scores = scores + position_bonus
-    
-    # Select top sentences
-    top_indices = np.argsort(final_scores)[-num_sentences:][::-1]
-    top_indices = sorted(top_indices)  # Maintain original order
-    
-    summary = '. '.join(sentences[i] for i in top_indices) + '.'
-    return summary
-
-# Usage
-text = """Your long document text here. This method selects the most 
-relevant sentences based on TF-IDF similarity to the document centroid."""
-summary = extractive_summary(text, num_sentences=5)
-```
-
-### Pattern 2: Meeting Summary with Action Extraction
-
-```python
-import re
-
-def extract_actions_from_text(text):
-    """
-    Extract action items from meeting notes or transcripts.
-    Uses pattern matching for common action item indicators.
-    """
-    action_patterns = [
-        r'(?:will|should|needs to|must|going to|plan to)\s+(.+?)(?:\.|$)',
-        r'(?:action item|todo|task)[:\s]+(.+?)(?:\.|$)',
-        r'(?:assigned to|owned by)\s+(.+?)(?:\.|$)',
-        r'(?:follow up on|follow-up on)\s+(.+?)(?:\.|$)',
-        r'(?:decided to)\s+(.+?)(?:\.|$)',
-    ]
-    
-    actions = []
-    for pattern in action_patterns:
-        matches = re.finditer(pattern, text, re.IGNORECASE)
-        for match in matches:
-            action_text = match.group(1).strip()
-            if len(action_text) > 10:  # Filter out too-short matches
-                actions.append({
-                    "action": action_text,
-                    "source_sentence": match.group(0),
-                    "confidence": "high" if "action item" in match.group(0).lower() else "medium"
-                })
-    
-    # Deduplicate similar actions
-    unique_actions = []
-    seen = set()
-    for action in actions:
-        key = action["action"].lower()[:50]
-        if key not in seen:
-            seen.add(key)
-            unique_actions.append(action)
-    
-    return unique_actions
-
-def format_meeting_summary(transcript, decisions=None, actions=None):
-    """Format a structured meeting summary."""
-    summary = []
-    
-    summary.append("## Meeting Summary\n")
-    
-    if decisions:
-        summary.append("### Decisions Made\n")
-        for i, d in enumerate(decisions, 1):
-            summary.append(f"{i}. **{d.get('topic', 'Decision')}**: {d.get('decision', d)}")
-            if d.get('made_by'):
-                summary.append(f"   - Made by: {d['made_by']}")
-        summary.append("")
-    
-    if actions:
-        summary.append("### Action Items\n")
-        summary.append("| # | Action | Owner | Due | Priority |")
-        summary.append("|---|--------|-------|-----|----------|")
-        for i, a in enumerate(actions, 1):
-            summary.append(f"| {i} | {a['action']} | {a.get('owner', 'TBD')} | {a.get('due', 'TBD')} | {a.get('priority', 'P2')} |")
-        summary.append("")
-    
-    return "\n".join(summary)
-```
-
-### Pattern 3: PR Summary Generator
-
-```python
-def generate_pr_summary(pr_data):
-    """
-    Generate a structured PR summary from GitHub PR data.
-    
-    pr_data should contain:
-    - title, description, author
-    - files_changed (list of {filename, additions, deletions, status})
-    - commits (list of {message, author})
-    - reviewers, labels
-    """
-    files = pr_data.get("files_changed", [])
-    commits = pr_data.get("commits", [])
-    
-    # Categorize changes
-    categories = {
-        "features": [],
-        "bugfixes": [],
-        "refactoring": [],
-        "tests": [],
-        "docs": [],
-        "config": [],
-        "dependencies": [],
+    summary = {
+        'citation': format_citation(paper),
+        'one_line': '',
+        'problem': '',
+        'approach': '',
+        'key_findings': [],
+        'limitations': [],
+        'significance': '',
+        'relevance_to_practice': ''
     }
     
-    for f in files:
-        path = f["filename"].lower()
-        if "test" in path:
-            categories["tests"].append(f)
-        elif "readme" in path or "doc" in path or "changelog" in path:
-            categories["docs"].append(f)
-        elif "package.json" in path or "requirements" in path or "go.mod" in path:
-            categories["dependencies"].append(f)
-        elif any(x in path for x in ["config", "env", "dockerfile", "yaml"]):
-            categories["config"].append(f)
-        elif f.get("status") == "added":
-            categories["features"].append(f)
-        elif f.get("status") == "removed":
-            categories["refactoring"].append(f)
-        else:
-            categories["features"].append(f)  # Default to feature
+    # Extract from structured sections
+    if 'abstract' in paper:
+        summary['one_line'] = extract_main_claim(paper['abstract'])
     
-    # Calculate stats
-    total_additions = sum(f.get("additions", 0) for f in files)
-    total_deletions = sum(f.get("deletions", 0) for f in files)
-    total_files = len(files)
+    if 'introduction' in paper:
+        summary['problem'] = extract_problem_statement(paper['introduction'])
     
-    # Risk assessment
-    risk_factors = []
-    if total_files > 20:
-        risk_factors.append(f"Large PR ({total_files} files changed)")
-    if total_additions + total_deletions > 1000:
-        risk_factors.append(f"Large diff ({total_additions + total_deletions} lines)")
-    if any("migration" in f["filename"].lower() for f in files):
-        risk_factors.append("Contains database migration")
-    if any("config" in f["filename"].lower() for f in files):
-        risk_factors.append("Configuration changes")
+    if 'methods' in paper:
+        summary['approach'] = extract_methodology(paper['methods'])
     
-    risk_level = "High" if len(risk_factors) > 2 else "Medium" if len(risk_factors) > 0 else "Low"
+    if 'results' in paper:
+        summary['key_findings'] = extract_findings(paper['results'])
     
-    # Build summary
-    summary = f"""## PR Summary
+    if 'discussion' in paper:
+        summary['limitations'] = extract_limitations(paper['discussion'])
+        summary['significance'] = extract_significance(paper['discussion'])
+    
+    # Generate formatted summary
+    formatted = f"""## {summary['citation']}
 
-### Overview
-**{pr_data.get('title', 'Untitled PR')}**
-Author: {pr_data.get('author', 'Unknown')}
-{pr_data.get('description', 'No description provided.')}
+**One-line summary:** {summary['one_line']}
 
-### Changes at a Glance
-| Metric | Value |
-|--------|-------|
-| Files Changed | {total_files} |
-| Lines Added | +{total_additions} |
-| Lines Deleted | -{total_deletions} |
-| Net Change | {'+' if total_additions > total_deletions else ''}{total_additions - total_deletions} |
+**Problem:** {summary['problem']}
 
-### Change Categories
+**Approach:** {summary['approach']}
+
+**Key Findings:**
+{chr(10).join(f'- {f}' for f in summary['key_findings'][:5])}
+
+**Limitations:**
+{chr(10).join(f'- {l}' for l in summary['limitations'][:3])}
+
+**Significance:** {summary['significance']}
 """
     
-    for category, cat_files in categories.items():
-        if cat_files:
-            summary += f"\n**{category.title()}** ({len(cat_files)} files):\n"
-            for f in cat_files[:5]:  # Show top 5 per category
-                summary += f"- `{f['filename']}` (+{f.get('additions', 0)}/-{f.get('deletions', 0)})\n"
-            if len(cat_files) > 5:
-                summary += f"- ... and {len(cat_files) - 5} more\n"
-    
-    summary += f"""
-### Risk Assessment
-**Risk Level:** {risk_level}
-"""
-    for factor in risk_factors:
-        summary += f"- ⚠️ {factor}\n"
-    
-    if not risk_factors:
-        summary += "- ✅ No significant risk factors detected\n"
-    
-    summary += f"""
-### Testing Checklist
-- [ ] Unit tests added/updated ({len(categories['tests'])} test files changed)
-- [ ] Integration tests pass
-- [ ] Manual testing completed
-- [ ] Edge cases covered
-- [ ] Performance impact assessed
-
-### Reviewer Focus Areas
-"""
-    if risk_factors:
-        for factor in risk_factors:
-            summary += f"- Review {factor.lower()}\n"
-    else:
-        summary += "- Standard review sufficient\n"
-    
-    return summary
+    return formatted
 ```
 
-### Pattern 4: Research Paper Summary
+### Pattern 2: Meeting Notes Summary
 
 ```python
-def summarize_research_paper(paper_text, llm=None):
+def summarize_meeting(transcript, attendees=None):
     """
-    Create a structured summary of a research paper following
-    the standard academic structure.
-    """
-    
-    prompt = f"""Summarize this research paper with the following structured format:
-
-## Paper Metadata
-- **Title:** {{extract from text}}
-- **Authors:** {{extract if available}}
-- **Year:** {{extract if available}}
-- **Venue:** {{extract if available}}
-
-## TL;DR
-{{
-One sentence that captures the core contribution and finding.
-}}
-
-## Problem Statement
-{{
-What problem does this paper address? Why is it important?
-2-3 sentences.
-}}
-
-## Key Contribution
-{{
-What is the novel contribution? What does this paper add to the field?
-1-2 sentences.
-}}
-
-## Method
-{{
-How did they approach the problem? What technique/framework did they use?
-3-5 sentences covering the key methodological choices.
-}}
-
-## Key Results
-| Metric/Claim | Result | Comparison to Baseline |
-|--------------|--------|----------------------|
-| {{metric}} | {{value}} | {{vs baseline}} |
-
-## Limitations
-- {{limitation 1 stated or inferred by authors}}
-- {{limitation 2}}
-- {{limitation 3}}
-
-## Relevance
-- **For practitioners:** {{why this matters for building things}}
-- **For researchers:** {{what research directions this opens}}
-- **Caveats:** {{what to be careful about when applying this}}
-
-## Key Takeaways
-1. {{takeaway 1}}
-2. {{takeaway 2}}
-3. {{takeaway 3}}
-
-## Related Work
-{{2-3 sentences on how this relates to other work in the area}}
-
-Paper text:
-{paper_text}"""
-    
-    return prompt
-```
-
-### Pattern 5: Executive Summary Generator
-
-```python
-def executive_summary(technical_report, audience="executive", llm=None):
-    """
-    Generate an executive summary that translates technical content
-    into business-relevant language.
+    Create structured meeting notes from a transcript or notes.
     """
     
-    audience_configs = {
-        "executive": {
-            "focus": "business impact, ROI, strategic implications",
-            "avoid": "technical jargon, implementation details, code",
-            "format": "bullet points with clear recommendations"
+    # Extract components
+    discussions = extract_discussions(transcript)
+    decisions = extract_decisions(transcript)
+    action_items = extract_action_items(transcript)
+    
+    summary = {
+        'meeting_info': {
+            'attendees': attendees or extract_attendees(transcript),
+            'duration': extract_duration(transcript),
+            'date': extract_date(transcript)
         },
-        "board": {
-            "focus": "strategic alignment, competitive advantage, risk",
-            "avoid": "any technical details, metrics without context",
-            "format": "3-5 key messages with supporting evidence"
-        },
-        "engineering_lead": {
-            "focus": "technical approach, trade-offs, team impact",
-            "avoid": "overly simplified language, business metrics only",
-            "format": "structured technical summary with recommendations"
+        'agenda_items': [],
+        'decisions': [],
+        'action_items': [],
+        'parking_lot': [],  # Topics deferred
+        'next_meeting': extract_next_meeting(transcript)
+    }
+    
+    # Process discussions
+    for discussion in discussions:
+        item = {
+            'topic': discussion['topic'],
+            'discussion_summary': discussion['summary'],
+            'outcome': discussion.get('outcome', 'No resolution'),
+            'time_spent': discussion.get('duration', 'Unknown')
         }
-    }
+        summary['agenda_items'].append(item)
     
-    config = audience_configs.get(audience, audience_configs["executive"])
+    # Format action items
+    for action in action_items:
+        summary['action_items'].append({
+            'action': action['description'],
+            'owner': action.get('owner', 'TBD'),
+            'deadline': action.get('deadline', 'TBD'),
+            'status': 'New'
+        })
     
-    prompt = f"""Create an executive summary of this technical report for a {audience} audience.
+    return summary
 
-Audience focus: {config['focus']}
-Avoid: {config['avoid']}
-Format: {config['format']}
-
-## Executive Summary
-
-### Key Message
-{{One sentence that captures the most important finding or recommendation}}
-
-### Background
-{{2-3 sentences: why this matters, what was investigated}}
-
-### Key Findings
-{{Bullet list of 3-5 most important findings, translated for {audience}}}
-
-### Business Impact
-{{What do these findings mean for the business? Quantify if possible.}}
-
-### Recommendations
-{{Ordered list of recommended actions with expected outcomes}}
-
-### Risks & Considerations
-{{What could go wrong? What are the trade-offs?}}
-
-### Next Steps
-{{Concrete next actions with owners and timelines}}
-
-Technical report:
-{technical_report}"""
+def format_meeting_summary(summary):
+    """Format meeting summary as markdown."""
     
-    return prompt
+    output = f"""# Meeting Summary
+
+**Date:** {summary['meeting_info']['date']}
+**Duration:** {summary['meeting_info']['duration']}
+**Attendees:** {', '.join(summary['meeting_info']['attendees'])}
+
+## Agenda
+
+{chr(10).join(f"### {item['topic']}" + chr(10) + item['discussion_summary'] + chr(10) + f"**Outcome:** {item['outcome']}" for item in summary['agenda_items'])}
+
+## Decisions
+
+{chr(10).join(f"- **{d['decision']}**" for d in summary['decisions'])}
+
+## Action Items
+
+| Action | Owner | Deadline | Status |
+|--------|-------|----------|--------|
+{chr(10).join(f"| {a['action']} | {a['owner']} | {a['deadline']} | {a['status']} |" for a in summary['action_items'])}
+
+## Next Meeting
+{summary['next_meeting'] or 'TBD'}
+"""
+    
+    return output
+```
+
+### Pattern 3: Article/News Summary
+
+```python
+def summarize_article(article, style='inverted_pyramid'):
+    """
+    Summarize a news article or blog post.
+    
+    Styles:
+    - inverted_pyramid: Most important info first (news style)
+    - chronological: Events in order
+    - thematic: Organized by theme
+    """
+    
+    # Extract key elements
+    who = extract_entities(article, ['person', 'organization'])
+    what = extract_main_event(article)
+    when = extract_date(article)
+    where = extract_location(article)
+    why = extract_reason(article)
+    impact = extract_impact(article)
+    
+    if style == 'inverted_pyramid':
+        summary = f"""**What happened:** {what}
+
+**Who's involved:** {', '.join(who[:3])}
+
+**When:** {when}
+
+**Why it matters:** {impact}
+
+**Key details:** {why}"""
+    
+    elif style == 'chronological':
+        events = extract_events(article)
+        summary = f"""**Timeline of events:**
+
+{chr(10).join(f"- **{e['time']}:** {e['description']}" for e in events)}
+
+**Current status:** {extract_current_status(article)}"""
+    
+    return summary
+```
+
+### Pattern 4: Technical Document Summary
+
+```python
+def summarize_technical_doc(document, audience='developer'):
+    """
+    Summarize technical documentation for a specific audience.
+    """
+    
+    # Extract technical content
+    api_endpoints = extract_api_endpoints(document)
+    key_concepts = extract_concepts(document)
+    code_examples = extract_code_examples(document)
+    common_tasks = extract_common_tasks(document)
+    
+    if audience == 'developer':
+        summary = f"""## Quick Start
+
+**What it does:** {extract_one_liner(document)}
+
+**Key concepts:**
+{chr(10).join(f"- **{c['name']}:** {c['description']}" for c in key_concepts[:5])}
+
+**Common tasks:**
+{chr(10).join(f"- {t}" for t in common_tasks[:5])}
+
+**Main API endpoints:**
+{chr(10).join(f"- `{e['method']} {e['path']}` — {e['description']}" for e in api_endpoints[:5])}
+
+**Getting started:**
+```bash
+{extract_quickstart_command(document)}
+```
+"""
+    
+    elif audience == 'manager':
+        summary = f"""## Overview
+
+**Purpose:** {extract_business_purpose(document)}
+
+**Key capabilities:**
+{chr(10).join(f"- {c}" for c in extract_capabilities(document)[:5])}
+
+**Integration requirements:**
+{chr(10).join(f"- {r}" for r in extract_requirements(document)[:3])}
+
+**Estimated implementation time:** {extract_effort_estimate(document)}
+"""
+    
+    return summary
+```
+
+### Pattern 5: Book/Chapter Summary
+
+```python
+def summarize_book_chapter(chapter, chapter_number=None):
+    """
+    Create a structured summary of a book chapter.
+    """
+    
+    # Extract chapter elements
+    thesis = extract_chapter_thesis(chapter)
+    key_arguments = extract_arguments(chapter)
+    examples = extract_examples(chapter)
+    conclusions = extract_chapter_conclusions(chapter)
+    
+    summary = f"""## Chapter {chapter_number or '?'} Summary
+
+### Core Thesis
+{thesis}
+
+### Key Arguments
+{chr(10).join(f"{i+1}. **{arg['claim']}** — {arg['evidence']}" for i, arg in enumerate(key_arguments[:5]))}
+
+### Illustrative Examples
+{chr(10).join(f"- {ex}" for ex in examples[:3])}
+
+### Chapter Conclusions
+{chr(10).join(f"- {c}" for c in conclusions[:3])}
+
+### Key Takeaways
+{chr(10).join(f"- {t}" for t in extract_takeaways(chapter)[:5])}
+
+### Connections
+- **Builds on:** {extract_prerequisites(chapter)}
+- **Leads to:** {extract_follow_up_topics(chapter)}
+"""
+    
+    return summary
 ```
 
 ---
 
 ## Edge Cases & Pitfalls
 
-### 1. Faithfulness Violations (Hallucination in Summaries)
-**Problem:** The summary includes information not present in the source material. This is the most dangerous summarization failure.
-**Solution:** Always verify summaries against the source. Use extractive methods when faithfulness is critical. Flag any inferred content.
+### 1. Losing Nuance in Compression
+**Problem:** Aggressive summarization removes important caveats, qualifications, and context, making the summary misleading.
+**Solution:** Always preserve: limitations, conditional statements ("under certain conditions"), and minority viewpoints. Use phrases like "the authors note that..." or "while some evidence suggests..."
 
-### 2. Loss of Nuance in Compression
-**Problem:** Aggressive summarization loses important caveats, conditions, or "except when..." clauses that change the meaning.
-**Solution:** Preserve conditional statements and caveats. When compressing, use "with caveats" markers rather than stripping nuance.
+### 2. Bias Amplification Through Selection
+**Problem:** Selectively summarizing only certain points creates a biased representation of the source. This is especially dangerous for controversial topics.
+**Solution:** Track which perspectives are represented. Include opposing viewpoints. Note when the source itself is one-sided.
 
-### 3. Bias Amplification
-**Problem:** The summary disproportionately represents certain viewpoints or topics from the source, amplifying existing biases.
-**Solution:** Track topic coverage across the source. Ensure all major sections/perspectives are represented proportionally.
+### 3. Summarizing Without Understanding
+**Problem:** Extractive summarization picks statistically important sentences that may lack context or be misleading when read in isolation.
+**Solution:** Read and understand the full document before summarizing. Use context-dependent extraction, not just keyword frequency.
 
-### 4. Inappropriate Confidence Level
-**Problem:** The summary presents uncertain inferences with the same confidence as directly stated facts.
-**Solution:** Use confidence-flagged summaries. Distinguish between "the paper says X" and "this implies Y."
+### 4. Misrepresenting Confidence Levels
+**Problem:** Presenting tentative findings or hypotheses as established facts in the summary.
+**Solution:** Use qualifying language: "suggests," "indicates," "preliminary evidence shows." Mirror the source's confidence level.
 
-### 5. Audience Mismatch
-**Problem:** A technical summary given to executives (too much detail) or an executive summary given to engineers (too vague).
-**Solution:** Always calibrate the summary for the intended audience. When in doubt, create multiple versions.
+### 5. Losing the Narrative Arc
+**Problem:** Summarizing a story or argument by picking random points destroys the logical flow and progression.
+**Solution:** Preserve the source's narrative structure. Summarize the argument chain: premise → evidence → conclusion.
 
-### 6. Missing Key Numbers
-**Problem:** The summary omits critical quantitative data (dates, amounts, percentages, error rates) that are essential for decision-making.
-**Solution:** Always preserve key metrics and numbers in summaries. Create a "key numbers" section.
+### 6. Ignoring the Audience
+**Problem:** Creating a one-size-fits-all summary that's too detailed for executives and too shallow for practitioners.
+**Solution:** Create audience-specific summaries. An executive summary, a technical summary, and a detailed summary serve different readers.
 
-### 7. Chronological Distortion in Meeting Summaries
-**Problem:** Summarizing meetings by extracting sentences out of chronological context, losing the flow of discussion and decision evolution.
-**Solution:** Maintain chronological order for discussion summaries. Use the "Decision → Rationale → Action" pattern.
+### 7. Over-summarizing (Summary Longer Than Useful)
+**Problem:** The summary is 80% the length of the original, defeating its purpose.
+**Solution:** Set clear length targets before summarizing. A good summary is typically 10-30% of the original length, depending on content density.
 
-### 8. Summarizing Too Short a Source
-**Problem:** Applying summarization to content that's already concise (<500 words) produces a "summary" that's barely shorter and loses detail.
-**Solution:** Set a minimum source length threshold. For short content, return the key points without compression.
+### 8. Failing to Cite Sources in Multi-Source Summaries
+**Problem:** When combining multiple sources, losing track of which claim came from which source.
+**Solution:** Maintain source attribution throughout. Use inline citations or footnotes. Create a source index.
 
-### 9. Inconsistent Summaries Across Runs
-**Problem:** Running the same summarization twice produces different summaries, making the process unreliable.
-**Solution:** Use temperature=0 for deterministic summaries. For extractive methods, use fixed scoring algorithms.
+### 9. Copy-Pasting the Abstract
+**Problem:** Using the paper's abstract as the summary is lazy and often inadequate — abstracts are written for experts, not general readers.
+**Solution:** Write the summary in your own words, tailored to your audience. The abstract is input, not output.
 
-### 10. Ignoring Code Context in PR Summaries
-**Problem:** Summarizing code changes without understanding what the code does — just counting lines changed.
-**Solution:** Parse the code structure (functions, classes, imports) to understand what changed, not just how much changed.
+### 10. Summarizing Code by Line Count
+**Problem:** Describing code changes by "X lines added, Y lines removed" without explaining what actually changed.
+**Solution:** Summarize code by: what functionality changed, why it changed, what the impact is, and what testing is needed.
 
-### 11. Log Summaries Missing Temporal Patterns
-**Problem:** Summarizing logs as a flat list of errors, missing time-based patterns (error spikes after deployments).
-**Solution:** Always include temporal analysis in log summaries. Group errors by time window and correlate with events.
+### 11. Missing the Forest for the Trees
+**Problem:** Summarizing every section equally without identifying the most important points.
+**Solution:** Not all content is equally important. Identify and emphasize the 20% of content that carries 80% of the meaning.
 
-### 12. Over-summarizing Action Items
-**Problem:** Compressing action items so much that owners, deadlines, or specific tasks are lost.
-**Solution:** Never compress action items below the level of "who does what by when." Action items need full detail.
+### 12. Ignoring Contradictions in Source
+**Problem:** The source contains contradictory statements, and the summary presents only one side.
+**Solution:** Note contradictions explicitly: "The report both states X and Y, which appear to conflict."
 
-### 13. Missing Cross-references
-**Problem:** The summary doesn't link back to specific sections, pages, or timestamps in the source, making verification difficult.
-**Solution:** Include page numbers, section references, or timestamps for key summary points.
+### 13. Not Adapting to Format
+**Problem:** Using the same summary format for a research paper, a meeting, and a news article.
+**Solution:** Match the summary format to the content type. Research papers need methodology. Meetings need action items. News needs the 5 Ws.
 
-### 14. Tone Mismatch
-**Problem:** The summary's tone doesn't match the source — a casual Slack summary sounds formal, or a serious incident report sounds flippant.
-**Solution:** Detect and preserve the source's tone. Adjust the summary's formality to match.
+### 14. Summarizing Before Reading
+**Problem:** Attempting to summarize before fully reading and understanding the source, leading to superficial or incorrect summaries.
+**Solution:** Always read the full document first. Identify the structure and key themes before attempting to extract or generate the summary.
 
-### 15. Not Handling Multi-source Input
-**Problem:** Failing to properly merge summaries when the input comes from multiple sources (e.g., multiple meeting attendees' notes).
-**Solution:** For multi-source input, identify overlapping and unique information. Merge with deduplication and conflict resolution.
+### 15. Losing Quantitative Data
+**Problem:** The summary omits key numbers, statistics, or data points that are essential for understanding the findings.
+**Solution:** Always include: sample sizes, key statistics, effect sizes, dates, and any numbers that the reader needs for decision-making.
 
 ---
 
@@ -1113,12 +931,12 @@ Technical report:
 
 | Skill | Integration Type | Description |
 |---|---|---|
-| **RAG Implementation** | Downstream | Summarize retrieved chunks before injection into context to manage token limits |
-| **Data Analysis** | Output | Summarize statistical findings and analysis results for stakeholders |
-| **Technical Writing** | Complementary | Summaries are a form of technical writing; use the same clarity principles |
-| **Data Cleaning** | Upstream | Clean data produces better summaries; remove noise before summarizing |
-| **Code Understanding** | Enhancement | Code-aware summarization requires understanding code structure and patterns |
-| **Knowledge Management** | Core Component | Summaries create the navigable layer of a knowledge base |
+| **RAG Implementation** | Core Application | Summarization is essential for RAG — summarize retrieved chunks to fit context windows |
+| **Data Analysis** | Output Format | Summarize statistical findings and analysis results for stakeholders |
+| **Technical Writing** | Companion | Technical documentation often includes summaries of longer content |
+| **Data Cleaning** | Prerequisite | Clean data produces better summaries; remove noise before summarizing |
+| **Code Understanding** | Enhancement | Code summarization requires understanding code structure and patterns |
+| **Knowledge Management** | Core Component | Summaries are the navigable layer of a knowledge base |
 | **Natural Language Processing** | Foundation | Text processing, tokenization, and NLP techniques underpin summarization |
 | **Monitoring & Observability** | Application | Log summarization and incident summarization are key monitoring outputs |
 
@@ -1126,116 +944,142 @@ Technical report:
 
 ## Output Format Templates
 
-### Standard Document Summary
+### Standard Summary
 
 ```markdown
 ## Summary: {Document Title}
 
 ### TL;DR
-{One sentence capturing the single most important point}
+{One sentence capturing the most important point}
 
 ### Key Points
-- **{Point 1}:** {description}
-- **{Point 2}:** {description}
-- **{Point 3}:** {description}
+- {Point 1}
+- {Point 2}
+- {Point 3}
 
-### Decisions & Conclusions
-1. {decision_1}
-2. {decision_2}
+### Important Details
+{Supporting information for key points}
 
-### Key Numbers
+### Conclusions
+{Main conclusions or recommendations}
+
+### Source
+{Document title, author, date, length}
+```
+
+### Executive Brief
+
+```markdown
+# Executive Brief: {Topic}
+
+## Bottom Line
+{1-2 sentences: What should the reader know/do?}
+
+## Key Findings
+1. **{Finding 1}:** {significance}
+2. **{Finding 2}:** {significance}
+3. **{Finding 3}:** {significance}
+
+## Recommendations
+1. {Action 1} — {expected outcome}
+2. {Action 2} — {expected outcome}
+
+## Risk Assessment
+- **High priority:** {risk}
+- **Medium priority:** {risk}
+
+## Supporting Data
 | Metric | Value | Context |
 |--------|-------|---------|
-| {metric} | {value} | {what it means} |
-
-### Recommendations
-1. {recommendation_1}
-2. {recommendation_2}
-
-### Source Reference
-- Original: {source_name}, {total_pages} pages
-- Summary compression: {original_words} → {summary_words} words ({ratio}%)
+| {metric} | {value} | {significance} |
 ```
 
-### Quick Summary
+### Detailed Summary
 
 ```markdown
-## {Topic}: Quick Summary
+# Detailed Summary: {Document Title}
 
-**What:** {one sentence}
-**Why it matters:** {one sentence}
-**Key numbers:** {key metrics}
-**Action needed:** {yes/no + what}
-**Confidence:** {high/medium/low}
+## Overview
+{2-3 sentences covering the document's scope, purpose, and main contribution}
+
+## Structure
+{Brief description of how the document is organized}
+
+## Section Summaries
+
+### {Section 1 Title}
+**Main point:** {one sentence}
+**Key evidence:** {supporting details}
+**Significance:** {why this matters}
+
+### {Section 2 Title}
+**Main point:** {one sentence}
+**Key evidence:** {supporting details}
+**Significance:** {why this matters}
+
+## Key Data Points
+- {Data point 1 with context}
+- {Data point 2 with context}
+- {Data point 3 with context}
+
+## Strengths and Limitations
+**Strengths:** {what the source does well}
+**Limitations:** {what the source lacks or gets wrong}
+
+## Relevance
+{How this content relates to the reader's work or interests}
 ```
 
-### Deep Summary (Multi-section)
+### Quick Summary (5-Line Digest)
 
 ```markdown
-## Comprehensive Summary: {Document Title}
+⚡ Quick Summary: {Document Title}
 
-### Overview
-{2-3 paragraph overview covering context, main content, and conclusions}
+1. **TL;DR:** {single sentence capturing the entire document}
+2. **Key finding:** {the one result or argument that matters most}
+3. **Evidence:** {strongest supporting data point, cited}
+4. **Caveat:** {biggest limitation or unverified claim}
+5. **Action:** {what the reader should do next, if anything}
 
-### Section-by-Section Summary
-
-#### {Section 1 Title}
-**Key insight:** {one sentence}
-**Details:** {2-3 sentences}
-**Evidence:** {data/citations supporting the insight}
-
-#### {Section 2 Title}
-**Key insight:** {one sentence}
-**Details:** {2-3 sentences}
-**Evidence:** {data/citations}
-
-### Cross-cutting Themes
-- **Theme 1:** {how it appears across sections}
-- **Theme 2:** {how it appears across sections}
-
-### Actionable Takeaways
-| Priority | Takeaway | Owner | Deadline |
-|----------|----------|-------|----------|
-| P0 | {takeaway} | {owner} | {date} |
-
-### Confidence Assessment
-| Claim | Confidence | Evidence Level |
-|-------|-----------|----------------|
-| {claim} | {HIGH/MED/LOW} | {direct/inferred/speculative} |
+Confidence: {high/medium/low} | Source: {title, §section} | Date: {pub date}
 ```
+
+Use when the consumer has under 30 seconds: standups, triage queues, chat pings. Never exceed 5 lines — if more is needed, escalate to Standard.
 
 ### Agent-Friendly Structured Output
 
 ```json
 {
   "summary": {
-    "type": "{document|meeting|pr|log|paper}",
+    "source_type": "{article|paper|meeting|report|book}",
     "title": "{title}",
-    "source_length": 5000,
-    "summary_length": 250,
-    "compression_ratio": 0.05,
+    "author": "{author}",
+    "date": "{date}",
+    "original_length": "{word_count} words",
+    "summary_length": "{word_count} words",
+    "compression_ratio": 0.15,
     "tldr": "{one sentence}",
     "key_points": [
-      {"point": "...", "importance": "high", "confidence": "high"},
-      {"point": "...", "importance": "medium", "confidence": "medium"}
+      "{point 1}",
+      "{point 2}",
+      "{point 3}"
     ],
-    "decisions": [
-      {"decision": "...", "made_by": "...", "rationale": "..."}
-    ],
-    "action_items": [
-      {"action": "...", "owner": "...", "due": "...", "priority": "P1"}
-    ],
-    "numbers": [
-      {"metric": "...", "value": "...", "context": "..."}
-    ],
-    "sentiment": {
-      "overall": "positive",
-      "score": 0.7,
-      "confidence": "high"
+    "entities": {
+      "people": ["{name}"],
+      "organizations": ["{org}"],
+      "dates": ["{date}"],
+      "locations": ["{location}"]
     },
-    "confidence_score": 0.85,
-    "topics_covered": ["topic1", "topic2", "topic3"],
-    "missing_topics": ["topic4"]
+    "statistics": [
+      {"metric": "{name}", "value": "{value}", "context": "{significance}"}
+    ],
+    "conclusions": ["{conclusion 1}"],
+    "confidence_notes": [
+      {"claim": "{claim}", "confidence": "{direct|inferred|interpreted}"}
+    ],
+    "sentiment": "{positive|negative|neutral|mixed}",
+    "reading_time_original": "{minutes} min",
+    "reading_time_summary": "{minutes} min"
   }
 }
 ```
@@ -1244,18 +1088,18 @@ Technical report:
 
 ## Rules
 
-1. **Faithfulness is non-negotiable** — Never include information in a summary that isn't in the source. Mark inferences explicitly. A wrong summary is worse than no summary.
-2. **Lead with what matters** — For action-oriented content (meetings, PRs, incidents), put decisions and action items first. For informational content, lead with the key finding.
-3. **Preserve key numbers** — Dates, amounts, percentages, error rates, and metrics must survive summarization. They're often the most decision-relevant information.
-4. **Maintain source structure** — Respect the source's logical organization. Don't reorder sections unless the summary format explicitly requires it.
-5. **Calibrate for audience** — An executive summary is different from a technical summary. Know who's reading and adjust depth, vocabulary, and focus.
-6. **Flag uncertainty** — Use confidence markers to distinguish between directly stated facts and inferences. Readers should know what's certain vs. extrapolated.
-7. **Include source references** — Link summary points back to specific sections, pages, or timestamps so readers can verify and explore further.
-8. **Never compress below utility** — An action item without an owner is useless. A finding without context is meaningless. Don't sacrifice utility for brevity.
-9. **Validate completeness** — Check that all major topics in the source are covered in the summary. Missing a critical topic is worse than a slightly longer summary.
-10. **Handle multi-source input gracefully** — When summarizing from multiple sources, deduplicate overlapping information and resolve conflicts explicitly.
-11. **Preserve temporal order for meeting summaries** — The flow of discussion matters. Don't reorder discussion points unless the format explicitly requires it.
-12. **Track sentiment for subjective content** — For reviews, feedback, and opinions, include sentiment analysis alongside content summary.
-13. **Use consistent format** — Within a series of summaries (e.g., weekly meeting summaries), use the same format so readers can scan efficiently.
-14. **Keep summaries scannable** — Use bullet points, tables, and headers. Nobody reads a summary as a wall of text.
-15. **Review summaries against source** — Before finalizing, spot-check that key claims in the summary accurately represent the source. One misrepresentation destroys trust.
+1. **Read the entire source before summarizing** — Never attempt to summarize from skimming. Understand the full content, then distill it. Partial understanding produces partial (and misleading) summaries.
+2. **Lead with the most important information** — For most content, put the conclusion or main finding first. Readers should be able to stop after the first sentence and still understand the key message.
+3. **Preserve the source's confidence level** — If the source hedges ("suggests," "may," "preliminary"), your summary should hedge too. Don't convert tentative findings into definitive statements.
+4. **Include quantitative data** — Key numbers, statistics, dates, and measurements should survive summarization. They're often the most decision-relevant information.
+5. **Maintain source attribution** — When summarizing multiple sources, always track which claim came from which source. Lose this and you lose credibility.
+6. **Match the summary to the audience** — An executive summary, a technical summary, and a general summary serve different readers. Know who will read it.
+7. **Keep summaries proportional** — A 10,000-word document shouldn't have a 5,000-word summary. Typical compression ratios: 10-20% for dense technical content, 5-10% for narrative content.
+8. **Don't add information** — A summary should only contain information from the source. Never introduce external knowledge, opinions, or interpretations without flagging them.
+9. **Preserve structure when helpful** — For structured content (reports, papers), mirror the structure in the summary. For narrative content, follow the logical flow.
+10. **Flag contradictions** — If the source contains contradictory statements, note them in the summary. Don't smooth over disagreements.
+11. **Test comprehension** — After writing a summary, ask: Could someone make a decision based on this summary alone? If not, it's missing critical information.
+12. **Use the source's terminology** — For technical summaries, use the same terms as the source. Don't substitute synonyms that might change the meaning.
+13. **Summarize action items separately** — For meeting notes and reports, extract action items into their own section with owners and deadlines. Don't bury them in narrative.
+14. **Version your summaries** — When summarizing evolving documents, include the version or date. A summary of version 1.0 is misleading if the document is now at version 3.0.
+15. **Review against the source** — After writing, verify: Are all key points represented? Is nothing misrepresented? Are the proportions of emphasis correct? One inaccurate summary can do more harm than no summary.

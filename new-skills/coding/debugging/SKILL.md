@@ -273,6 +273,27 @@ function process(value: string | number) {
 }
 ```
 
+### 7. Time-Travel / Reverse Debugging
+
+Step backwards through execution to see the state BEFORE the crash, not just after. Modern debuggers and record-replay tools make "what happened before the exception?" answerable instead of guessable.
+
+```python
+# Python: record-replay debugging with PyTrace / rr (C/C++/Rust)
+# rr records a failing run once, then replay it N times deterministically:
+#   $ rr record ./repro.sh
+#   $ rr replay
+#   (rr) reverse-next     # step BACK one statement
+#   (rr) reverse-watch var # run backward until `var` changes
+
+# Node.js: capture full state at throw time with source-map support
+process.on('uncaughtException', (err) => {
+  console.error('Stack:', err.stack);          // where it broke
+  console.error('Cause:', err.cause?.stack);   // what led here (error chaining)
+});
+```
+
+**When to reach for it:** flaky tests that pass in isolation, memory corruption, race-dependent failures — anywhere a normal breakpoint arrives too late.
+
 ## Language-Specific Debugging Patterns
 
 ### Python Debugging

@@ -1,801 +1,1061 @@
 ---
 name: technical-writing
 description: >-
-  Write clear, effective technical content: tutorials, explainers, deep dives, 
-  comparison posts, post-mortems, and workshop materials.
-  English: technical writing, technical documentation, tutorial writing, explainer articles,
-    deep dives, comparison posts, post-mortems, workshop materials, code narrative,
-    progressive disclosure, audience analysis, Feynman technique, developer documentation,
-    API documentation, architecture decision records, knowledge base articles.
-  فارسی: نگارش فنی، مستندسازی فنی، نوشتن آموزش‌ها، مقالات توضیحی، مقالات عمیق،
-    مقالات مقایسه‌ای، گزارش‌های پس‌مرگ، مواد کارگاهی، روایت کد، تکنیک فاینمن.
-  中文: 技术写作，技术文档，教程编写，解释性文章，深度文章，比较文章，事后分析，
-    工作坊材料，代码叙事，渐进式披露，受众分析，费曼技巧，开发者文档。
+  Create clear, effective technical documentation and content.
+  English: technical writing, documentation, tutorials, API docs, README, user guides,
+    knowledge base, style guides, editorial, content strategy, plain language, UX writing,
+    release notes, changelogs, whitepapers, case studies, how-to guides, troubleshooting guides.
+  فارسی: نگارش فنی، مستندسازی، آموزش‌ها، مستندات API، راهنمای کاربر، پایگاه دانش،
+    سبک‌نامه، استراتژی محتوا، زبان ساده، نوشتن تجربه کاربری، یادداشت‌های انتشار.
+  中文: 技术写作，文档编写，教程，API文档，README，用户指南，知识库，风格指南，
+    内容策略，纯语言，用户体验写作，发布说明，白皮书，案例研究。
 ---
 
-# Technical Writing and Content Creation
+# Technical Writing and Documentation
 
 ## Overview
 
-Technical writing is the practice of communicating complex information clearly, accurately, and efficiently to a specific audience. Unlike creative writing, technical writing prioritizes utility over beauty — the reader should be able to accomplish something after reading. The best technical writing is invisible: readers absorb the information without noticing the prose.
+Technical writing transforms complex information into clear, actionable content that enables readers to understand concepts, follow procedures, or make decisions. Unlike creative writing, technical writing prioritizes clarity, accuracy, and usability over style or entertainment value. Every sentence should serve a purpose: to inform, instruct, or guide.
 
-The core challenge of technical writing is managing complexity. Every technical topic exists on a spectrum from "total beginner" to "domain expert," and the writer must decide where on that spectrum to target. Writing for too advanced an audience alienates newcomers; writing for too basic an audience bores experts. The Feynman technique — explain the concept as if teaching it to someone with no background — is the writer's most powerful tool for finding this balance.
+This skill covers the full spectrum of technical documentation: tutorials that teach, how-to guides that solve specific problems, reference documentation that answers detailed questions, and conceptual explanations that build understanding. Each type serves a different reader need and requires a different structure, tone, and approach.
 
-This skill covers the complete technical writing lifecycle: audience analysis, content type selection, structural planning, drafting with code integration, revision for clarity, and publication. It includes templates for every major content type and techniques for making complex topics accessible.
+The core principles of effective technical writing are: know your audience, structure for scanning, write for action, test with real users, and maintain relentlessly. A document that isn't maintained becomes worse than no document — it provides outdated information with false confidence.
 
 ## When to Use This Skill
 
-- Writing tutorials that teach readers to build something step-by-step
-- Creating explainer articles that make complex concepts understandable
-- Writing deep dives that explore advanced topics in detail
-- Building comparison posts that help readers choose between options
-- Documenting post-mortems after incidents or project completions
-- Developing workshop materials for hands-on learning sessions
-- Writing architecture decision records (ADRs) for technical decisions
-- Creating developer documentation for APIs, libraries, or frameworks
+- Writing tutorials, how-to guides, or getting-started documentation
+- Creating API documentation, SDKs, or developer guides
+- Writing README files, CONTRIBUTING guides, or CHANGELOGs
+- Producing internal knowledge bases, runbooks, or playbooks
+- Crafting user manuals, FAQ pages, or troubleshooting guides
+- Writing technical blog posts, whitepapers, or case studies
+- Creating release notes, deprecation notices, or migration guides
+- Developing style guides or editorial standards for a team
+- Reviewing and editing existing technical content for clarity
 
 ## When NOT to Use This Skill
 
-- Writing marketing copy or sales-focused content (use copywriting skills)
-- Creating UI/UX microcopy (use UX writing patterns)
-- Writing academic papers (follow academic conventions instead)
-- Composing internal status updates or meeting notes (use summarization skills)
-- Writing legal or compliance documents (requires specialized legal writing)
+- Marketing copy or promotional content (use copywriting skills)
+- Creative fiction or narrative storytelling (use creative writing skills)
+- Legal documents or contracts (use legal drafting skills)
+- Scientific papers with strict academic formatting (use academic writing skills)
+- Casual social media posts or chat messages
+- When the content is too technical for you to verify accuracy (consult a subject matter expert first)
 
 ---
 
 ## Workflow
 
-### Phase 1: Audience Analysis
+### Phase 1: Planning and Audience Analysis
 
-**Objective:** Determine who you're writing for, what they already know, and what they need to accomplish.
-
-```
-Audience Identification → Knowledge Assessment → Goal Mapping → Content Calibration
-```
-
-**Step 1.1 — Identify Primary and Secondary Audiences**
-Who is the intended reader? A junior developer learning a new framework? A senior architect evaluating a technology choice? A product manager understanding a technical constraint? Each audience requires different depth, vocabulary, and examples.
-
-**Step 1.2 — Assess Knowledge Level**
-Map the audience's likely knowledge: What concepts do they already understand? What terminology is familiar? What's the gap between their current knowledge and the article's content? The article should bridge this gap without being condescending or overwhelming.
-
-**Step 1.3 — Define the Reader's Goal**
-What does the reader want to accomplish after reading? "Understand how RAG works" (explainer), "Build a RAG pipeline" (tutorial), "Choose between vector databases" (comparison), or "Learn from our RAG deployment failure" (post-mortem). The goal determines the content type and structure.
-
-**Step 1.4 — Calibrate Content**
-Adjust: vocabulary (jargon vs. plain language), code complexity (complete examples vs. snippets), depth of explanation (why vs. how vs. what), and assumed context (standalone vs. series).
-
-### Phase 2: Content Type Selection
-
-**Objective:** Choose the content structure that best serves the reader's goal.
+**Objective:** Define the purpose, audience, and scope of the document before writing a single sentence.
 
 ```
-Reader Goal → Content Type → Structure Template → Outline → First Draft
+Purpose Definition → Audience Analysis → Scope Setting → Outline → Review Plan
 ```
 
-| Content Type | Reader Goal | Structure | Length |
+**Step 1.1 — Define Purpose**
+Answer: What problem does this document solve? What should the reader be able to do after reading it? What is the single most important takeaway?
+
+**Step 1.2 — Audience Analysis**
+
+| Audience | Knowledge Level | Needs | Tone |
 |---|---|---|---|
-| Tutorial | Learn by building | Steps with code | 1500-4000 words |
-| Explainer | Understand a concept | Definition → Why → How → Examples | 1000-2500 words |
-| Deep Dive | Master advanced topics | Context → Mechanics → Trade-offs → Edge cases | 3000-8000 words |
-| Comparison | Make a decision | Criteria → Side-by-side → Verdict | 2000-4000 words |
-| Post-mortem | Learn from failure | Timeline → Impact → Root cause → Lessons | 2000-5000 words |
-| Workshop | Hands-on learning | Setup → Exercises → Challenges → Solutions | 4000-10000 words |
-| ADR | Document a decision | Context → Decision → Consequences | 500-1500 words |
+| Beginner | New to the topic | Step-by-step guidance, context, analogies | Patient, explanatory |
+| Intermediate | Familiar with basics | Efficient solutions, best practices | Direct, practical |
+| Expert | Deep knowledge | Reference details, edge cases, API specs | Concise, precise |
+| Decision-maker | High-level understanding | Business impact, trade-offs, recommendations | Strategic, outcome-focused |
+| Support team | Knows the product | Troubleshooting steps, escalation paths | Action-oriented, structured |
 
-### Phase 3: Structural Planning
+**Step 1.3 — Scope Setting**
+Define what's in and out of scope. Be ruthless: a document that tries to cover everything covers nothing well. Split into multiple documents if needed.
 
-**Objective:** Create a detailed outline that ensures logical flow and completeness.
+**Step 1.4 — Outline**
+Create a hierarchical outline with headings and key points under each. This is the skeleton — every section should map to a reader need.
 
-```
-Key Messages → Logical Sequence → Section Breakdown → Heading Hierarchy → Time Estimates
-```
+### Phase 2: Writing
 
-**Step 3.1 — Define Key Messages**
-What are the 3-5 essential points the reader must take away? Everything in the article should support, elaborate, or exemplify these messages.
-
-**Step 3.2 — Sequence Logically**
-Order sections to build understanding progressively: foundation → application → nuance → mastery. Never assume the reader will read linearly — use headings that work as a table of contents.
-
-**Step 3.3 — Estimate Reading Time**
-Respect the reader's time. A 3000-word article takes ~12 minutes to read. Add code examples and the total engagement time rises to 20-30 minutes. Set expectations with the reader upfront.
-
-### Phase 4: Drafting with Code Integration
-
-**Objective:** Write the first draft with proper code narrative flow and progressive disclosure.
+**Objective:** Draft the content following established structure and style principles.
 
 ```
-Introduction → Conceptual Foundation → Working Code → Explanation → Variations → Conclusion
+First Draft → Structure Check → Clarity Pass → Code Examples → Visual Aids
 ```
 
-**Step 4.1 — Write the Introduction Last**
-The introduction should state: what the reader will learn, why it matters, what they'll build/understand by the end, and prerequisites. Write it after the body so it accurately reflects the content.
+**Step 2.1 — Write the First Draft**
+Start with the structure you defined. Write each section independently. Don't edit as you go — get ideas down first, refine later.
 
-**Step 4.2 — Integrate Code Naturally**
-Code should illustrate a concept, not be the concept. Every code block needs: context (what this code does), the code itself (complete and runnable), explanation (what each part does), and expected output. Never show code without explaining it.
+**Step 2.2 — Apply Structure Principles**
+- **Inverted pyramid:** Most important information first
+- **Progressive disclosure:** Simple → detailed → advanced
+- **Task-oriented headings:** "Configure the API" not "API Configuration"
+- **Parallel structure:** Consistent grammatical patterns in lists and headings
 
-**Step 4.3 — Apply Progressive Disclosure**
-Layer information: start with the simplest version that works, then add complexity. Show the 5-line version before the 50-line production version. Explain the concept before the implementation.
+**Step 2.3 — Clarity Pass**
+Apply the Feynman technique: could you explain this to someone unfamiliar with the topic? Replace jargon with plain language where possible. Define technical terms on first use.
 
-### Phase 5: Revision for Clarity
+**Step 2.4 — Code Examples**
+Every code example should: be complete enough to run, include expected output, show error handling where relevant, and use realistic (not contrived) data.
 
-**Objective:** Eliminate confusion, reduce friction, and ensure every sentence serves the reader.
+### Phase 3: Editing and Refinement
 
-```
-First Draft → Clarity Pass → Technical Accuracy Pass → Readability Pass → Final Polish
-```
-
-**Step 5.1 — Clarity Pass**
-Read every sentence and ask: "Would a member of my target audience understand this on first read?" If not, simplify. Replace passive voice with active voice. Eliminate unnecessary words. Break long sentences.
-
-**Step 5.2 — Technical Accuracy Pass**
-Verify every technical claim, code example, and assertion. Test all code examples. Check version numbers, API names, and command syntax. Have a subject matter expert review if possible.
-
-**Step 5.3 — Readability Pass**
-Check: sentence length (target <25 words average), paragraph length (target <4 sentences), heading hierarchy (H2 > H3, never skip levels), code-to-prose ratio (aim for 40-60% prose), and scanning-friendliness (bullets, tables, bold key terms).
-
-### Phase 6: Publication and Maintenance
-
-**Objective:** Publish in the right format and keep the content accurate over time.
+**Objective:** Transform a rough draft into polished, publication-ready content.
 
 ```
-Format Selection → SEO/Discovery → Publication → Feedback Collection → Maintenance Schedule
+Structural Edit → Line Edit → Copy Edit → Technical Review → Final Proofread
 ```
 
-**Step 6.1 — Format for Platform**
-Adapt content for the publication platform: blog (Markdown, front matter), documentation site (structured pages, navigation), GitHub (README, docs folder), or workshop (exercises, solutions).
+**Step 3.1 — Structural Edit**
+Check document flow, section ordering, and logical coherence. Does each section build on the previous one? Are there gaps in the explanation?
 
-**Step 6.2 — Set Up Maintenance**
-Technical content decays. Set review dates: API docs (every release), tutorials (quarterly), explainers (biannually). Track when referenced tools or versions change.
+**Step 3.2 — Line Edit**
+Improve sentence-level clarity: eliminate unnecessary words, replace passive voice with active voice, break long sentences, and ensure consistent terminology.
+
+**Step 3.3 — Technical Review**
+Verify all technical claims: do code examples actually work? Are version numbers current? Are API endpoints correct? Is the described behavior accurate?
+
+**Step 3.4 — Final Proofread**
+Check for typos, grammar errors, broken links, inconsistent formatting, and missing images.
+
+### Phase 4: Publication and Maintenance
+
+**Objective:** Publish the content and establish a maintenance schedule.
+
+```
+Format → Publish → Gather Feedback → Schedule Updates → Version
+```
+
+**Step 4.1 — Format**
+Apply consistent formatting: headers, code blocks, callout boxes, tables, and images. Ensure accessibility: alt text for images, logical heading hierarchy, sufficient color contrast.
+
+**Step 4.2 — Gather Feedback**
+Share with representative users. Watch them read and follow the document. Note where they hesitate, re-read, or get confused.
+
+**Step 4.3 — Schedule Maintenance**
+Set a review cadence: monthly for fast-moving topics, quarterly for stable ones. Assign an owner for each document. Create a changelog.
 
 ---
 
 ## Advanced Techniques
 
-### 1. The Feynman Technique for Technical Explanations
+### 1. The Feynman Technique for Technical Explanation
 
-Richard Feynman's approach to understanding: explain the concept in simple language, identify gaps in your explanation, go back to the source to fill gaps, and simplify further. This technique is the foundation of great technical writing.
+Named after physicist Richard Feynman, this technique ensures you truly understand something before explaining it. If you can't explain it simply, you don't understand it well enough.
 
 ```python
-# Concept: Event-Driven Architecture
+class FeynmanExplainer:
+    """
+    Framework for creating clear technical explanations
+    using the Feynman Technique.
+    """
+    
+    def __init__(self, topic):
+        self.topic = topic
+        self.steps = []
+    
+    def step1_define(self):
+        """Write the topic name at the top of a blank page."""
+        return {
+            "step": "Define",
+            "instruction": f"Write '{self.topic}' at the top.",
+            "purpose": "Focus your explanation on a specific concept."
+        }
+    
+    def step2_explain_child(self):
+        """
+        Explain the topic as if teaching a 12-year-old.
+        Use simple words, no jargon, concrete examples.
+        """
+        return {
+            "step": "Explain to a child",
+            "instruction": (
+                f"Explain {self.topic} using only words a smart "
+                "12-year-old would understand. Use analogies from "
+                "everyday life. Avoid all technical jargon."
+            ),
+            "template": """## {topic}
 
-# Level 1: Simple Explanation (What a 10-year-old would understand)
-"""
-Instead of one person calling another person and waiting for them to finish 
-before moving on (like a phone call), imagine you send a text message and 
-continue with your day. When the other person replies, you deal with it then. 
-That's event-driven: you send a signal and don't wait around.
-"""
+### In Simple Terms
+{analogy_explanation}
 
-# Level 2: Developer Explanation (What a junior developer needs)
-"""
-Event-driven architecture is a design pattern where components communicate 
-by sending and receiving events. Instead of direct function calls (Request → 
-Response), a component publishes an event (e.g., "OrderPlaced") and other 
-components react to it independently. This decouples the sender from the 
-receiver — the order service doesn't need to know which other services care 
-about new orders.
-"""
+### A Real-World Example
+{concrete_example}
 
-# Level 3: Architect Explanation (What a senior architect needs)
-"""
-Event-driven architecture (EDA) uses events as the primary mechanism for 
-inter-service communication in distributed systems. Key patterns include:
+### Why It Matters
+{practical_importance}""",
+            "rules": [
+                "No jargon — if you must use a technical term, define it immediately",
+                "Use analogies from everyday life",
+                "One concept at a time — don't combine multiple ideas",
+                "Use short sentences (under 20 words when possible)",
+            ]
+        }
+    
+    def step3_identify_gaps(self):
+        """
+        Review your explanation for gaps or hand-waving.
+        Where did you struggle to explain simply? That's a gap.
+        """
+        return {
+            "step": "Identify gaps",
+            "instruction": (
+                "Review your simple explanation. Where did you use "
+                "vague language? Where did you say 'it's just like...' "
+                "without completing the analogy? Those are gaps in "
+                "your understanding."
+            ),
+            "checklist": [
+                "Can I explain WHY this exists (not just what it is)?",
+                "Can I explain HOW it works step by step?",
+                "Can I explain WHEN to use it (and when not to)?",
+                "Can I give a concrete example that demonstrates each point?",
+                "Does my analogy actually map to the real concept?"
+            ]
+        }
+    
+    def step4_simplify_and_refine(self):
+        """
+        Go back to the source material, fill gaps, then 
+        simplify your explanation further.
+        """
+        return {
+            "step": "Simplify and refine",
+            "instruction": (
+                "Rewrite your explanation. Use simpler words, "
+                "better analogies, and more precise examples. "
+                "Read it aloud — if any sentence is hard to say, "
+                "it's too complex."
+            ),
+            "quality_checks": [
+                "Every sentence has one idea",
+                "Technical terms are defined on first use",
+                "Examples are concrete and runnable",
+                "The explanation builds progressively",
+                "A complete beginner could follow it"
+            ]
+        }
 
-- Event Notification: Minimal event payload, consumers fetch details
-- Event-Carried State Transfer: Full state in event, no callback needed  
-- Event Sourcing: Events as the source of truth, state derived from event log
-- CQRS: Separate read and write models, often combined with event sourcing
+# Usage
+explainer = FeynmanExplainer("Kubernetes Pods")
+print(explainer.step2_explain_child())
 
-Trade-offs: EDA improves scalability and resilience but introduces eventual 
-consistency, debugging complexity (distributed tracing), and schema evolution 
-challenges (event versioning). Use when loose coupling and independent scaling 
-matter more than strong consistency.
-"""
+# Output template:
+# ## Kubernetes Pods
+# ### In Simple Terms
+# A Pod is like a backpack for your applications. Just like a backpack 
+# carries everything a hiker needs (water, snacks, map), a Pod carries 
+# everything an application needs to run (the code, the files, the 
+# network connection)...
 ```
 
 ### 2. Code Narrative Flow
 
-Every code example should tell a story: setup → action → result → interpretation. Never drop code without context.
+Structure code documentation so the reader understands the "why" before the "how," and the "what" before the "how."
 
 ```python
-# BAD: Code without narrative
-"""
+def write_code_narrative(code, context, purpose):
+    """
+    Generate narrative documentation for code that explains:
+    1. Why this code exists (problem it solves)
+    2. What it does (high-level overview)
+    3. How it works (detailed walkthrough)
+    4. When to modify it (extension points)
+    """
+    
+    template = f"""## {context}
+
+### Why This Code Exists
+{purpose}
+
+### What It Does (Overview)
 ```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-
-embeddings = OpenAIEmbeddings()
-db = Chroma.from_documents(docs, embeddings)
-results = db.similarity_search("query", k=5)
-```
-"""
-
-# GOOD: Code with narrative flow
-"""
-### Step 2: Create the Vector Store
-
-First, we initialize the embedding model. This converts text into 
-1536-dimensional vectors that capture semantic meaning:
-
-```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-
-# Initialize the embedding model
-# Each text chunk will be converted to a 1536-dimensional vector
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+# High-level: This function processes user data and returns validated records.
+# It handles three main tasks:
+# 1. Validates input against the schema
+# 2. Transforms data types (strings → numbers, dates)
+# 3. Deduplicates based on business rules
+{code.split(chr(10))[0]}  # Just the signature
 ```
 
-Next, we create the vector store from our chunked documents. This 
-embeds each chunk and stores it for efficient similarity search:
+### How It Works (Step by Step)
 
-```python
-# Create vector store from documents
-# This step: embed each chunk → store vectors + metadata
-db = Chroma.from_documents(
-    documents=chunks,      # Our preprocessed document chunks
-    embedding=embeddings,  # The embedding model
-    persist_directory="./chroma_db"  # Save to disk for persistence
-)
+| Step | What Happens | Why |
+|------|-------------|-----|
+| 1 | Parse input data | Raw input may have different formats |
+| 2 | Validate each field | Catch errors early with clear messages |
+| 3 | Transform types | Ensure downstream code gets correct types |
+| 4 | Apply business rules | Dedup based on company-specific logic |
+| 5 | Return results | Structured output for callers |
 
-print(f"Indexed {db._collection.count()} chunks")
-# Output: Indexed 1,247 chunks
+### Example Walkthrough
+```
+Input:  {{"name": "Alice", "age": "30", "email": "alice@example.com"}}
+Step 1: Parsed — fields extracted
+Step 2: Validated — all fields pass schema
+Step 3: Transformed — age: "30" → 30 (int)
+Step 4: No duplicates found
+Output: {{"name": "Alice", "age": 30, "email": "alice@example.com", "valid": true}}
 ```
 
-Finally, we can search for relevant documents. The query is embedded 
-using the same model, and we find the 5 most similar chunks:
+### When to Modify This Code
+- **Adding a new field:** Add to the schema dict and update the transform step
+- **Changing validation rules:** Modify the validation logic in step 2
+- **Adding dedup rules:** Update the business rules in step 4
+- **Performance issues:** Consider batching validation for large datasets
 
-```python
-# Search for relevant chunks
-results = db.similarity_search(
-    "How do I configure authentication?",  # The user's query
-    k=5  # Return top 5 results
-)
-
-# Display results with metadata
-for i, doc in enumerate(results):
-    print(f"[{i+1}] Source: {doc.metadata['source']}")
-    print(f"    {doc.page_content[:200]}...")
-    print()
+### Common Pitfalls
+- Don't add fields without updating the schema — they'll be silently dropped
+- The age field must be a string in input (API constraint), not an int
+- Dedup is case-sensitive — "Alice" and "alice" are different users
+"""
+    return template
 ```
 
-The results are ranked by cosine similarity — higher scores mean 
-more relevant to the query. In the next step, we'll use these 
-results to generate a grounded response.
-"""
-```
+### 3. Progressive Disclosure Documentation
 
-### 3. Progressive Disclosure in Technical Content
-
-Start with the simplest version that works, then layer complexity. This respects cognitive load and serves multiple audience levels.
+Structure content so readers can choose their depth of engagement: skim for overview, read for understanding, deep-dive for implementation.
 
 ```python
-# LEVEL 1: Minimal Working Example (5 lines)
-"""
-The simplest way to build a RAG pipeline:
+def progressive_disclosure_content(topic, overview, details, implementation):
+    """
+    Create content at three levels of detail.
+    
+    Level 1 (Overview): 30 seconds — what is this and why care?
+    Level 2 (Details): 5 minutes — how does it work?
+    Level 3 (Implementation): 30 minutes — how do I use it?
+    """
+    
+    content = f"""# {topic}
 
-```python
-from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores import Chroma
-from langchain.chains import RetrievalQA
+## Quick Overview (30 seconds)
+{overview}
 
-db = Chroma.from_documents(docs, OpenAIEmbeddings())
-qa = RetrievalQA.from_chain_type(
-    llm=ChatOpenAI(model="gpt-4"),
-    retriever=db.as_retriever()
-)
-answer = qa.invoke("What is RAG?")
-```
+> 💡 **Need more detail?** Keep reading. Use the section links to jump to what you need.
 
-This works, but lacks control over chunking, retrieval quality, and 
-citation. Let's add those one at a time.
-"""
+---
 
-# LEVEL 2: Added Chunking Control (20 lines)
-"""
-```python
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+## How It Works (5 minutes)
 
-# Step 1: Control how documents are split
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=512,      # Max tokens per chunk
-    chunk_overlap=50,    # Overlap between chunks (preserves context)
-    separators=["\n\n", "\n", ". ", " "],  # Split at these boundaries
-    length_function=len,  # Use character count (or tiktoken for tokens)
-)
-chunks = splitter.split_documents(documents)
-print(f"Split {len(documents)} docs into {len(chunks)} chunks")
-"""
-"""
+{details}
 
-# LEVEL 3: Production-Ready (50+ lines, with metadata, hybrid search, citations)
-"""
-Now let's build a production pipeline with metadata, hybrid search, 
-and source citations. This adds 30 lines but 10x the reliability...
+> 💡 **Ready to implement?** Jump to the [Implementation Guide](#implementation-guide) below.
 
-[Full production example with all features]
+---
+
+## Implementation Guide (30 minutes)
+
+{implementation}
+
+---
+
+## Reference
+
+### Configuration Options
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `timeout` | int | 30 | Max seconds per request |
+| `retries` | int | 3 | Number of retry attempts |
+| `backoff` | float | 1.5 | Exponential backoff multiplier |
+
+### Error Codes
+| Code | Meaning | Resolution |
+|------|---------|------------|
+| `E001` | Connection timeout | Check network, increase timeout |
+| `E002` | Invalid schema | Verify input matches expected format |
+| `E003` | Rate limited | Wait and retry with exponential backoff |
 """
+    return content
 ```
 
 ### 4. Post-Mortem Writing Framework
 
-Write post-mortems that are blameless, actionable, and educational. The goal is learning, not punishment.
+Write effective incident post-mortems that build organizational learning, not assign blame.
 
-```markdown
-# Post-Mortem Template
+```python
+def post_mortem_template(incident_data):
+    """
+    Generate a blameless post-mortem document.
+    
+    Focus: What happened, why it happened, how we prevent it next time.
+    Not: Who caused it.
+    """
+    
+    template = f"""# Post-Mortem: {incident_data.get('title', 'Untitled Incident')}
 
-## Title: {Incident Name} — {Date}
+## Incident Summary
 
-### TL;DR
-{One paragraph: what happened, impact, resolution, root cause}
+| Field | Value |
+|-------|-------|
+| **Date:** | {incident_data.get('date', 'TBD')} |
+| **Duration:** | {incident_data.get('duration', 'TBD')} |
+| **Severity:** | {incident_data.get('severity', 'SEV?')} |
+| **Impact:** | {incident_data.get('impact', 'TBD')} |
+| **Author:** | {incident_data.get('author', 'TBD')} |
+| **Status:** | {incident_data.get('status', 'Draft')} |
 
-### Impact
-- **Duration:** {start_time} to {end_time} ({total_duration})
-- **Affected Services:** {list}
-- **Affected Users:** {number or percentage}
-- **Revenue Impact:** ${amount} (if applicable)
-- **SLA Impact:** {SLO breached, error budget consumed}
+## Executive Summary
+{incident_data.get('summary', '[2-3 sentences: What happened, what was the impact, what did we do about it]')}
 
-### Timeline (UTC)
+## Timeline (All times in UTC)
 | Time | Event |
 |------|-------|
-| {t0} | {Trigger event — what started the incident} |
-| {t1} | {Detection — when monitoring alerted} |
-| {t2} | {Response start — who acknowledged} |
-| {t3} | {Investigation — what was discovered} |
-| {t4} | {Mitigation — what was done to stop the bleeding} |
-| {t5} | {Resolution — what fixed the root cause} |
-| {t6} | {Verification — confirmed the fix works} |
+| {incident_data.get('timeline', 'HH:MM — [event description]')} |
 
-### Root Cause
-{Technical explanation of why this happened. Focus on systems, not people. 
-Use the "5 Whys" technique to get to the actual root cause.}
+## What Went Well
+- [What worked during the incident response]
+- [What mitigated the impact]
+- [What monitoring/alerting helped]
 
-### What Went Well
-- {Thing 1 that worked as designed}
-- {Thing 2 that helped}
+## What Went Wrong
+- [What caused the incident]
+- [What delayed detection]
+- [What delayed resolution]
 
-### What Went Wrong
-- {Thing 1 that failed or was inadequate}
-- {Thing 2 that was missing}
+## Where We Got Lucky
+- [What could have been worse]
+- [What accidental mitigations existed]
 
-### Where We Got Lucky
-- {Thing that could have been much worse}
+## Root Cause Analysis
 
-### Action Items
-| Priority | Action | Owner | Due Date | Status |
-|----------|--------|-------|----------|--------|
-| P0 | {Immediate fix} | {person} | {date} | {status} |
-| P1 | {Prevention measure} | {person} | {date} | {status} |
-| P2 | {Long-term improvement} | {person} | {date} | {status} |
+### 5 Whys
+1. **Why did the service fail?** → [immediate cause]
+2. **Why did that happen?** → [underlying condition]
+3. **Why wasn't this caught?** → [detection gap]
+4. **Why does this condition exist?** → [systemic issue]
+5. **Why wasn't this prevented?** → [process/tooling gap]
 
-### Lessons Learned
-1. {Lesson 1}
-2. {Lesson 2}
-3. {Lesson 3}
+### Contributing Factors
+- **Technical:** [code, infrastructure, configuration issues]
+- **Process:** [procedural gaps, missing reviews]
+- **Human:** [cognitive load, training gaps, communication]
+
+## Action Items
+
+| # | Action | Owner | Priority | Due Date | Status |
+|---|--------|-------|----------|----------|--------|
+| 1 | {incident_data.get('actions', '[action item]')} | [owner] | P0-P3 | [date] | Open |
+
+## Lessons Learned
+1. [Key takeaway 1]
+2. [Key takeaway 2]
+3. [Key takeaway 3]
+
+## Supporting Data
+- Dashboard links
+- Log excerpts
+- Alert configurations
+
+---
+
+*This post-mortem is blameless. Its purpose is to learn and improve, not to assign fault.*
+"""
+    return template
 ```
 
 ### 5. Comparison Post Framework
 
-Write fair, evidence-based comparisons that help readers make informed decisions.
-
-```markdown
-# Comparison Post Template
-
-## {Option A} vs {Option B}: {Subtitle} ({Year})
-
-### TL;DR
-{One sentence verdict: "Choose {A} if {condition}, choose {B} if {condition}."}
-
-### Quick Comparison
-| Criteria | {Option A} | {Option B} | Winner |
-|----------|-----------|-----------|--------|
-| Performance | {metric} | {metric} | {A/B/Tie} |
-| Learning Curve | {description} | {description} | {A/B/Tie} |
-| Ecosystem | {description} | {description} | {A/B/Tie} |
-| Cost | {price} | {price} | {A/B/Tie} |
-| Scalability | {description} | {description} | {A/B/Tie} |
-| Community | {description} | {description} | {A/B/Tie} |
-
-### Deep Dive: {Key Criterion 1}
-{Detailed analysis with benchmarks, examples, and nuance}
-
-### Deep Dive: {Key Criterion 2}
-{Detailed analysis with benchmarks, examples, and nuance}
-
-### When to Choose {Option A}
-- {Scenario 1}
-- {Scenario 2}
-- {Scenario 3}
-
-### When to Choose {Option B}
-- {Scenario 1}
-- {Scenario 2}
-- {Scenario 3}
-
-### Migration Guide
-{If relevant: how to switch from one to the other}
-
-### Conclusion
-{Restate the verdict with nuance. Acknowledge that neither option is universally better.}
-```
-
-### 6. Workshop Material Design
-
-Design workshops that keep participants engaged through active learning, not passive reading.
+Write technical comparison articles that help readers make informed decisions.
 
 ```python
-# Workshop Design Pattern
+def comparison_post_template(comparison_data):
+    """
+    Framework for writing fair, comprehensive comparison posts.
+    """
+    
+    template = f"""# {comparison_data.get('title', 'Comparison')}
 
+## TL;DR
+{comparison_data.get('tldr', '[One paragraph: Which option wins for which use case]')}
+
+## Quick Comparison
+
+| Feature | {comparison_data.get('option_a', 'Option A')} | {comparison_data.get('option_b', 'Option B')} | {comparison_data.get('option_c', 'Option C')} |
+|---------|------------|------------|------------|
+| {comparison_data.get('features', '[feature rows]')} |
+
+## Decision Matrix
+
+**Choose {comparison_data.get('option_a', 'Option A')} if you need:**
+- [Use case 1]
+- [Use case 2]
+
+**Choose {comparison_data.get('option_b', 'Option B')} if you need:**
+- [Use case 1]
+- [Use case 2]
+
+**Choose {comparison_data.get('option_c', 'Option C')} if you need:**
+- [Use case 1]
+- [Use case 2]
+
+## Detailed Comparison
+
+### Performance
+{comparison_data.get('performance', '[Benchmarks, latency, throughput data]')}
+
+### Developer Experience
+{comparison_data.get('dx', '[Learning curve, documentation quality, community]')}
+
+### Ecosystem and Integrations
+{comparison_data.get('ecosystem', '[Libraries, plugins, third-party support]')}
+
+### Cost
+{comparison_data.get('cost', '[Licensing, hosting, operational costs]')}
+
+### Production Readiness
+{comparison_data.get('production', '[Maturity, reliability, enterprise features]')}
+
+## Migration Guide
+{comparison_data.get('migration', '[If switching: effort, risk, step-by-step]')}
+
+## Our Recommendation
+{comparison_data.get('recommendation', '[Honest recommendation with caveats]')}
+
+## How We Tested
+{comparison_data.get('methodology', '[What we measured, how, with what data]')}
+
+## FAQ
+{comparison_data.get('faq', '[Common questions and nuanced answers]')}
+
+---
+
+*Last updated: {comparison_data.get('date', 'YYYY-MM-DD')}*
+*Disclosure: [any conflicts of interest or sponsorship]*
 """
-## Workshop: Building a RAG Pipeline (3 hours)
-
-### Prerequisites (30 min)
-- Install Python 3.11+, pip, git
-- Clone the starter repo: `git clone {url}`
-- Run `pip install -r requirements.txt`
-- Verify: `python verify_setup.py` (should print "Ready!")
-
-### Module 1: Foundations (45 min)
-**Goal:** Understand RAG architecture
-**Format:** Live coding + explanation
-
-Exercise 1.1: Load and chunk a document (15 min)
-- Starter code: `exercises/module1/ex1_chunking.py`
-- Task: Load `data/sample.pdf`, chunk it, print chunk count
-- Checkpoint: `python check_module1_1.py`
-
-Exercise 1.2: Create embeddings and search (15 min)
-- Starter code: `exercises/module1/ex2_embedding.py`
-- Task: Embed chunks, run a similarity search, display results
-- Checkpoint: `python check_module1_2.py`
-
-Exercise 1.3: Build a basic QA chain (15 min)
-- Starter code: `exercises/module1/ex3_qa.py`
-- Task: Connect retrieval to LLM, ask a question, get an answer
-- Checkpoint: `python check_module1_3.py`
-
-### Module 2: Production Patterns (60 min)
-**Goal:** Add metadata, hybrid search, and citations
-**Format:** Pair programming
-
-Exercise 2.1: Add metadata to chunks (20 min)
-Exercise 2.2: Implement hybrid search (20 min)
-Exercise 2.3: Add source citations to responses (20 min)
-
-### Module 3: Advanced Topics (45 min)
-**Goal:** Reranking, query decomposition, evaluation
-**Format:** Group exercise
-
-Exercise 3.1: Implement reranking (15 min)
-Exercise 3.2: Multi-query retrieval (15 min)
-Exercise 3.3: RAGAS evaluation (15 min)
-
-### Bonus Challenges
-- Implement streaming responses
-- Add conversation history
-- Deploy to production
-
-### Solutions
-Available in `solutions/` directory (unzip after workshop)
-"""
+    return template
 ```
 
-### 7. Architecture Decision Record (ADR) Writing
+### 6. Workshop and Training Material Design
 
-ADRs capture technical decisions with context and rationale, creating institutional knowledge.
+```python
+def workshop_module(topic, duration_minutes, learning_objectives, exercises):
+    """
+    Design a hands-on workshop module with clear learning outcomes.
+    """
+    
+    template = f"""# Workshop Module: {topic}
 
-```markdown
-# ADR Template
+## Module Info
+- **Duration:** {duration_minutes} minutes
+- **Level:** {exercises.get('level', 'Intermediate')}
+- **Prerequisites:** {exercises.get('prerequisites', 'None')}
+- **Materials:** {exercises.get('materials', 'Laptop with Python 3.9+')}
 
-## ADR-{number}: {Title}
+## Learning Objectives
+By the end of this module, you will be able to:
+{chr(10).join(f'- {obj}' for obj in learning_objectives)}
 
-**Status:** {Proposed | Accepted | Deprecated | Superseded by ADR-XXX}
-**Date:** {YYYY-MM-DD}
-**Deciders:** {list of people involved}
-**Technical Story:** {link to issue/ticket}
+## Agenda
 
-### Context
-{What is the issue that we're seeing that is motivating this decision? 
-What are the forces at play (technical, business, political, social)? 
-Include constraints and requirements.}
+| Time | Activity | Type |
+|------|----------|------|
+| 0:00-0:05 | Welcome and setup check | Interactive |
+| 0:05-0:15 | Concept introduction | Lecture |
+| 0:15-0:25 | Guided exercise | Hands-on |
+| 0:25-0:35 | Independent exercise | Hands-on |
+| 0:35-0:45 | Q&A and wrap-up | Discussion |
 
-### Decision
-{What is the change that we're proposing and/or doing? 
-Be specific and unambiguous. State what IS being done, not just what 
-options were considered.}
+## Concept Introduction
+{exercises.get('concept', '[Key concepts to explain before exercises]')}
 
-### Consequences
+## Guided Exercise
+{exercises.get('guided', '[Step-by-step exercise with instructor]')}
 
-#### Positive
-- {benefit 1}
-- {benefit 2}
+### Setup
+```bash
+{exercises.get('setup_commands', '# Setup commands')}
+```
 
-#### Negative
-- {cost 1}
-- {cost 2}
+### Steps
+1. {exercises.get('step1', '[First step with expected output]')}
+2. {exercises.get('step2', '[Second step]')}
 
-#### Risks
-- {risk 1} — Mitigation: {how}
+### Expected Output
+```
+{exercises.get('expected_output', '[What the student should see]')}
+```
 
-### Alternatives Considered
+## Independent Exercise
+{exercises.get('independent', '[Exercise for students to complete on their own]')}
 
-#### {Alternative 1}
-- **Pros:** {pros}
-- **Cons:** {cons}
-- **Reason for rejection:** {why}
+### Challenge
+{exercises.get('challenge', '[Extended challenge for fast finishers]')}
 
-#### {Alternative 2}
-- **Pros:** {pros}
-- **Cons:** {cons}
-- **Reason for rejection:** {why}
+## Discussion Questions
+1. {exercises.get('question1', '[Thought-provoking question]')}
+2. {exercises.get('question2', '[Application question]')}
 
-### References
-- {link 1}
-- {link 2}
+## Resources
+- [Additional reading 1]
+- [Additional reading 2]
+- [Practice problems]
+"""
+    return template
+```
+
+### 7. API Documentation Standards
+
+```python
+def api_endpoint_doc(endpoint):
+    """
+    Generate comprehensive API documentation for an endpoint.
+    """
+    
+    template = f"""## `{endpoint['method']} {endpoint['path']}`
+
+{endpoint.get('description', '[Brief description of what this endpoint does]')}
+
+### Authentication
+{endpoint.get('auth', 'Required. Include `Authorization: Bearer <token>` header.')}
+
+### Request
+
+#### Headers
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Authorization` | Yes | Bearer token |
+| `Content-Type` | Yes | `application/json` |
+| `X-Request-ID` | No | Unique request identifier for tracing |
+
+#### Path Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+{endpoint.get('path_params', '| `id` | string | Resource ID |')}
+
+#### Query Parameters
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+{endpoint.get('query_params', '| `limit` | integer | No | `20` | Max results (1-100) |')}
+
+#### Request Body
+```json
+{endpoint.get('request_body', '{\\n  "key": "value"\\n}')}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+{endpoint.get('body_fields', '| `name` | string | Yes | Resource name |')}
+
+### Response
+
+#### Success (200 OK)
+```json
+{endpoint.get('success_response', '{\\n  "id": "abc123",\\n  "created_at": "2024-01-01T00:00:00Z"\\n}')}
+```
+
+#### Error Responses
+| Status | Code | Description | Resolution |
+|--------|------|-------------|------------|
+| 400 | `INVALID_INPUT` | Request body validation failed | Check required fields |
+| 401 | `UNAUTHORIZED` | Missing or invalid token | Re-authenticate |
+| 404 | `NOT_FOUND` | Resource doesn't exist | Verify resource ID |
+| 429 | `RATE_LIMITED` | Too many requests | Wait and retry |
+| 500 | `INTERNAL_ERROR` | Server error | Contact support |
+
+### Rate Limits
+- **Limit:** {endpoint.get('rate_limit', '100')} requests per minute
+- **Burst:** {endpoint.get('burst', '10')} requests per second
+
+### Examples
+
+#### cURL
+```bash
+{endpoint.get('curl_example', 'curl -X GET "https://api.example.com/resource" \\\n  -H "Authorization: Bearer $TOKEN"')}
+```
+
+#### Python
+```python
+import requests
+
+response = requests.{endpoint.get('method', 'get').lower()}(
+    "https://api.example.com{endpoint['path']}",
+    headers={{"Authorization": f"Bearer {{TOKEN}}"}},
+)
+print(response.json())
+```
+
+### Changelog
+| Date | Change |
+|------|--------|
+{endpoint.get('changelog', '| 2024-01-01 | Initial release |')}
+"""
+    return template
 ```
 
 ---
 
 ## Common Patterns
 
-### Pattern 1: Tutorial Structure with Checkpoints
-
-```markdown
-# How to Build {Thing}: A Step-by-Step Tutorial
-
-## What You'll Build
-{Screenshot or diagram of the final product}
-
-## What You'll Learn
-- {Skill 1}
-- {Skill 2}
-- {Skill 3}
-
-## Prerequisites
-- {Requirement 1}
-- {Requirement 2}
-- Estimated time: {X} minutes
-
-## Step 1: {Action}
-
-{Brief explanation of what we're doing and why}
-
-{Code block}
-
-{Expected output}
-
-✅ **Checkpoint:** You should see {expected result}. If not, {troubleshooting}.
-
-## Step 2: {Action}
-{Repeat pattern}
-
-## Step 3: {Action}
-{Repeat pattern}
-
-## Next Steps
-- {Extension 1}
-- {Extension 2}
-
-## Troubleshooting
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| {error message} | {why it happens} | {how to fix} |
-```
-
-### Pattern 2: Concept Explainer with Analogies
-
-```markdown
-# {Concept}: A Clear Explanation
-
-## The One-Line Explanation
-{Concept} is {simplest possible definition}.
-
-## The Analogy
-Think of {concept} like {everyday analogy}.
-{Explain the analogy in 2-3 sentences, mapping each part to the technical concept}
-
-## How It Actually Works
-{Technical explanation with diagram}
-
-## Why It Matters
-- {Reason 1 with concrete example}
-- {Reason 2 with concrete example}
-
-## Code Example
-{Working code with detailed comments}
-
-## Common Misconceptions
-- ❌ {Misconception 1} → ✅ {Reality}
-- ❌ {Misconception 2} → ✅ {Reality}
-
-## Further Reading
-- {Resource 1} — {why it's useful}
-- {Resource 2} — {why it's useful}
-```
-
-### Pattern 3: Deep Dive with Layered Complexity
-
-```markdown
-# {Advanced Topic}: A Deep Dive
-
-## Who This Is For
-This article assumes you {prerequisites}. If you're not familiar with 
-{concept}, read {prerequisite article} first.
-
-## The Big Picture
-{High-level overview with architecture diagram}
-
-## Part 1: {Subtopic} — The Basics
-{Foundational explanation}
-
-## Part 2: {Subtopic} — Under the Hood
-{Implementation details with source code references}
-
-## Part 3: {Subtopic} — Edge Cases and Failure Modes
-{What goes wrong and how to handle it}
-
-## Part 4: {Subtopic} — Production Considerations
-{Real-world deployment concerns, monitoring, scaling}
-
-## Performance Analysis
-| Configuration | Throughput | Latency (p99) | Memory |
-|---------------|-----------|---------------|--------|
-| {config_1} | {metric} | {metric} | {metric} |
-| {config_2} | {metric} | {metric} | {metric} |
-
-## Decision Framework
-{When to use this, when not to, alternatives}
-
-## Summary
-{Key takeaways as bullet points}
-```
-
-### Pattern 4: Post-Mortem with 5 Whys
-
-```markdown
-# Post-Mount: {Incident Name}
-
-## Summary
-{One paragraph: what, when, impact, how resolved}
-
-## Timeline
-{Chronological event list}
-
-## 5 Whys Analysis
-
-**Why did {symptom} occur?**
-→ Because {immediate cause}
-
-**Why did {immediate cause} happen?**
-→ Because {underlying cause 1}
-
-**Why did {underlying cause 1} happen?**
-→ Because {underlying cause 2}
-
-**Why did {underlying cause 2} happen?**
-→ Because {systemic cause}
-
-**Why wasn't this caught earlier?**
-→ Because {detection gap}
-
-## Root Cause
-{Synthesized root cause from 5 Whys}
-
-## Action Items
-{Table of actions with owners and deadlines}
-
-## Lessons
-{Numbered list of key takeaways}
-```
-
-### Pattern 5: Workshop Exercise Card
-
-```markdown
-## Exercise {N}: {Title}
-
-**Time:** {X} minutes
-**Goal:** {What the participant will accomplish}
-**Starting point:** `{file path}`
-
-### Instructions
-1. {Step 1}
-2. {Step 2}
-3. {Step 3}
-
-### Hints
-<details>
-<summary>Hint 1 (click to expand)</summary>
-{Hint text}
-</details>
-
-<details>
-<summary>Hint 2 (click to expand)</summary>
-{Hint text}
-</details>
-
-### Expected Result
-```
-{Expected output}
-```
-
-### Solution
-<details>
-<summary>Click to reveal solution</summary>
+### Pattern 1: Tutorial Structure (Learning-by-Doing)
 
 ```python
-# Solution code
+def write_tutorial(topic, prerequisites, steps):
+    """
+    Structure a tutorial that teaches by doing.
+    
+    Each step: explain → show → do → verify
+    """
+    
+    template = f"""# Tutorial: {topic}
+
+## What You'll Build
+{steps.get('what_youll_build', '[End result description with screenshot]')}
+
+## Prerequisites
+- {chr(10).join(f'- {p}' for p in prerequisites)}
+
+## Time Required
+{steps.get('time', '~30 minutes')}
+
+---
+
+## Step 1: {steps.get('step1_title', 'Setup')}
+
+### What you're doing
+{steps.get('step1_explain', '[Why this step matters]')}
+
+### How to do it
+```bash
+{steps.get('step1_commands', '# Commands to run')}
 ```
 
-**Key concepts:** {list of concepts demonstrated}
-</details>
+### Verify it worked
+```bash
+{steps.get('step1_verify', '# Expected output')}
+```
+
+✅ **Checkpoint:** You should see [expected output]. If not, [troubleshooting tip].
+
+---
+
+## Step 2: {steps.get('step2_title', 'Implementation')}
+
+### What you're doing
+{steps.get('step2_explain', '[Why this step matters]')}
+
+### How to do it
+```python
+{steps.get('step2_code', '# Code to write')}
+```
+
+### Verify it worked
+{steps.get('step2_verify', '[How to confirm this step worked]')}
+
+✅ **Checkpoint:** [What success looks like]
+
+---
+
+## Step 3: {steps.get('step3_title', 'Testing')}
+
+### What you're doing
+{steps.get('step3_explain', '[Why this step matters]')}
+
+### How to do it
+```bash
+{steps.get('step3_commands', '# Test commands')}
+```
+
+✅ **Checkpoint:** All tests should pass.
+
+---
+
+## What You Learned
+- [Key concept 1]
+- [Key concept 2]
+- [Key concept 3]
+
+## Next Steps
+- [Link to more advanced tutorial]
+- [Link to API reference]
+- [Link to community resources]
+
+## Troubleshooting
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| {steps.get('troubleshoot1', '[Error message]')} | [cause] | [fix] |
+| {steps.get('troubleshoot2', '[Error message]')} | [cause] | [fix] |
+"""
+    return template
+```
+
+### Pattern 2: Concept Explainer (Analogy-First)
+
+```python
+def write_concept_explainer(concept, analogy, details):
+    """
+    Explain a technical concept using the Analogy → Reality → Details pattern.
+    """
+    
+    template = f"""# {concept}
+
+## The Short Version
+{details.get('short_version', '[One sentence that captures the essence]')}
+
+## Think of It Like...
+{analogy.get('description', '[Everyday analogy that makes the concept intuitive]')}
+
+> {analogy.get('quote', '[Key insight from the analogy]')}
+
+## The Real Story
+
+### What It Actually Is
+{details.get('definition', '[Precise technical definition]')}
+
+### How It Works
+{details.get('how_it_works', '[Step-by-step explanation]')}
+
+### Why It Matters
+{details.get('why_matters', '[Practical importance]')}
+
+## In Practice
+
+### When to Use It
+- {chr(10).join(f'- {use}' for use in details.get('when_to_use', ['Use case 1']))}
+
+### When NOT to Use It
+- {chr(10).join(f'- {avoid}' for avoid in details.get('when_not_to_use', ['Anti-pattern 1']))}
+
+## Common Misconceptions
+1. **Misconception:** {details.get('misconception1', '[Wrong belief]')}
+   **Reality:** {details.get('reality1', '[Correct understanding]')}
+
+## Further Reading
+- [{details.get('resource1_title', 'Resource 1')}]({details.get('resource1_url', '#')})
+- [{details.get('resource2_title', 'Resource 2')}]({details.get('resource2_url', '#')})
+"""
+    return template
+```
+
+### Pattern 3: How-To Guide (Problem-Solution)
+
+```python
+def write_how_to(title, problem, solution):
+    """
+    Write a problem-solution how-to guide.
+    """
+    
+    template = f"""# How to {title}
+
+**Problem:** {problem.get('description', '[What the reader is trying to do]')}
+
+**Solution:** {solution.get('summary', '[Brief overview of the approach]')}
+
+**Difficulty:** {solution.get('difficulty', 'Intermediate')}
+**Time:** {solution.get('time', '15 minutes')}
+
+---
+
+## Prerequisites
+- {chr(10).join(f'- {p}' for p in solution.get('prerequisites', ['Basic knowledge']))}
+
+## Steps
+
+### 1. {solution.get('step1_title', 'Understand the Problem')}
+{solution.get('step1', '[Detailed explanation]')}
+
+```bash
+{solution.get('step1_code', '# Example code')}
+```
+
+### 2. {solution.get('step2_title', 'Implement the Solution')}
+{solution.get('step2', '[Detailed explanation]')}
+
+```python
+{solution.get('step2_code', '# Example code')}
+```
+
+### 3. {solution.get('step3_title', 'Verify the Result')}
+{solution.get('step3', '[How to confirm it worked]')}
+
+---
+
+## Alternative Approaches
+| Approach | Pros | Cons | Best For |
+|----------|------|------|----------|
+| {solution.get('alt1', '[Approach 1]')} | [pros] | [cons] | [use case] |
+| {solution.get('alt2', '[Approach 2]')} | [pros] | [cons] | [use case] |
+
+## Troubleshooting
+
+### Error: {solution.get('error1', '[Common error message]')}
+**Cause:** {solution.get('error1_cause', '[Why this happens]')}
+**Fix:** {solution.get('error1_fix', '[How to fix it]')}
+
+## Related
+- [Link to related how-to]
+- [Link to reference documentation]
+"""
+    return template
+```
+
+### Pattern 4: Release Notes
+
+```python
+def write_release_notes(version, changes):
+    """
+    Write clear, actionable release notes.
+    """
+    
+    template = f"""# Release Notes — v{version}
+
+**Release Date:** {changes.get('date', 'YYYY-MM-DD')}
+
+## 🎉 What's New
+{chr(10).join(f'- **{feat["title"]}:** {feat["description"]}' for feat in changes.get('features', [{'title': 'Feature', 'description': 'Description'}]))}
+
+## 🔧 Improvements
+{chr(10).join(f'- {imp}' for imp in changes.get('improvements', ['Improvement 1']))}
+
+## 🐛 Bug Fixes
+{chr(10).join(f'- {fix}' for fix in changes.get('bug_fixes', ['Fix 1']))}
+
+## ⚠️ Breaking Changes
+{chr(10).join(f'- **{bc["title"]}:** {bc["description"]} → **Migration:** {bc["migration"]}' for bc in changes.get('breaking_changes', []))}
+
+## 📦 Dependencies Updated
+{chr(10).join(f'- `{dep["name"]}` {dep["old_version"]} → {dep["new_version"]}' for dep in changes.get('dependencies', []))}
+
+## 🔒 Security
+{chr(10).join(f'- {sec}' for sec in changes.get('security', []))}
+
+## 📝 Upgrade Instructions
+{changes.get('upgrade_instructions', 'No special upgrade steps required.')}
+
+## Known Issues
+{chr(10).join(f'- {issue}' for issue in changes.get('known_issues', []))}
+
+---
+
+**Full Changelog:** https://github.com/org/repo/compare/v{changes.get('previous_version', 'X.Y.Z')}...v{version}
+"""
+    return template
+```
+
+### Pattern 5: Troubleshooting Guide
+
+```python
+def write_troubleshooting_guide(issue, symptoms, solutions):
+    """
+    Structure a troubleshooting guide that helps readers diagnose and fix issues.
+    """
+    
+    template = f"""# Troubleshooting: {issue}
+
+## Symptoms
+- {chr(10).join(f'- {s}' for s in symptoms.get('indicators', ['Symptom 1']))}
+
+## Quick Fix
+{symptoms.get('quick_fix', 'Try restarting the service: `systemctl restart myservice`')}
+
+## Diagnosis Flowchart
+
+```
+Start here: Is the service running?
+├── YES → Is the port open?
+│   ├── YES → Is the database accessible?
+│   │   ├── YES → Check application logs
+│   │   └── NO → Fix database connection
+│   └── NO → Check firewall / load balancer
+└── NO → Check service status and restart
+```
+
+## Detailed Solutions
+
+### Solution 1: {solutions.get('sol1_title', 'Most Common Fix')}
+**When to use:** {solutions.get('sol1_when', 'When you see error code E001')}
+**Steps:**
+1. {solutions.get('sol1_step1', '[First step]')}
+2. {solutions.get('sol1_step2', '[Second step]')}
+3. {solutions.get('sol1_step3', '[Verify fix]')}
+
+### Solution 2: {solutions.get('sol2_title', 'Less Common Fix')}
+**When to use:** {solutions.get('sol2_when', 'When the quick fix didn't work')}
+**Steps:**
+1. {solutions.get('sol2_step1', '[First step]')}
+
+## Logs to Check
+| Log File | Location | What to Look For |
+|----------|----------|------------------|
+| Application log | `/var/log/app/` | Error messages, stack traces |
+| Access log | `/var/log/nginx/` | 5xx errors, slow requests |
+| System log | `/var/log/syslog` | OOM kills, disk errors |
+
+## Still Stuck?
+- Search existing issues: [GitHub Issues](link)
+- Check community forum: [Forum link]
+- Contact support: [support@example.com](mailto:support@example.com)
+
+**When contacting support, include:**
+1. Error message (full text, not just the code)
+2. Steps to reproduce
+3. Application version and environment details
+4. Relevant log excerpts
+"""
+    return template
 ```
 
 ---
 
 ## Edge Cases & Pitfalls
 
-### 1. Writing for Yourself, Not the Reader
-**Problem:** Experts write at their own knowledge level, making content inaccessible to the target audience.
-**Solution:** Apply the Feynman technique. Have someone from the target audience read it. If they can't follow it, simplify.
+### 1. Writing for Yourself
+**Problem:** You understand the topic deeply and write documentation that makes sense to you but not to your audience. This is the curse of knowledge.
+**Solution:** Test with real users. Watch someone read your documentation for the first time. Their confusion is your documentation's failure, not their understanding.
 
 ### 2. Code Examples That Don't Run
-**Problem:** Code snippets with missing imports, outdated API calls, or context-dependent variables that readers can't reproduce.
-**Solution:** Every code example must be complete and runnable. Test all code before publishing. Include all imports.
+**Problem:** Documentation includes code snippets with typos, missing imports, or incorrect API calls. Readers trust them and waste hours debugging.
+**Solution:** Run every code example before publishing. Use CI/CD to test code snippets. Version code examples alongside documentation.
 
-### 3. The "Curse of Knowledge"
-**Problem:** Once you understand something, it's hard to remember what it was like not to understand it. This leads to skipping steps and undefined terms.
-**Solution:** Define every technical term on first use. Never assume the reader knows abbreviations or jargon.
+### 3. Tutorial Hell
+**Problem:** Tutorials that only show the "happy path" leave readers unable to handle errors, edge cases, or customization.
+**Solution:** Include error handling in examples. Show common failure modes. After the tutorial, show how to extend and customize.
 
-### 4. Tutorial Hell (Step-by-Step Without Understanding)
-**Problem:** Tutorials that work perfectly but teach readers to follow instructions, not to think. Readers can't adapt when their situation differs.
-**Solution:** After each step, explain WHY this step is necessary and what alternatives exist. Include "try modifying X" prompts.
+### 4. Wall-of-Text Documentation
+**Problem:** Long paragraphs without headers, lists, or visual breaks. Readers scan, not read — walls of text are invisible.
+**Solution:** Use headers every 2-3 paragraphs. Use bullet points and numbered lists. Add diagrams, code blocks, and tables for visual variety.
 
-### 5. Overloading the Introduction
-**Problem:** Putting too much context, motivation, and background in the introduction before getting to the point.
-**Solution:** Keep introductions under 200 words. State what the reader will learn and why it matters, then start the content.
+### 5. Missing Prerequisites
+**Problem:** Tutorials assume readers have specific tools, knowledge, or setup that isn't stated. Readers fail immediately and blame themselves.
+**Solution:** Explicitly list prerequisites. Link to setup guides. Include a "Verify your setup" step at the beginning.
 
-### 6. Missing Error Handling in Examples
-**Problem:** Code examples that only show the happy path, leaving readers unprepared for errors.
-**Solution:** Show error handling for critical operations. At minimum, mention what can go wrong and how to handle it.
+### 6. Overusing Screenshots
+**Problem:** Documentation relies on screenshots that become outdated, aren't searchable, and don't work for screen readers.
+**Solution:** Use text-based examples and command-line output over screenshots. When screenshots are necessary, supplement with text descriptions.
 
-### 7. Inconsistent Naming Conventions
-**Problem:** Using different variable names, terminology, or formatting styles across the same article.
-**Solution:** Create a terminology glossary for the article. Use find-and-replace to ensure consistency.
+### 7. Inconsistent Terminology
+**Problem:** The same concept is called different things in different documents ("user" vs "customer" vs "account" vs "member").
+**Solution:** Create a glossary. Use find-and-replace to standardize. Add terminology guidelines to your style guide.
 
-### 8. Wall-of-Text Syndrome
-**Problem:** Long paragraphs without visual breaks, making content hard to scan and intimidating to read.
-**Solution:** Break text into short paragraphs (3-4 sentences max). Use bullets, tables, code blocks, and headings to create visual rhythm.
+### 8. Burying the Lead
+**Problem:** Putting the most important information deep in the document, requiring readers to read everything before finding what they need.
+**Solution:** Lead with the answer. Use the inverted pyramid: most important information first, details later. Use callout boxes for critical information.
 
-### 9. Forgetting Mobile Readers
-**Problem:** Long code lines that overflow on mobile screens, tables that don't scroll, and images that are too small to read.
-**Solution:** Keep code lines under 80 characters. Use horizontal scroll for wide tables. Ensure images are high-resolution.
+### 9. Ignoring Mobile Readers
+**Problem:** Long code blocks and wide tables that require horizontal scrolling on mobile devices.
+**Solution:** Keep code examples short. Use responsive tables. Test documentation on mobile devices. Consider mobile-first formatting.
 
-### 10. Not Updating Outdated Content
-**Problem:** Publishing a tutorial that references deprecated APIs, old versions, or discontinued tools.
-**Solution:** Add "Last updated: {date}" to every article. Set calendar reminders to review content quarterly.
+### 10. Outdated Content
+**Problem:** Documentation that references deprecated APIs, old versions, or discontinued features. Readers follow it and get errors.
+**Solution:** Set review dates. Use version-aware documentation. Add "Last verified with version X.Y" notices. Automate link checking.
 
-### 11. Burying the Lead
-**Problem:** Making the reader wade through paragraphs before revealing the key information or answer.
-**Solution:** Use the inverted pyramid: most important information first, details last. TL;DR at the top.
+### 11. No Call to Action
+**Problem:** Documentation explains concepts but doesn't tell the reader what to do next. They finish reading and are lost.
+**Solution:** End every page with clear next steps: links to related docs, suggested exercises, or calls to try something.
 
-### 12. Overusing Screenshots
-**Problem:** Screenshots of code instead of actual code blocks, making content unsearchable and uncopyable.
-**Solution:** Always use text code blocks, not images of code. Use screenshots only for UI/visualization output.
+### 12. Over-explaining Simple Things
+**Problem:** Spending 500 words explaining how to install Python, while the target audience already knows how.
+**Solution:** Match depth to audience level. Put basic setup in a "Prerequisites" section with links. Focus the main content on the actual topic.
 
-### 13. Neglecting Prerequisites
-**Problem:** Assuming readers have the right environment set up without explicitly stating what's needed.
-**Solution:** Include a prerequisites section with exact versions, installation commands, and a verification step.
+### 13. Missing Context for Code
+**Problem:** Showing code without explaining why this approach was chosen, what alternatives exist, or when to use it.
+**Solution:** Always include: why (motivation), what (overview), how (implementation), when (use cases), and when not to (anti-patterns).
 
-### 14. Excessive Qualification
-**Problem:** Hedging every statement with "generally," "usually," "in most cases," which dilutes the message and bores the reader.
-**Solution:** Be confident when the statement is generally true. Add qualifications only when the exception is common and important.
+### 14. Not Versioning Documentation
+**Problem:** A single documentation site serves all versions, but readers are on different API versions.
+**Solution:** Version documentation alongside code. Use URL versioning (/v1/, /v2/) or version dropdowns. Clearly mark deprecated versions.
 
-### 15. No Call to Action
-**Problem:** The article ends without telling the reader what to do next, leaving them with knowledge but no direction.
-**Solution:** End with: next steps to try, resources to explore, a community to join, or a project to build.
+### 15. Ignoring Accessibility
+**Problem:** Documentation uses color alone to convey meaning, lacks alt text for images, or has poor heading structure for screen readers.
+**Solution:** Use semantic HTML. Add alt text to all images. Don't rely solely on color. Ensure sufficient contrast. Test with screen readers.
 
 ---
 
@@ -803,13 +1063,14 @@ This article assumes you {prerequisites}. If you're not familiar with
 
 | Skill | Integration Type | Description |
 |---|---|---|
-| **Data Analysis** | Content Source | Statistical findings and analysis results are common subjects for technical articles |
-| **RAG Implementation** | Content Subject | Many technical articles explain RAG concepts, patterns, and implementations |
-| **Data Cleaning** | Content Source | Data cleaning techniques and patterns are frequently documented for teams |
-| **Summarization** | Complementary | Summarize long technical content for quick reference or executive summaries |
-| **Code Review** | Companion | Technical writing often accompanies code review processes and architecture docs |
-| **Knowledge Management** | Output | Technical writing creates the knowledge base that teams rely on |
-| **Presentation Skills** | Related | Workshop materials often become presentation decks; parallel skill development |
+| **Data Analysis** | Content Source | Analysis findings need clear documentation for stakeholders |
+| **RAG Implementation** | Enhancement | Well-structured docs improve retrieval quality in knowledge bases |
+| **Data Cleaning** | Companion | Document data cleaning procedures for reproducibility |
+| **Summarization** | Complement | Summarize long documents for quick reference guides |
+| **Code Understanding** | Input | Code comprehension informs API documentation and tutorials |
+| **Knowledge Management** | Core Component | Technical writing is the primary content type in knowledge bases |
+| **UX Writing** | Overlap | Technical writing shares principles with UX microcopy and interface text |
+| **Project Management** | Process | Documentation planning integrates with sprint planning and release cycles |
 
 ---
 
@@ -818,205 +1079,205 @@ This article assumes you {prerequisites}. If you're not familiar with
 ### Standard Tutorial
 
 ```markdown
----
-title: "How to {Action}: A Step-by-Step Tutorial"
-description: "Learn to {goal} with this comprehensive tutorial. Covers {topics}."
-date: {YYYY-MM-DD}
-author: {Author}
-tags: [{tag1}, {tag2}]
-estimated_time: {X} minutes
-difficulty: {beginner|intermediate|advanced}
----
-
-# How to {Action}: A Step-by-Step Tutorial
-
-> **TL;DR:** {One sentence summary of what you'll build/learn}
-
-## Prerequisites
-- {requirement_1}
-- {requirement_2}
+# Tutorial: {Topic}
 
 ## What You'll Learn
-- ✅ {learning_1}
-- ✅ {learning_2}
-- ✅ {learning_3}
+- Learning objective 1
+- Learning objective 2
+- Learning objective 3
 
-## Step 1: {Action}
-{explanation}
+## Prerequisites
+- Requirement 1
+- Requirement 2
 
-```{language}
-{code}
-```
+## Time Required
+~{X} minutes
 
-{expected output}
-
-## Step 2: {Action}
-{explanation}
-
-```{language}
-{code}
-```
-
-## Summary
-{recap key points}
-
-## Next Steps
-- {extension_1}
-- {extension_2}
-```
-
-### Quick Explainer
-
-```markdown
 ---
-title: "{Concept} Explained"
-description: "What is {concept} and why does it matter? A clear, concise explanation."
-estimated_time: {X} minutes
----
-
-# {Concept} Explained
-
-**{Concept}** is {one-sentence definition}.
-
-## Why It Matters
-{2-3 sentences on importance}
-
-## How It Works
-{diagram or code example}
-
-## Key Takeaways
-- {takeaway_1}
-- {takeaway_2}
-- {takeaway_3}
-```
-
-### Deep Dive Article
-
-```markdown
----
-title: "{Advanced Topic}: A Deep Dive"
-description: "Master {topic} with this comprehensive guide covering {subtopics}."
-estimated_time: {X} minutes
-difficulty: advanced
----
-
-# {Advanced Topic}: A Deep Dive
-
-> **Prerequisites:** This article assumes familiarity with {prerequisites}. 
-> If you're new to {topic}, start with {prerequisite_article}.
-
-## The Big Picture
-{overview with architecture diagram}
 
 ## Part 1: {Subtopic}
-{detailed content}
+
+### Explanation
+{Concept explanation with analogy}
+
+### Hands-On
+```{language}
+{Runnable code example}
+```
+
+### Verify
+{Expected output or verification step}
+
+✅ **Checkpoint:** {What success looks like}
+
+---
 
 ## Part 2: {Subtopic}
-{detailed content}
+{Repeat pattern}
 
-## Part 3: {Subtopic}
-{detailed content}
-
-## Production Considerations
-{deployment, monitoring, scaling advice}
-
-## Decision Framework
-{when to use, when not to, alternatives}
+---
 
 ## Summary
-{key takeaways}
+- {Key concept 1}
+- {Key concept 2}
+
+## Next Steps
+- {Link to advanced topic}
+- {Link to reference}
+
+## Troubleshooting
+| Problem | Solution |
+|---------|----------|
+| {Problem 1} | {Solution 1} |
 ```
 
-### Post-Mortem
+### Quick Reference Card
 
 ```markdown
----
-title: "Post-Mortem: {Incident Name}"
-date: {YYYY-MM-DD}
-status: {draft|published}
-severity: {SEV1|SEV2|SEV3}
----
+# {Tool/Concept} Quick Reference
 
-# Post-Mortem: {Incident Name}
+## Commands
+| Command | Description | Example |
+|---------|-------------|---------|
+| `{cmd1}` | {desc} | `{example}` |
+
+## Common Patterns
+```{language}
+{pattern1}
+```
+
+## Error Reference
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `{error}` | {cause} | {fix} |
+
+## Configuration
+| Option | Default | Description |
+|--------|---------|-------------|
+| `{opt}` | `{default}` | {desc} |
+```
+
+### Concept Explainer
+
+```markdown
+# {Concept}
 
 ## TL;DR
-{One paragraph summary}
+{One sentence explanation}
 
-## Impact
-- Duration: {X hours}
-- Users affected: {number}
-- Revenue impact: ${amount}
+## Analogy
+{Everyday analogy that makes it intuitive}
 
-## Timeline
-{chronological list}
+## How It Works
+{Technical explanation with diagrams}
 
-## Root Cause
-{technical explanation}
+## When to Use
+- Use case 1
+- Use case 2
 
-## Action Items
-| Action | Owner | Due | Priority |
-|--------|-------|-----|----------|
-| {action} | {owner} | {date} | {P0-P3} |
+## When NOT to Use
+- Anti-pattern 1
+- Anti-pattern 2
 
-## Lessons Learned
-1. {lesson}
-2. {lesson}
+## Example
+```{language}
+{Working code example}
 ```
 
-### Workshop Module
+## Further Reading
+- {Resource 1}
+- {Resource 2}
+```
+
+### API Reference Page
 
 ```markdown
----
-title: "Workshop: {Topic}"
-duration: {X} hours
-level: {beginner|intermediate|advanced}
----
+# {Endpoint Name}
 
-# Workshop: {Topic}
+**Method:** `{METHOD}` | **Path:** `{path}` | **Auth:** {required/optional}
 
-## Setup (30 min)
-{prerequisites, installation, verification}
+## Description
+{What this endpoint does}
 
-## Module 1: {Title} ({X} min)
-**Goal:** {what participants will accomplish}
+## Request
+### Parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `{param}` | {type} | {yes/no} | {desc} |
 
-### Exercise 1.1: {Title}
-- **Time:** {X} min
-- **Instructions:** {steps}
-- **Expected result:** {output}
+### Body
+```json
+{request_body_example}
+```
 
-### Exercise 1.2: {Title}
-- **Time:** {X} min
-- **Instructions:** {steps}
-- **Expected result:** {output}
+## Response
+### Success (200)
+```json
+{success_response}
+```
 
-## Module 2: {Title} ({X} min)
-{repeat pattern}
+### Errors
+| Code | Description |
+|------|-------------|
+| 400 | Bad request |
+| 401 | Unauthorized |
 
-## Bonus Challenges
-- {challenge_1}
-- {challenge_2}
+## Examples
+```bash
+{curl_example}
+```
+```
 
-## Solutions
-{available after workshop}
+### Agent-Friendly Structured Output
+
+```json
+{
+  "document_type": "{tutorial|reference|how-to|concept|release-notes}",
+  "title": "{title}",
+  "target_audience": "{beginner|intermediate|expert}",
+  "reading_time_minutes": 10,
+  "sections": [
+    {
+      "heading": "{heading}",
+      "level": 2,
+      "content_type": "{text|code|table|diagram}",
+      "key_points": ["point 1", "point 2"]
+    }
+  ],
+  "code_examples": [
+    {
+      "language": "python",
+      "description": "{what this example demonstrates}",
+      "runnable": true
+    }
+  ],
+  "links": [
+    {"text": "{link text}", "url": "{url}", "type": "{internal|external}"}
+  ],
+  "metadata": {
+    "version": "1.0",
+    "last_reviewed": "2024-01-01",
+    "review_cycle_days": 90
+  }
+}
 ```
 
 ---
 
 ## Rules
 
-1. **Know your audience** — Write for a specific knowledge level, not for everyone. A tutorial for beginners is different from a deep dive for experts. State prerequisites explicitly.
-2. **Lead with value** — State what the reader will learn or build in the first paragraph. Respect their time by being upfront about the payoff.
-3. **Every code example must run** — Test all code before publishing. Include imports, context, and expected output. Broken code destroys trust.
-4. **Use the Feynman technique** — Explain concepts as if teaching someone with no background. If you can't explain it simply, you don't understand it well enough.
-5. **Progressive disclosure** — Start simple, add complexity gradually. Show the 5-line version before the 50-line version. Don't overwhelm.
-6. **Code needs narrative** — Every code block needs: what it does (context), the code itself, what each part does (explanation), and what happens (output). Never drop code without context.
-7. **Break text visually** — Short paragraphs (3-4 sentences), bullets, tables, code blocks, and headings. No walls of text. Target a 40-60% code-to-prose ratio.
-8. **Define every term** — Don't assume the reader knows jargon, abbreviations, or acronyms. Define on first use.
-9. **Include error handling** — Show what happens when things go wrong, not just the happy path. Readers will encounter errors.
-10. **Make it scannable** — Use headings that work as a table of contents. Bold key terms. Use TL;DR sections. Readers scan before they read.
-11. **Update regularly** — Technical content decays. Add "Last updated" dates. Set review schedules. Remove or update deprecated information.
-12. **End with next steps** — Don't leave the reader stranded. Suggest what to learn, build, or read next.
-13. **Be blameless in post-mortems** — Focus on systems and processes, not people. The goal is learning and prevention.
-14. **Test your tutorials** — Have someone unfamiliar with the topic follow your tutorial step by step. Where they get stuck, your writing needs improvement.
-15. **Write the introduction last** — The introduction should accurately reflect the content. Write it after the body so it doesn't promise something the article doesn't deliver.
+1. **Write for your reader, not for yourself** — Your audience has different knowledge, goals, and context. Test with real users before assuming clarity.
+2. **Lead with the answer** — Put the most important information first. Use inverted pyramid: conclusion → supporting details → background.
+3. **One idea per paragraph** — Each paragraph should have a single main point. If you're covering two concepts, use two paragraphs or two sections.
+4. **Use active voice** — "Click the button" not "The button should be clicked." Active voice is clearer, shorter, and more direct.
+5. **Show, don't just tell** — Code examples, screenshots, and diagrams communicate faster than paragraphs of description.
+6. **Make code examples runnable** — Every code snippet should work as-is. Include imports, context, and expected output. Test before publishing.
+7. **Use consistent terminology** — Pick one term for each concept and use it everywhere. Create a glossary for your project.
+8. **Structure for scanning** — Use headers, bullet points, tables, and callout boxes. Readers scan before they read.
+9. **Define jargon on first use** — If you must use a technical term, define it immediately. Better yet, use plain language instead.
+10. **Include the "why" not just the "how"** — Understanding why an approach was chosen helps readers adapt it to their situation.
+11. **Version your documentation** — Documentation should be versioned alongside code. Old versions should remain accessible.
+12. **Write for accessibility** — Use semantic structure, alt text, sufficient contrast, and test with screen readers.
+13. **Maintain a changelog** — Every significant documentation change should be logged. Readers need to know what's new.
+14. **Keep code examples current** — Outdated code examples are worse than no examples. Automate testing where possible.
+15. **End with clear next steps** — Every document should end with what to do next: related docs, exercises, or calls to action.
