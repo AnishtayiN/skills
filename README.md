@@ -326,6 +326,11 @@ validator as proof that application code works.
 `index.html` has no build step and no dependencies: open it locally, or drop it on any static
 host. Its catalog is checked against the skill frontmatter by the validator.
 
+`.nojekyll` is not decoration. With Pages building from a branch, Jekyll treats every `SKILL.md`
+as a page and runs Liquid over it — and prompt templates legitimately contain `{{variable}}`, which
+makes the Pages build fail. Skipping Jekyll serves the site as-is and keeps the 57 playbooks out
+of the build path.
+
 ## 🤝 Contributing
 
 Before adding a skill:
