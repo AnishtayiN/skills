@@ -99,27 +99,27 @@ class HubAgent:
         self.workers: Dict[str, WorkerAgent] = {}
         self.task_queue = asyncio.Queue()
         self.results: Dict[str, Any] = {}
-    
+
     def register_worker(self, name: str, worker: 'WorkerAgent'):
         self.workers[name] = worker
         worker.hub = self
-    
+
     async def delegate_task(self, task: dict, worker_name: str):
         if worker_name not in self.workers:
             raise ValueError(f"Worker {worker_name} not found")
-        
+
         worker = self.workers[worker_name]
         result = await worker.execute(task)
         self.results[task['id']] = result
         return result
-    
+
     async def parallel_execute(self, tasks: List[dict]):
         """Execute multiple tasks in parallel"""
         coroutines = []
         for task in tasks:
             worker_name = task.get('worker', list(self.workers.keys())[0])
             coroutines.append(self.delegate_task(task, worker_name))
-        
+
         results = await asyncio.gather(*coroutines, return_exceptions=True)
         return results
 
@@ -127,7 +127,7 @@ class WorkerAgent:
     def __init__(self, name: str):
         self.name = name
         self.hub = None
-    
+
     async def execute(self, task: dict) -> Any:
         # Worker-specific logic
         return {"status": "completed", "task_id": task['id']}
@@ -159,26 +159,26 @@ class PeerAgent:
         self.peers: Dict[str, 'PeerAgent'] = {}
         self.mailbox = asyncio.Queue()
         self.handlers = {}
-    
+
     def connect(self, peer: 'PeerAgent'):
         self.peers[peer.name] = peer
         peer.peers[self.name] = self
-    
+
     async def send(self, receiver_name: str, message: Message):
         if receiver_name not in self.peers:
             raise ValueError(f"Peer {receiver_name} not connected")
         await self.peers[receiver_name].mailbox.put(message)
-    
+
     async def broadcast(self, message: Message):
         for peer_name, peer in self.peers.items():
             if peer_name != self.name:
                 await peer.mailbox.put(message)
-    
+
     async def run(self):
         while True:
             message = await self.mailbox.get()
             await self.handle_message(message)
-    
+
     async def handle_message(self, message: Message):
         if message.type in self.handlers:
             await self.handlers[message.type](message)
@@ -195,7 +195,7 @@ class PipelineStage:
         self.processor = processor
         self.input_queue = asyncio.Queue()
         self.output_queue = asyncio.Queue()
-    
+
     async def process(self):
         while True:
             item = await self.input_queue.get()
@@ -209,22 +209,22 @@ class Pipeline:
     def __init__(self, stages: list):
         self.stages = stages
         self._connect_stages()
-    
+
     def _connect_stages(self):
         for i in range(len(self.stages) - 1):
             self.stages[i].output_queue = self.stages[i + 1].input_queue
-    
+
     async def execute(self, data: Any):
         # Start all stages
         tasks = [stage.process() for stage in self.stages]
-        
+
         # Feed data into first stage
         await self.stages[0].input_queue.put(data)
         await self.stages[0].input_queue.put(None)  # Sentinel
-        
+
         # Wait for completion
         await asyncio.gather(*tasks)
-        
+
         # Get result from last stage
         return await self.stages[-1].output_queue.get()
 
@@ -278,15 +278,15 @@ class MessageBroker:
     def __init__(self):
         self.subscribers: dict = {}
         self.message_queue = asyncio.Queue()
-    
+
     async def publish(self, message: AgentMessage):
         await self.message_queue.put(message)
-    
+
     def subscribe(self, topic: str, handler):
         if topic not in self.subscribers:
             self.subscribers[topic] = []
         self.subscribers[topic].append(handler)
-    
+
     async def process_messages(self):
         while True:
             message = await self.message_queue.get()
@@ -299,11 +299,11 @@ class AgentCommunication:
         self.agent_id = agent_id
         self.broker = broker
         self.pending_replies = {}
-    
+
     async def request(self, receiver: str, payload: Any, timeout: float = 30) -> Any:
         """Send request and wait for response"""
         correlation_id = str(uuid.uuid4())
-        
+
         message = AgentMessage(
             id=str(uuid.uuid4()),
             protocol=Protocol.REQUEST_RESPONSE,
@@ -313,18 +313,18 @@ class AgentCommunication:
             payload=payload,
             reply_to=correlation_id
         )
-        
+
         future = asyncio.Future()
         self.pending_replies[correlation_id] = future
-        
+
         await self.broker.publish(message)
-        
+
         try:
             return await asyncio.wait_for(future, timeout)
         except asyncio.TimeoutError:
             del self.pending_replies[correlation_id]
             raise TimeoutError(f"Request to {receiver} timed out")
-    
+
     async def send_response(self, correlation_id: str, payload: Any):
         """Send response to a request"""
         message = AgentMessage(
@@ -368,34 +368,34 @@ class TaskDelegator:
         self.agents = []
         self.task_queue = asyncio.Queue()
         self.results = {}
-    
+
     def register_agent(self, agent):
         self.agents.append(agent)
-    
+
     async def delegate(self, tasks: List[Task]):
         """Distribute tasks among agents"""
         for task in tasks:
             await self.task_queue.put(task)
-        
+
         # Start workers
         workers = [self._worker() for _ in self.agents]
         await asyncio.gather(*workers)
-        
+
         return self.results
-    
+
     async def _worker(self):
         while True:
             try:
                 task = self.task_queue.get_nowait()
             except asyncio.QueueEmpty:
                 break
-            
+
             # Find available agent
             agent = self._find_available_agent()
             if agent:
                 task.assigned_to = agent.name
                 task.status = TaskStatus.IN_PROGRESS
-                
+
                 try:
                     result = await agent.execute(task)
                     task.status = TaskStatus.COMPLETED
@@ -405,7 +405,7 @@ class TaskDelegator:
                     task.status = TaskStatus.FAILED
                     task.error = str(e)
                     self.results[task.id] = task
-    
+
     def _find_available_agent(self):
         # Simple round-robin for now
         return self.agents[len(self.results) % len(self.agents)] if self.agents else None
@@ -420,39 +420,39 @@ class DynamicAllocator:
     def __init__(self):
         self.agents: Dict[str, Agent] = {}
         self.load_balancer = LoadBalancer()
-    
+
     async def allocate(self, tasks: List[Task]) -> Dict[str, List[Task]]:
         """Dynamically allocate tasks based on agent capabilities and load"""
         allocations = {agent_name: [] for agent_name in self.agents}
-        
+
         for task in tasks:
             # Find best agent for this task
             best_agent = await self._find_best_agent(task)
             if best_agent:
                 allocations[best_agent].append(task)
                 self.load_balancer.record_assignment(best_agent, task)
-        
+
         return allocations
-    
+
     async def _find_best_agent(self, task: Task) -> str:
         """Find the best agent based on capability and current load"""
         candidates = []
-        
+
         for name, agent in self.agents.items():
             if self._can_handle(agent, task):
                 load_score = self.load_balancer.get_load(name)
                 capability_score = self._get_capability_score(agent, task)
                 candidates.append((name, load_score * capability_score))
-        
+
         if candidates:
             # Return agent with lowest combined score
             return min(candidates, key=lambda x: x[1])[0]
         return None
-    
+
     def _can_handle(self, agent: Agent, task: Task) -> bool:
         """Check if agent can handle this task"""
         return task.type in agent.capabilities
-    
+
     def _get_capability_score(self, agent: Agent, task: Task) -> float:
         """Get capability score (0-1, higher is better)"""
         return agent.capabilities.get(task.type, 0)
@@ -460,10 +460,10 @@ class DynamicAllocator:
 class LoadBalancer:
     def __init__(self):
         self.loads: Dict[str, int] = {}
-    
+
     def record_assignment(self, agent_name: str, task: Task):
         self.loads[agent_name] = self.loads.get(agent_name, 0) + task.weight
-    
+
     def get_load(self, agent_name: str) -> float:
         return self.loads.get(agent_name, 0)
 ```
@@ -487,23 +487,23 @@ class CircuitState(Enum):
 class CircuitBreaker:
     failure_threshold: int = 5
     recovery_timeout: timedelta = timedelta(seconds=30)
-    
+
     def __post_init__(self):
         self.state = CircuitState.CLOSED
         self.failure_count = 0
         self.last_failure_time = None
-    
+
     def record_success(self):
         self.failure_count = 0
         self.state = CircuitState.CLOSED
-    
+
     def record_failure(self):
         self.failure_count += 1
         self.last_failure_time = datetime.now()
-        
+
         if self.failure_count >= self.failure_threshold:
             self.state = CircuitState.OPEN
-    
+
     def should_allow_request(self) -> bool:
         if self.state == CircuitState.CLOSED:
             return True
@@ -518,11 +518,11 @@ class CircuitBreaker:
 class ResilientAgent:
     def __init__(self):
         self.circuit_breakers: Dict[str, CircuitBreaker] = {}
-    
+
     async def execute_with_retry(self, func: Callable, max_retries: int = 3) -> Any:
         """Execute function with retry and circuit breaker"""
         last_error = None
-        
+
         for attempt in range(max_retries):
             try:
                 result = await func()
@@ -531,23 +531,23 @@ class ResilientAgent:
             except Exception as e:
                 last_error = e
                 self._record_failure()
-                
+
                 if not self._should_retry(attempt, max_retries):
                     break
-                
+
                 # Exponential backoff
                 await asyncio.sleep(2 ** attempt)
-        
+
         raise last_error
-    
+
     def _record_success(self):
         for cb in self.circuit_breakers.values():
             cb.record_success()
-    
+
     def _record_failure(self):
         for cb in self.circuit_breakers.values():
             cb.record_failure()
-    
+
     def _should_retry(self, attempt: int, max_retries: int) -> bool:
         return attempt < max_retries - 1
 ```
@@ -560,21 +560,21 @@ import asyncio
 class FallbackChain:
     def __init__(self):
         self.strategies: List[Callable] = []
-    
+
     def add_strategy(self, strategy: Callable):
         self.strategies.append(strategy)
         return self
-    
+
     async def execute(self, *args, **kwargs) -> Any:
         last_error = None
-        
+
         for strategy in self.strategies:
             try:
                 return await strategy(*args, **kwargs)
             except Exception as e:
                 last_error = e
                 continue
-        
+
         raise Exception(f"All strategies failed. Last error: {last_error}")
 
 # Usage
@@ -623,13 +623,13 @@ class StateManager:
         self.state: Dict[str, StateEntry] = {}
         self.locks: Dict[str, asyncio.Lock] = {}
         self._global_lock = asyncio.Lock()
-    
+
     async def get(self, key: str) -> Optional[Any]:
         async with self._global_lock:
             if key in self.state:
                 return self.state[key].value
         return None
-    
+
     async def set(self, key: str, value: Any, version: int = None) -> bool:
         async with self._global_lock:
             if key not in self.state:
@@ -641,20 +641,20 @@ class StateManager:
                     last_updated=asyncio.get_event_loop().time()
                 )
                 return True
-            
+
             current = self.state[key]
             if version and current.version != version:
                 return False  # Version conflict
-            
+
             current.value = value
             current.version = (version or current.version) + 1
             current.last_updated = asyncio.get_event_loop().time()
             return True
-    
+
     async def watch(self, key: str, callback: Callable):
         """Watch for state changes"""
         last_version = 0
-        
+
         while True:
             async with self._global_lock:
                 if key in self.state:
@@ -669,18 +669,18 @@ class AgentState:
         self.agent_id = agent_id
         self.state_manager = state_manager
         self.local_state = {}
-    
+
     async def update(self, key: str, value: Any):
         full_key = f"{self.agent_id}:{key}"
         await self.state_manager.set(full_key, value)
         self.local_state[key] = value
-    
+
     async def get(self, key: str) -> Optional[Any]:
         full_key = f"{self.agent_id}:{key}"
         value = await self.state_manager.get(full_key)
         self.local_state[key] = value
         return value
-    
+
     async def sync(self):
         """Sync local state with distributed state"""
         for key in list(self.local_state.keys()):
@@ -709,59 +709,59 @@ class LoopType(Enum):
 class LoopDetector:
     max_history: int = 100
     max_retries: int = 3
-    
+
     def __post_init__(self):
         self.history: Dict[str, int] = {}
         self.execution_path: list = []
-    
+
     def can_execute(self, agent_id: str, task_id: str) -> bool:
         """Check if execution would create a loop"""
         key = self._make_key(agent_id, task_id)
-        
+
         # Check for self-loop
         if agent_id == task_id:
             return False
-        
+
         # Check for direct loop
         if key in self.history and self.history[key] >= self.max_retries:
             return False
-        
+
         # Check for transitive loop
         if self._detect_loop(agent_id):
             return False
-        
+
         return True
-    
+
     def record_execution(self, agent_id: str, task_id: str):
         key = self._make_key(agent_id, task_id)
         self.history[key] = self.history.get(key, 0) + 1
         self.execution_path.append((agent_id, task_id))
-        
+
         # Trim history if too long
         if len(self.execution_path) > self.max_history:
             self.execution_path = self.execution_path[-self.max_history:]
-    
+
     def _make_key(self, agent_id: str, task_id: str) -> str:
         return f"{agent_id}:{task_id}"
-    
+
     def _detect_loop(self, current_agent: str) -> bool:
         """Detect if adding current_agent would create a loop"""
         visited = set()
         stack = [current_agent]
-        
+
         while stack:
             agent = stack.pop()
             if agent in visited:
                 return True
             visited.add(agent)
-            
+
             # Find agents this agent calls
             for entry_agent, entry_task in self.execution_path:
                 if entry_agent == agent:
                     stack.append(entry_task)
-        
+
         return False
-    
+
     def get_loop_info(self) -> Dict[str, Any]:
         return {
             "history_size": len(self.history),
@@ -772,13 +772,13 @@ class LoopDetector:
 class LoopPreventionMiddleware:
     def __init__(self):
         self.detector = LoopDetector()
-    
+
     async def execute(self, agent: 'Agent', task: 'Task') -> Any:
         if not self.detector.can_execute(agent.id, task.id):
             raise RuntimeError(f"Loop detected: {agent.id} -> {task.id}")
-        
+
         self.detector.record_execution(agent.id, task.id)
-        
+
         try:
             return await agent.execute(task)
         finally:
@@ -803,21 +803,21 @@ class SharedContext:
     metadata: Dict[str, Any] = field(default_factory=dict)
     version: int = 0
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
-    
+
     async def get(self, key: str, default: Any = None) -> Any:
         async with self.lock:
             return self.data.get(key, default)
-    
+
     async def set(self, key: str, value: Any):
         async with self.lock:
             self.data[key] = value
             self.version += 1
-    
+
     async def update(self, updates: Dict[str, Any]):
         async with self.lock:
             self.data.update(updates)
             self.version += 1
-    
+
     def snapshot(self) -> Dict[str, Any]:
         """Create a snapshot of current context"""
         return {
@@ -831,20 +831,20 @@ class ContextManager:
     def __init__(self):
         self.contexts: Dict[str, SharedContext] = {}
         self._lock = asyncio.Lock()
-    
+
     async def create_context(self, context_id: str) -> SharedContext:
         async with self._lock:
             if context_id in self.contexts:
                 return self.contexts[context_id]
-            
+
             context = SharedContext(id=context_id)
             self.contexts[context_id] = context
             return context
-    
+
     async def get_context(self, context_id: str) -> Optional[SharedContext]:
         async with self._lock:
             return self.contexts.get(context_id)
-    
+
     async def share_between_agents(self, agent1: str, agent2: str, context_id: str):
         """Share context between two agents"""
         context = await self.get_context(context_id)
@@ -857,15 +857,15 @@ class AgentWithContext:
         self.agent_id = agent_id
         self.context_manager = context_manager
         self.local_context: Optional[SharedContext] = None
-    
+
     async def join_context(self, context_id: str):
         self.local_context = await self.context_manager.get_context(context_id)
-    
+
     async def read_context(self, key: str) -> Any:
         if self.local_context:
             return await self.local_context.get(key)
         return None
-    
+
     async def write_context(self, key: str, value: Any):
         if self.local_context:
             await self.local_context.set(key, value)
@@ -887,20 +887,20 @@ async def fan_out_fan_in(
     """Execute tasks in parallel and aggregate results"""
     # Create semaphore to limit concurrency
     semaphore = asyncio.Semaphore(max_workers)
-    
+
     async def bounded_worker(task):
         async with semaphore:
             return await worker(task)
-    
+
     # Fan out: execute all tasks
     results = await asyncio.gather(
         *[bounded_worker(task) for task in tasks],
         return_exceptions=True
     )
-    
+
     # Filter out exceptions
     successful_results = [r for r in results if not isinstance(r, Exception)]
-    
+
     # Fan in: aggregate results
     return await aggregator(successful_results)
 
@@ -923,17 +923,17 @@ class AgentRegistry:
     def __init__(self):
         self._agents: Dict[str, Type] = {}
         self._instances: Dict[str, Any] = {}
-    
+
     def register(self, name: str, agent_class: Type):
         self._agents[name] = agent_class
-    
+
     async def get_or_create(self, name: str, **kwargs) -> Any:
         if name not in self._instances:
             if name not in self._agents:
                 raise ValueError(f"Agent {name} not registered")
             self._instances[name] = self._agents[name](**kwargs)
         return self._instances[name]
-    
+
     async def get_all(self) -> Dict[str, Any]:
         return self._instances.copy()
 
@@ -964,7 +964,7 @@ class Priority(IntEnum):
 class PrioritizedTask:
     priority: Priority
     task: Any = field(compare=False)
-    
+
     def __init__(self, priority: Priority, task: Any):
         self.priority = priority
         self.task = task
@@ -973,17 +973,17 @@ class PriorityTaskQueue:
     def __init__(self):
         self._queue: list = []
         self._lock = asyncio.Lock()
-    
+
     async def put(self, priority: Priority, task: Any):
         async with self._lock:
             heapq.heappush(self._queue, PrioritizedTask(priority, task))
-    
+
     async def get(self) -> Any:
         async with self._lock:
             if self._queue:
                 return heapq.heappop(self._queue).task
             return None
-    
+
     @property
     def empty(self) -> bool:
         return len(self._queue) == 0
@@ -1008,14 +1008,14 @@ class HealthMonitor:
     def __init__(self):
         self.agents: Dict[str, HealthStatus] = {}
         self.heartbeat_interval = 30  # seconds
-    
+
     async def monitor(self):
         while True:
             for agent_id, status in self.agents.items():
                 if self._is_unhealthy(status):
                     await self._handle_unhealthy(agent_id, status)
             await asyncio.sleep(self.heartbeat_interval)
-    
+
     def _is_unhealthy(self, status: HealthStatus) -> bool:
         time_since_heartbeat = (datetime.now() - status.last_heartbeat).seconds
         return (
@@ -1023,7 +1023,7 @@ class HealthMonitor:
             status.error_count > 10 or
             status.response_time_ms > 5000
         )
-    
+
     async def _handle_unhealthy(self, agent_id: str, status: HealthStatus):
         print(f"Agent {agent_id} is unhealthy: {status}")
         # Restart agent, alert, etc.
@@ -1056,33 +1056,33 @@ class WorkflowOrchestrator:
     def __init__(self):
         self.steps: Dict[str, WorkflowStep] = {}
         self.results: Dict[str, Any] = {}
-    
+
     def add_step(self, step: WorkflowStep):
         self.steps[step.id] = step
-    
+
     async def execute(self):
         # Topological sort
         execution_order = self._get_execution_order()
-        
+
         for step_group in execution_order:
             # Execute steps in parallel
             tasks = [self._execute_step(step_id) for step_id in step_group]
             await asyncio.gather(*tasks)
-        
+
         return self.results
-    
+
     async def _execute_step(self, step_id: str):
         step = self.steps[step_id]
-        
+
         # Check dependencies
         if step.depends_on:
             for dep in step.depends_on:
                 if self.steps[dep].status != StepStatus.COMPLETED:
                     step.status = StepStatus.SKIPPED
                     return
-        
+
         step.status = StepStatus.RUNNING
-        
+
         try:
             # Get agent and execute
             agent = await self._get_agent(step.agent)
@@ -1092,13 +1092,13 @@ class WorkflowOrchestrator:
         except Exception as e:
             step.status = StepStatus.FAILED
             step.result = str(e)
-    
+
     def _get_execution_order(self) -> List[List[str]]:
         """Return steps grouped by dependency level"""
         # Simple implementation - would use topological sort in production
         levels = []
         visited = set()
-        
+
         while len(visited) < len(self.steps):
             level = []
             for step_id, step in self.steps.items():
@@ -1106,13 +1106,13 @@ class WorkflowOrchestrator:
                     continue
                 if not step.depends_on or all(dep in visited for dep in step.depends_on):
                     level.append(step_id)
-            
+
             if not level:
                 break  # Circular dependency
-            
+
             levels.append(level)
             visited.update(level)
-        
+
         return levels
 ```
 

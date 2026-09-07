@@ -1,0 +1,44 @@
+name: Skill problem
+description: Report a playbook that is wrong, unsafe, or unusable in a real agent
+title: "[skill] "
+labels: ["skill-quality"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report the smallest reproducible case: the request you made, the skill that fired, and
+        what the agent did as a result. Claims without evidence are hard to fix.
+  - type: input
+    id: skill
+    attributes:
+      label: Skill
+      description: Which playbook (for example `coding/debugging`)
+      placeholder: coding/debugging
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: The incorrect command, the missing edge case, the unsafe instruction, or the dead tooling
+      placeholder: |
+        The skill tells the agent to run `npm test`, but most pnpm workspaces need `pnpm -r test`;
+        the agent reported "no test script" on a repo that has 400 tests.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Command output, links to upstream docs, or the agent transcript excerpt
+      render: shell
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix
+      description: Optional — the wording or step you would put in its place
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Which agent surfaced this
+      options: [Claude Code, Cursor, Windsurf, Aider, Continue.dev, Hermes Agent, Other / none]

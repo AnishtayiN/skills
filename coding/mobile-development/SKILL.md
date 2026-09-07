@@ -16,8 +16,7 @@ conflicts: []
 
 Mobile application development spans three distinct paradigms: cross-platform frameworks (React Native, Flutter) that share code across iOS and Android, and native development using platform-specific languages (Swift/Kotlin). This skill provides production-grade patterns for every phase of the mobile lifecycle — from architecture and navigation to offline-first data strategies, push notification systems, app store deployment, and performance monitoring. Each framework section includes real-world code patterns, not toy examples, reflecting how mature mobile teams structure their applications.
 
-## When to Use This Skill (6-9 bullets)
-
+## When to Use This Skill
 - **Building a new mobile application** from scratch that targets both iOS and Android platforms
 - **Choosing between React Native, Flutter, or native** development based on project requirements and team expertise
 - **Implementing complex navigation patterns** — nested stacks, deep linking, authentication flows, and tab-based navigation
@@ -28,8 +27,7 @@ Mobile application development spans three distinct paradigms: cross-platform fr
 - **Integrating platform-specific features** — camera, biometrics, location, file system, background tasks
 - **Testing mobile applications** — unit tests, component tests, E2E tests across device form factors
 
-## When NOT to Use This Skill (5-7 bullets)
-
+## When NOT to Use This Skill
 - **Building a responsive web application** — use web development skills; mobile-specific patterns don't apply
 - **Creating a Progressive Web App (PWA)** — PWAs use web technologies, not native mobile frameworks
 - **Developing desktop applications** — Electron/Tauri use different patterns than mobile

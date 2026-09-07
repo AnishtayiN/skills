@@ -16,8 +16,7 @@ conflicts: []
 
 Search Engine Optimization (SEO) is the practice of increasing organic visibility in search engine results pages (SERPs) through technical infrastructure, content structure, and authority signals. This skill focuses on the technical and structural foundations: crawlability (robots.txt, sitemaps, canonical URLs), indexability (meta tags, rendering strategies, SSR/SSG), structured data (Schema.org markup for rich results), Core Web Vitals (LCP, CLS, INP), and server-side rendering implications. SEO is a long-term, compounding strategy — the technical foundation determines whether your content can be discovered at all.
 
-## When to Use This Skill (6-9 bullets)
-
+## When to Use This Skill
 - **Auditing a website's technical SEO** — crawl errors, indexation issues, broken links, redirect chains, and sitemap validation
 - **Implementing structured data / Schema.org** — JSON-LD markup for articles, products, FAQs, breadcrumbs, organization, and local business
 - **Optimizing Core Web Vitals** — improving LCP, reducing CLS, minimizing INP, and passing Google's Page Experience signals
@@ -28,8 +27,7 @@ Search Engine Optimization (SEO) is the practice of increasing organic visibilit
 - **Setting up Google Search Console and analytics** — property verification, sitemap submission, and performance monitoring
 - **Migrating domains or restructuring URLs** — 301 redirect mapping, preserving link equity, and monitoring post-migration
 
-## When NOT to Use This Skill (5-7 bullets)
-
+## When NOT to Use This Skill
 - **Content writing and keyword research** — this skill covers technical infrastructure, not content strategy
 - **Social media marketing** — social signals are not a direct ranking factor; different discipline
 - **PPC / paid search advertising** — Google Ads and SEO are complementary but distinct
@@ -68,6 +66,8 @@ Disallow: /api/
 Crawl-delay: 0
 
 # Bingbot specific rules
+# Googlebot ignores Crawl-delay entirely; throttle crawlers with rate limiting or
+# 429/503 responses instead of relying on this directive.
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1

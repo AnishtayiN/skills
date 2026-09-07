@@ -172,7 +172,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 def build_hierarchical_index(documents):
     # Level 1: Document summaries (1 per doc)
     doc_summaries = [summarize(doc) for doc in documents]
-    
+
     # Level 2: Section chunks (512 tokens)
     section_splitter = RecursiveCharacterTextSplitter(
         chunk_size=512, chunk_overlap=50,
@@ -186,7 +186,7 @@ def build_hierarchical_index(documents):
                 "doc_id": doc.id,
                 "level": "section"
             })
-    
+
     # Level 3: Fine chunks (256 tokens) for precise retrieval
     fine_splitter = RecursiveCharacterTextSplitter(
         chunk_size=256, chunk_overlap=30
@@ -199,7 +199,7 @@ def build_hierarchical_index(documents):
                 "section_id": section["id"],
                 "level": "fine"
             })
-    
+
     return doc_summaries, sections, fine_chunks
 ```
 
@@ -213,24 +213,24 @@ from langchain.prompts import ChatPromptTemplate
 
 async def multi_query_retrieval(query: str, retriever, top_k: int = 5):
     """Decompose complex query into sub-queries and merge results."""
-    
+
     decomposition_prompt = ChatPromptTemplate.from_template(
-        """Given the user question, generate 3-5 sub-questions that 
+        """Given the user question, generate 3-5 sub-questions that
         together would fully answer the original question.
-        
+
         User question: {question}
-        
+
         Sub-questions (one per line):"""
     )
-    
+
     llm = ChatOpenAI(model="gpt-4", temperature=0.3)
     response = await llm.ainvoke(
         decomposition_prompt.format_messages(question=query)
     )
-    
+
     sub_queries = [q.strip() for q in response.content.split("\n") if q.strip()]
     sub_queries.append(query)  # Include original query
-    
+
     # Retrieve for each sub-query
     all_results = {}
     for sq in sub_queries:
@@ -242,14 +242,14 @@ async def multi_query_retrieval(query: str, retriever, top_k: int = 5):
                 all_results[doc_id] = {"doc": doc, "score": 0, "queries": []}
             all_results[doc_id]["score"] += 1
             all_results[doc_id]["queries"].append(sq)
-    
+
     # Merge and rank by multi-query coverage
     ranked = sorted(
-        all_results.values(), 
-        key=lambda x: (x["score"], len(x["queries"])), 
+        all_results.values(),
+        key=lambda x: (x["score"], len(x["queries"])),
         reverse=True
     )
-    
+
     return [r["doc"] for r in ranked[:top_k]]
 ```
 
@@ -266,16 +266,16 @@ def build_parent_child_index(documents, child_size=256, parent_size=1024):
     child_splitter = RecursiveCharacterTextSplitter(
         chunk_size=child_size, chunk_overlap=30
     )
-    
+
     parents = []
     children = []
-    
+
     for doc in documents:
         parent_chunks = parent_splitter.split_text(doc.text)
         for i, parent_text in enumerate(parent_chunks):
             parent_id = f"{doc.id}_p{i}"
             parents.append({"id": parent_id, "text": parent_text, "doc_id": doc.id})
-            
+
             child_chunks = child_splitter.split_text(parent_text)
             for j, child_text in enumerate(child_chunks):
                 children.append({
@@ -283,13 +283,13 @@ def build_parent_child_index(documents, child_size=256, parent_size=1024):
                     "parent_id": parent_id,
                     "doc_id": doc.id,
                 })
-    
+
     return parents, children
 
 async def parent_child_retrieve(query, child_retriever, parent_index, top_k=5):
     """Retrieve via child chunks, return parent context."""
     child_results = await child_retriever.aretrieve(query)
-    
+
     seen_parents = set()
     parent_results = []
     for child in child_results:
@@ -298,7 +298,7 @@ async def parent_child_retrieve(query, child_retriever, parent_index, top_k=5):
             seen_parents.add(parent_id)
             parent = parent_index[parent_id]
             parent_results.append(parent)
-    
+
     return parent_results[:top_k]
 ```
 
@@ -311,20 +311,20 @@ import numpy as np
 from typing import List, Dict
 
 def reciprocal_rank_fusion(
-    ranked_lists: List[List[str]], 
+    ranked_lists: List[List[str]],
     k: int = 60
 ) -> List[str]:
     """Fuse multiple ranked lists using RRF."""
     scores: Dict[str, float] = {}
     doc_map: Dict[str, str] = {}
-    
+
     for ranked_list in ranked_lists:
         for rank, doc_id in enumerate(ranked_list):
             if doc_id not in scores:
                 scores[doc_id] = 0.0
             scores[doc_id] += 1.0 / (k + rank + 1)
             doc_map[doc_id] = doc_id
-    
+
     # Sort by fused score
     fused = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     return [doc_id for doc_id, _ in fused]
@@ -333,12 +333,12 @@ async def hybrid_retrieve(query, dense_retriever, sparse_retriever, top_k=10):
     """Combine dense and sparse retrieval with RRF."""
     dense_results = await dense_retriever.aretrieve(query)
     sparse_results = await sparse_retriever.aretrieve(query)
-    
+
     dense_ids = [r.metadata["id"] for r in dense_results]
     sparse_ids = [r.metadata["id"] for r in sparse_results]
-    
+
     fused_ids = reciprocal_rank_fusion([dense_ids, sparse_ids])
-    
+
     # Retrieve full documents for fused results
     doc_map = {r.metadata["id"]: r for r in dense_results + sparse_results}
     return [doc_map[did] for did in fused_ids[:top_k] if did in doc_map]
@@ -383,7 +383,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 def adaptive_semantic_chunks(
-    text: str, 
+    text: str,
     model: SentenceTransformer,
     threshold: float = 0.5,
     min_chunk_sentences: int = 2,
@@ -393,9 +393,9 @@ def adaptive_semantic_chunks(
     sentences = split_into_sentences(text)
     if len(sentences) <= min_chunk_sentences:
         return [text]
-    
+
     embeddings = model.encode(sentences)
-    
+
     # Compute similarity between adjacent sentences
     similarities = []
     for i in range(len(embeddings) - 1):
@@ -403,21 +403,21 @@ def adaptive_semantic_chunks(
             np.linalg.norm(embeddings[i]) * np.linalg.norm(embeddings[i+1])
         )
         similarities.append(sim)
-    
+
     # Find break points where similarity drops below threshold
     break_points = [0]
     for i, sim in enumerate(similarities):
         if sim < threshold:
             break_points.append(i + 1)
     break_points.append(len(sentences))
-    
+
     # Enforce min/max chunk sizes
     chunks = []
     for i in range(len(break_points) - 1):
         start = break_points[i]
         end = break_points[i + 1]
         chunk_sents = sentences[start:end]
-        
+
         if len(chunk_sents) < min_chunk_sentences and chunks:
             # Merge with previous chunk
             chunks[-1].extend(chunk_sents)
@@ -427,7 +427,7 @@ def adaptive_semantic_chunks(
                 chunks.append(chunk_sents[j:j + max_chunk_sentences])
         else:
             chunks.append(chunk_sents)
-    
+
     return [" ".join(chunk) for chunk in chunks]
 ```
 
@@ -437,13 +437,13 @@ Verify that every claim in the LLM output is attributable to a specific retrieve
 
 ```python
 async def verify_attribution(
-    response: str, 
+    response: str,
     retrieved_chunks: list,
     llm,
     threshold: float = 0.7
 ) -> dict:
     """Verify that each claim in the response is grounded in retrieved context."""
-    
+
     # Step 1: Extract claims from the response
     claims_prompt = f"""Extract all factual claims from this response as a JSON list.
 Each claim should be a standalone statement.
@@ -451,14 +451,14 @@ Each claim should be a standalone statement.
 Response: {response}
 
 Claims (JSON array of strings):"""
-    
+
     claims_response = await llm.ainvoke(claims_prompt)
     claims = parse_json_list(claims_response.content)
-    
+
     # Step 2: Verify each claim against retrieved chunks
     verifications = []
     for claim in claims:
-        verification_prompt = f"""Given these retrieved passages, determine if the claim 
+        verification_prompt = f"""Given these retrieved passages, determine if the claim
 is directly supported by at least one passage.
 
 Claim: {claim}
@@ -467,16 +467,16 @@ Passages:
 {format_chunks(retrieved_chunks)}
 
 Answer as JSON: {{"supported": true/false, "evidence": "quote from passage", "chunk_id": N}}"""
-        
+
         v_response = await llm.ainvoke(verification_prompt)
         v = parse_json(v_response.content)
         v["claim"] = claim
         verifications.append(v)
-    
+
     # Step 3: Compute attribution score
     supported = sum(1 for v in verifications if v.get("supported", False))
     attribution_score = supported / len(verifications) if verifications else 0
-    
+
     return {
         "attributed_claims": [v for v in verifications if v.get("supported")],
         "unsupported_claims": [v for v in verifications if not v.get("supported")],
@@ -522,7 +522,7 @@ vectorstore = Chroma.from_documents(
 
 # --- Retrieval QA ---
 prompt = ChatPromptTemplate.from_template("""
-Answer the question based ONLY on the following context. 
+Answer the question based ONLY on the following context.
 If the context doesn't contain enough information, say "I don't have enough information to answer this question."
 Always cite your sources using [1], [2], etc.
 
@@ -584,16 +584,16 @@ async def hybrid_search(query, index, bm25_index, doc_map, top_k=10):
         vector=query_embedding, top_k=top_k * 2,
         include_metadata=True
     )
-    
+
     # Sparse search (BM25)
     tokenized_query = query.lower().split()
     bm25_scores = bm25_index.get_scores(tokenized_query)
     bm25_top_indices = np.argsort(bm25_scores)[-top_k * 2:][::-1]
-    
+
     # Reciprocal Rank Fusion
     dense_ranks = {m["id"]: i for i, m in enumerate(dense_results["matches"])}
     bm25_ranks = {doc_map[i]["id"]: rank for rank, i in enumerate(bm25_top_indices)}
-    
+
     all_ids = set(dense_ranks.keys()) | set(bm25_ranks.keys())
     rrf_scores = {}
     for doc_id in all_ids:
@@ -601,7 +601,7 @@ async def hybrid_search(query, index, bm25_index, doc_map, top_k=10):
             1.0 / (60 + dense_ranks.get(doc_id, 100)) +
             1.0 / (60 + bm25_ranks.get(doc_id, 100))
         )
-    
+
     ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
     return [doc_map[doc_id] for doc_id, _ in ranked[:top_k]]
 ```
@@ -627,7 +627,7 @@ def build_ragas_dataset(test_questions, rag_pipeline):
         "contexts": [],
         "ground_truth": []
     }
-    
+
     for q in test_questions:
         result = rag_pipeline.invoke(q["question"])
         data["question"].append(q["question"])
@@ -636,13 +636,13 @@ def build_ragas_dataset(test_questions, rag_pipeline):
             doc.page_content for doc in result["source_documents"]
         ])
         data["ground_truth"].append(q["ground_truth"])
-    
+
     return Dataset.from_dict(data)
 
 def evaluate_rag_pipeline(rag_pipeline, test_dataset):
     """Comprehensive RAGAS evaluation."""
     eval_data = build_ragas_dataset(test_dataset, rag_pipeline)
-    
+
     result = evaluate(
         eval_data,
         metrics=[
@@ -653,14 +653,14 @@ def evaluate_rag_pipeline(rag_pipeline, test_dataset):
             answer_correctness  # Is the answer factually correct?
         ]
     )
-    
+
     print("=== RAGAS Evaluation Results ===")
     print(f"Faithfulness:          {result['faithfulness']:.3f}")
     print(f"Answer Relevancy:      {result['answer_relevancy']:.3f}")
     print(f"Context Precision:     {result['context_precision']:.3f}")
     print(f"Context Recall:        {result['context_recall']:.3f}")
     print(f"Answer Correctness:    {result['answer_correctness']:.3f}")
-    
+
     return result
 ```
 
@@ -671,42 +671,42 @@ import asyncio
 from typing import AsyncGenerator
 
 async def streaming_rag(
-    query: str, 
-    retriever, 
-    llm, 
+    query: str,
+    retriever,
+    llm,
     top_k: int = 5
 ) -> AsyncGenerator[str, None]:
     """Stream RAG response with inline citations."""
-    
+
     # Retrieve context
     docs = await retriever.aretrieve(query)
-    
+
     # Build context with citation markers
     context_parts = []
     for i, doc in enumerate(docs):
         citation_id = i + 1
         context_parts.append(f"[{citation_id}] {doc.page_content}")
-    
+
     context = "\n\n".join(context_parts)
-    
-    system_prompt = f"""You are a helpful assistant. Answer the question using ONLY the 
+
+    system_prompt = f"""You are a helpful assistant. Answer the question using ONLY the
 provided context. Cite sources using [1], [2], etc. format.
 
 If the context doesn't contain enough information, say so.
 
 CONTEXT:
 {context}"""
-    
+
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": query}
     ]
-    
+
     # Stream response
     stream = await llm.astream(messages)
     async for chunk in stream:
         yield chunk.content
-    
+
     # Append sources
     yield "\n\n---\n**Sources:**\n"
     for i, doc in enumerate(docs):
@@ -722,11 +722,11 @@ from langchain.tools import Tool
 
 def create_agentic_rag(vectorstores: dict):
     """Create an agent that can query multiple knowledge bases."""
-    
+
     tools = []
     for name, vs in vectorstores.items():
         retriever = vs.as_retriever(search_kwargs={"k": 5})
-        
+
         def make_search(vstore):
             def search(query):
                 docs = vstore.similarity_search(query, k=5)
@@ -735,22 +735,22 @@ def create_agentic_rag(vectorstores: dict):
                     for d in docs
                 ])
             return search
-        
+
         tools.append(Tool(
             name=f"search_{name}",
             func=make_search(vs),
             description=f"Search the {name} knowledge base. Use for questions about {name}."
         ))
-    
+
     llm = ChatOpenAI(model="gpt-4", temperature=0)
     prompt = ChatPromptTemplate.from_messages([
-        ("system", """You have access to multiple knowledge bases. Choose the most 
-appropriate one(s) for each question. You may query multiple bases and synthesize 
+        ("system", """You have access to multiple knowledge bases. Choose the most
+appropriate one(s) for each question. You may query multiple bases and synthesize
 the results. Always cite your sources."""),
         ("human", "{input}"),
         ("placeholder", "{agent_scratchpad}")
     ])
-    
+
     agent = create_openai_tools_agent(llm, tools, prompt)
     return AgentExecutor(agent=agent, tools=tools, verbose=True, max_iterations=5)
 ```

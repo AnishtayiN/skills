@@ -7,17 +7,84 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
+    name: Metadata, hygiene, and installer
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Validate metadata and dependency graph
-        run: python3 scripts/validate_skills.py
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate metadata, links, and structure
+        run: python3 scripts/validate_skills.py --strict
+
+      - name: Confirm SKILL-MATRIX.md is not stale
+        run: python3 scripts/gen_matrix.py --check
+
       - name: Check shell syntax
         run: bash -n install.sh
-      - name: Check whitespace
-        run: git diff --check --exit-code
-      - name: Smoke-test help output
+
+      - name: Lint the installer with shellcheck
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            shellcheck --severity=warning install.sh
+          else
+            echo "shellcheck unavailable on this runner; skipping"
+          fi
+
+      - name: Show help output
         run: ./install.sh --help
+
+      - name: Self-check the library through the installer
+        run: ./install.sh --check --no-color
+
+      - name: Prove install, update, and uninstall round-trip
+        run: ./install.sh --self-test --no-color
+
+      - name: Reject trailing whitespace and missing final newlines
+        run: |
+          set -euo pipefail
+          if grep -rn --include='*.md' --include='*.sh' --include='*.py' --include='*.yml' -e '[[:space:]]$' . ; then
+            echo "trailing whitespace found in the files listed above"
+            exit 1
+          fi
+          while IFS= read -r -d '' file; do
+            if [ -s "$file" ] && [ -n "$(tail -c 1 "$file")" ]; then
+              echo "missing final newline: $file"
+              exit 1
+            fi
+          done < <(git ls-files -z '*.md' '*.sh' '*.py' '*.yml')
+
+      - name: Syntax-check the site script
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, shutil, subprocess, sys
+          html = pathlib.Path("index.html").read_text(encoding="utf-8")
+          match = re.search(r"<script>(.*)</script>", html, re.S)
+          if not match:
+              sys.exit("index.html: no inline script found")
+          if not shutil.which("node"):
+              print("node unavailable; skipping inline script check")
+              raise SystemExit(0)
+          pathlib.Path("/tmp/index-inline.js").write_text(match.group(1), encoding="utf-8")
+          subprocess.run(["node", "--check", "/tmp/index-inline.js"], check=True)
+          print("PASS: index.html inline script parses")
+          PY
+
+      - name: Refuse accidental credential material
+        run: |
+          if git grep -nE '(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY)' -- . ; then
+            echo "committing credentials is not allowed"
+            exit 1
+          fi
+          echo "PASS: no credential-shaped strings"

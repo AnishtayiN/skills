@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/AnishtayiN/skills/discussions
+    about: Usage questions, agent integration notes, and "should this be a skill?" discussions.
+  - name: Contributing standard
+    url: https://github.com/AnishtayiN/skills/blob/main/CONTRIBUTING.md
+    about: What the validator enforces before a pull request can be reviewed.

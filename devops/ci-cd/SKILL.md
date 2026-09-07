@@ -72,7 +72,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
       - run: npm ci
       - run: npm run lint
@@ -85,7 +85,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
       - run: npm ci
       - run: npm test -- --coverage
@@ -166,7 +166,7 @@ runs:
   steps:
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
         cache: 'npm'
     - run: npm ci
       shell: bash
@@ -191,7 +191,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         exclude:
           - os: windows-latest
-            node-version: 18
+            node-version: 22
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -235,7 +235,7 @@ variables:
 lint:
   <<: *cache_template
   stage: test
-  image: node:20-alpine
+  image: node:22-alpine
   script:
     - npm ci
     - npm run lint
@@ -244,7 +244,7 @@ lint:
 test:unit:
   <<: *cache_template
   stage: test
-  image: node:20-alpine
+  image: node:22-alpine
   script:
     - npm ci
     - npm run test:unit
@@ -253,7 +253,7 @@ test:unit:
 test:integration:
   <<: *cache_template
   stage: test
-  image: node:20-alpine
+  image: node:22-alpine
   services:
     - postgres:16-alpine
     - redis:7-alpine
@@ -320,7 +320,7 @@ jobs:
 # 2. Dependency caching
 - uses: actions/setup-node@v4
   with:
-    node-version: 20
+    node-version: 22
     cache: 'npm'               # Automatic npm cache
 
 # Custom cache for other tools
@@ -349,7 +349,7 @@ concurrency:
   cancel-in-progress: true     # Cancel previous run on new push
 
 # 5. Use slim Docker images for CI
-container: node:20-alpine      # Instead of full ubuntu
+container: node:22-alpine      # Instead of full ubuntu
 ```
 
 ### 4. Matrix Builds
@@ -618,7 +618,7 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-test.yml
     with:
-      node-version: 20
+      node-version: 22
     secrets: inherit
 
 # .github/workflows/reusable-test.yml

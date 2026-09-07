@@ -410,7 +410,7 @@ Don't use CQRS when:
 
 ---
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. Capacity Planning
 Use back-of-envelope calculations to estimate infrastructure needs. Calculate RPS, storage, bandwidth, and connection pools. Plan for 2-3x peak load.
@@ -435,7 +435,7 @@ Document every significant architectural decision with context, options, and rat
 
 ---
 
-## Common Patterns (5 Patterns with Code Examples)
+## Common Patterns
 
 ### Pattern 1: API Gateway
 ```yaml
@@ -571,7 +571,7 @@ def health_check():
 
 ---
 
-## Edge Cases & Pitfalls (15 Items)
+## Edge Cases & Pitfalls
 
 1. **Single point of failure**: Every component that can fail will fail. Design for redundancy at every layer.
 2. **Thundering herd**: When a cached value expires, many requests hit the database simultaneously. Use locks or staggered expiration.
@@ -720,7 +720,7 @@ def health_check():
 
 ---
 
-## Rules (12 Rules)
+## Rules
 
 1. **Start with requirements, not solutions** — Understand the problem before designing.
 2. **Consider failure modes** — Every component can and will fail. Design for it.

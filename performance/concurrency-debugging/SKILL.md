@@ -181,22 +181,22 @@ def operation_with_timeout():
 class DeadlockDetector:
     def __init__(self):
         self.lock_graph = {}  # lock -> set of locks it's waiting for
-    
+
     def acquire(self, thread_id, lock_id, timeout=1):
         # Check for cycle in dependency graph
         if self._has_cycle(lock_id):
             raise RuntimeError(f"Potential deadlock detected for {lock_id}")
-        
+
         # Record this thread is waiting for this lock
         if thread_id not in self.lock_graph:
             self.lock_graph[thread_id] = set()
-        
+
         acquired = lock_id.acquire(timeout=timeout)
         if acquired:
             # Thread acquired the lock
             self.lock_graph[thread_id].add(lock_id)
         return acquired
-    
+
     def _has_cycle(self, start_lock):
         visited = set()
         stack = [start_lock]
@@ -290,7 +290,7 @@ import queue
 class ThreadSafeSingleton:
     _instance = None
     _lock = threading.Lock()
-    
+
     def __new__(cls):
         if cls._instance is None:
             with cls._lock:
@@ -303,15 +303,15 @@ class ThreadSafeDict:
     def __init__(self):
         self._dict = {}
         self._lock = threading.RLock()  # Reentrant lock
-    
+
     def get(self, key):
         with self._lock:
             return self._dict.get(key)
-    
+
     def set(self, key, value):
         with self._lock:
             self._dict[key] = value
-    
+
     def update(self, d):
         with self._lock:
             self._dict.update(d)
@@ -321,12 +321,12 @@ class ProducerConsumer:
     def __init__(self, max_size=100):
         self.queue = queue.Queue(maxsize=max_size)
         self.running = True
-    
+
     def producer(self, items):
         for item in items:
             self.queue.put(item)
         self.queue.put(None)  # Sentinel
-    
+
     def consumer(self):
         while self.running:
             try:
@@ -336,7 +336,7 @@ class ProducerConsumer:
                 self.process(item)
             except queue.Empty:
                 continue
-    
+
     def process(self, item):
         print(f"Processing {item}")
 
@@ -346,22 +346,22 @@ class ReadWriteLock:
         self.readers = 0
         self.readers_lock = threading.Lock()
         self.writers_lock = threading.Lock()
-    
+
     def acquire_read(self):
         with self.readers_lock:
             self.readers += 1
             if self.readers == 1:
                 self.writers_lock.acquire()
-    
+
     def release_read(self):
         with self.readers_lock:
             self.readers -= 1
             if self.readers == 0:
                 self.writers_lock.release()
-    
+
     def acquire_write(self):
         self.writers_lock.acquire()
-    
+
     def release_write(self):
         self.writers_lock.release()
 ```
@@ -390,15 +390,15 @@ class Actor:
         self.name = name
         self.mailbox = asyncio.Queue()
         self.running = True
-    
+
     async def receive(self, message: Message):
         """Override this to handle messages"""
         raise NotImplementedError
-    
+
     async def send(self, actor: 'Actor', message: Message):
         """Send a message to another actor"""
         await actor.mailbox.put(message)
-    
+
     async def run(self):
         """Main actor loop"""
         while self.running:
@@ -429,16 +429,16 @@ class PongActor(Actor):
 class ActorSystem:
     def __init__(self):
         self.actors: Dict[str, Actor] = {}
-    
+
     def create_actor(self, actor_class, name: str, **kwargs) -> Actor:
         actor = actor_class(name, **kwargs)
         self.actors[name] = actor
         return actor
-    
+
     async def start_all(self):
         tasks = [actor.run() for actor in self.actors.values()]
         await asyncio.gather(*tasks)
-    
+
     def stop_all(self):
         for actor in self.actors.values():
             actor.running = False
@@ -458,17 +458,17 @@ class Channel(Generic[T]):
         self.buffer_size = buffer_size
         self.items = asyncio.Queue(maxsize=buffer_size)
         self.closed = False
-    
+
     async def send(self, item: T):
         if self.closed:
             raise RuntimeError("Channel is closed")
         await self.items.put(item)
-    
+
     async def receive(self) -> Optional[T]:
         if self.closed and self.items.empty():
             return None
         return await self.items.get()
-    
+
     def close(self):
         self.closed = True
 
@@ -495,7 +495,7 @@ async def fan_out(input_channel: Channel, workers: list):
             if item is None:
                 break
             await process(item)
-    
+
     channels = [Channel() for _ in workers]
     # Distribute work to workers
     async def distributor():
@@ -508,25 +508,25 @@ async def fan_out(input_channel: Channel, workers: list):
             # Round-robin distribution
             for ch in channels:
                 await ch.send(item)
-    
+
     await asyncio.gather(distributor(), *[worker(ch) for ch in channels])
 
 # Fan-in pattern
 async def fan_in(*channels: Channel) -> Channel:
     output = Channel()
-    
+
     async def merge(channel: Channel):
         while True:
             item = await channel.receive()
             if item is None:
                 break
             await output.send(item)
-    
+
     async def check_done():
         for ch in channels:
             await ch.receive()  # Wait for close
         output.close()
-    
+
     await asyncio.gather(*[merge(ch) for ch in channels], check_done())
     return output
 ```
@@ -540,12 +540,12 @@ class LockFreeStack:
     """Lock-free stack using compare-and-swap"""
     def __init__(self):
         self.head = None
-    
+
     class Node:
         def __init__(self, value: Any, next_node=None):
             self.value = value
             self.next = next_node
-    
+
     def push(self, value: Any):
         while True:
             old_head = self.head
@@ -554,7 +554,7 @@ class LockFreeStack:
             if self.head == old_head:
                 self.head = new_node
                 break
-    
+
     def pop(self) -> Optional[Any]:
         while True:
             old_head = self.head
@@ -571,10 +571,10 @@ class LockFreeQueue:
         self.in_stack = []
         self.out_stack = []
         self._lock = threading.Lock()  # For transition only
-    
+
     def push(self, item):
         self.in_stack.append(item)
-    
+
     def pop(self):
         if not self.out_stack:
             if not self.in_stack:
@@ -630,7 +630,7 @@ from contextlib import asynccontextmanager
 class AsyncLock:
     def __init__(self):
         self._lock = asyncio.Lock()
-    
+
     @asynccontextmanager
     async def acquire(self):
         async with self._lock:
@@ -681,18 +681,18 @@ class BoundedBuffer:
         self.queue = queue.Queue(maxsize=max_size)
         self.items_count = 0
         self.lock = threading.Lock()
-    
+
     def put(self, item: Any):
         self.queue.put(item)
         with self.lock:
             self.items_count += 1
-    
+
     def get(self) -> Any:
         item = self.queue.get()
         with self.lock:
             self.items_count -= 1
         return item
-    
+
     @property
     def size(self) -> int:
         with self.lock:

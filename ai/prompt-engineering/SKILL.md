@@ -199,7 +199,7 @@ Run multiple different prompt designs for the same task and combine their output
 
 ```
 Prompt A (Direct): "Classify this text as spam or not spam: {text}"
-Prompt B (Role-based): "As an email security analyst, evaluate whether this email 
+Prompt B (Role-based): "As an email security analyst, evaluate whether this email
   is spam: {text}"
 Prompt C (Rule-based): "Apply these spam detection rules to the text: {text}
   Rules: 1) Contains urgency keywords 2) Asks for personal info 3)..."
@@ -222,8 +222,8 @@ The audience is a busy executive who needs the key takeaways in under 30 seconds
 Prioritize business impact over technical details.
 
 # EXAMPLE
-Article: "Company X reported Q3 earnings of $2.1B, up 15% YoY, driven by cloud 
-services growth. However, hardware division declined 8%. CEO announced a restructuring 
+Article: "Company X reported Q3 earnings of $2.1B, up 15% YoY, driven by cloud
+services growth. However, hardware division declined 8%. CEO announced a restructuring
 that will cut 10% of hardware staff."
 
 Summary:

@@ -191,13 +191,13 @@ from scipy.stats import chi2_contingency
 
 def detect_simpsons_paradox(df, outcome_col, treatment_col, confounders):
     """
-    Check if aggregated treatment effect reverses when controlling 
+    Check if aggregated treatment effect reverses when controlling
     for confounders.
     """
     # Aggregated analysis
     aggregated = df.groupby(treatment_col)[outcome_col].mean()
     aggregated_effect = aggregated[1] - aggregated[0]
-    
+
     results = []
     for confounder in confounders:
         # Stratified analysis
@@ -214,18 +214,18 @@ def detect_simpsons_paradox(df, outcome_col, treatment_col, confounders):
                 "effect": strat_effect,
                 "n": len(group)
             })
-        
+
         # Weighted average of stratified effects
         if stratified_effects:
             weighted_effect = np.average(
                 [e["effect"] for e in stratified_effects],
                 weights=[e["n"] for e in stratified_effects]
             )
-            
+
             # Check for reversal
             reversed = (aggregated_effect > 0 and weighted_effect < 0) or \
                        (aggregated_effect < 0 and weighted_effect > 0)
-            
+
             results.append({
                 "confounder": confounder,
                 "aggregated_effect": aggregated_effect,
@@ -233,14 +233,14 @@ def detect_simpsons_paradox(df, outcome_col, treatment_col, confounders):
                 "reversed": reversed,
                 "strata": stratified_effects
             })
-    
+
     return results
 
 # Example: Detect Simpson's paradox in hiring data
 # df has columns: hired (0/1), gender (M/F), department
 results = detect_simpsons_paradox(
-    df, outcome_col="hired", 
-    treatment_col="gender", 
+    df, outcome_col="hired",
+    treatment_col="gender",
     confounders=["department"]
 )
 for r in results:
@@ -261,12 +261,12 @@ from itertools import combinations
 
 class PHackingPrevention:
     """Framework to prevent and detect p-hacking in analyses."""
-    
+
     def __init__(self, alpha=0.05):
         self.alpha = alpha
         self.analysis_log = []
         self.pre_registered_tests = []
-    
+
     def pre_register(self, test_name, hypotheses, test_func, alpha=None):
         """Register analysis plan before seeing results."""
         self.pre_registered_tests.append({
@@ -276,7 +276,7 @@ class PHackingPrevention:
             "alpha": alpha or self.alpha,
             "registered_at": pd.Timestamp.now()
         })
-    
+
     def execute_pre_registered(self, data):
         """Execute only pre-registered tests."""
         results = []
@@ -285,7 +285,7 @@ class PHackingPrevention:
             result["p_hacking_risk"] = "low"  # Pre-registered
             results.append(result)
         return results
-    
+
     def exploratory_analysis(self, data, test_funcs, variables):
         """Run exploratory analyses with proper correction."""
         all_results = []
@@ -294,37 +294,37 @@ class PHackingPrevention:
                 result = test_func(data, var_pair)
                 result["p_hacking_risk"] = "high"  # Exploratory
                 all_results.append(result)
-        
+
         # Apply Benjamini-Hochberg correction
         p_values = [r["p_value"] for r in all_results]
         corrected = self.benjamini_hochberg(p_values)
-        
+
         for r, c_alpha in zip(all_results, corrected):
             r["corrected_alpha"] = c_alpha
             r["significant_after_correction"] = r["p_value"] < c_alpha
-        
+
         return all_results
-    
+
     @staticmethod
     def benjamini_hochberg(p_values, alpha=0.05):
         """Benjamini-Hochberg FDR correction."""
         n = len(p_values)
         ranked = np.argsort(p_values)
         corrected = np.zeros(n)
-        
+
         for i, rank in enumerate(ranked):
             corrected[rank] = min(
-                p_values[rank] * n / (i + 1), 
+                p_values[rank] * n / (i + 1),
                 1.0
             )
-        
+
         # Enforce monotonicity
         for i in range(n - 2, -1, -1):
             corrected[ranked[i]] = min(
-                corrected[ranked[i]], 
+                corrected[ranked[i]],
                 corrected[ranked[i + 1]]
             )
-        
+
         return corrected
 
 # Usage example
@@ -361,20 +361,20 @@ def power_analysis_two_proportions(
     """Calculate sample size for two-proportion Z-test."""
     p1 = baseline_rate
     p2 = baseline_rate + mde
-    
+
     # Pooled proportion
     p_pooled = (p1 + p2) / 2
-    
+
     # Effect size (Cohen's h)
     h = 2 * (np.arcsin(np.sqrt(p1)) - np.arcsin(np.sqrt(p2)))
-    
+
     # Z-scores
     z_alpha = norm.ppf(1 - alpha / 2)
     z_beta = norm.ppf(power)
-    
+
     # Sample size per group
     n = ((z_alpha + z_beta) ** 2 * 2 * p_pooled * (1 - p_pooled)) / (p1 - p2) ** 2
-    
+
     return int(np.ceil(n))
 
 def power_analysis_continuous(
@@ -386,11 +386,11 @@ def power_analysis_continuous(
     """Calculate sample size for two-sample t-test (continuous outcome)."""
     z_alpha = norm.ppf(1 - alpha / 2)
     z_beta = norm.ppf(power)
-    
+
     # Welch's formula
     n1 = ((z_alpha + z_beta) ** 2 * (1 + 1/allocation_ratio)) / (effect_size ** 2)
     n2 = n1 * allocation_ratio
-    
+
     return int(np.ceil(n1)), int(np.ceil(n2))
 
 # Example: How many users needed to detect 2% uplift in 10% baseline conversion?
@@ -416,7 +416,7 @@ import pandas as pd
 def decompose_time_series(series, period=None, seasonal=7):
     """
     Decompose time series using STL with stationarity testing.
-    
+
     Parameters:
     - series: pd.Series with DatetimeIndex
     - period: seasonal period (auto-detected if None)
@@ -425,7 +425,7 @@ def decompose_time_series(series, period=None, seasonal=7):
     # Test stationarity
     adf_result = adfuller(series.dropna())
     kpss_result = kpss(series.dropna(), regression='c', nlags='auto')
-    
+
     stationarity = {
         "adf_statistic": adf_result[0],
         "adf_p_value": adf_result[1],
@@ -434,33 +434,33 @@ def decompose_time_series(series, period=None, seasonal=7):
         "kpss_p_value": kpss_result[1],
         "is_stationary_kpss": kpss_result[1] > 0.05,
     }
-    
+
     # Determine if differencing is needed
-    needs_diff = not (stationarity["is_stationary_adf"] and 
+    needs_diff = not (stationarity["is_stationary_adf"] and
                      stationarity["is_stationary_kpss"])
-    
+
     if needs_diff:
         differenced = series.diff().dropna()
         series = differenced
-    
+
     # STL decomposition
     stl = STL(
-        series, 
+        series,
         period=period or detect_period(series),
         seasonal=seasonal,
         robust=True  # Robust to outliers
     )
     result = stl.fit()
-    
+
     return {
         "trend": result.trend,
         "seasonal": result.seasonal,
         "residual": result.resid,
         "stationarity": stationarity,
         "needs_differencing": needs_diff,
-        "strength_of_trend": 1 - (result.resid.var() / 
+        "strength_of_trend": 1 - (result.resid.var() /
                                    (result.trend + result.resid).var()),
-        "strength_of_seasonality": 1 - (result.resid.var() / 
+        "strength_of_seasonality": 1 - (result.resid.var() /
                                          (result.seasonal + result.resid).var()),
     }
 
@@ -473,7 +473,7 @@ def detect_period(series):
     for i in range(2, len(acf_values) - 1):
         if acf_values[i] > acf_values[i-1] and acf_values[i] > acf_values[i+1]:
             peaks.append((i, acf_values[i]))
-    
+
     if peaks:
         return max(peaks, key=lambda x: x[1])[0]
     return 7  # Default to weekly
@@ -497,24 +497,24 @@ def rfm_segmentation(
 ) -> pd.DataFrame:
     """
     Perform RFM segmentation with automated profiling.
-    
+
     Returns DataFrame with RFM scores, segment labels, and profiles.
     """
     if analysis_date is None:
         analysis_date = df[transaction_date_col].max() + pd.Timedelta(days=1)
-    
+
     # Calculate RFM metrics
     rfm = df.groupby(customer_id_col).agg({
         transaction_date_col: lambda x: (analysis_date - x.max()).days,  # Recency
         transaction_amount_col: ['count', 'sum']  # Frequency, Monetary
     })
-    
+
     rfm.columns = ['recency', 'frequency', 'monetary']
     rfm = rfm.reset_index()
-    
+
     # Assign RFM scores (1-5, lower recency = higher score)
     rfm['R_score'] = pd.qcut(
-        rfm['recency'], n_quantiles, 
+        rfm['recency'], n_quantiles,
         labels=range(n_quantiles, 0, -1),  # Lower recency = higher score
         duplicates='drop'
     )
@@ -528,14 +528,14 @@ def rfm_segmentation(
         labels=range(1, n_quantiles + 1),
         duplicates='drop'
     )
-    
+
     # Composite RFM score
     rfm['RFM_score'] = (
-        rfm['R_score'].astype(int) * 100 + 
-        rfm['F_score'].astype(int) * 10 + 
+        rfm['R_score'].astype(int) * 100 +
+        rfm['F_score'].astype(int) * 10 +
         rfm['M_score'].astype(int)
     )
-    
+
     # Segment assignment
     def assign_segment(row):
         r, f, m = int(row['R_score']), int(row['F_score']), int(row['M_score'])
@@ -555,9 +555,9 @@ def rfm_segmentation(
             return 'Lost'
         else:
             return 'Need Attention'
-    
+
     rfm['segment'] = rfm.apply(assign_segment, axis=1)
-    
+
     # Profile each segment
     profiles = rfm.groupby('segment').agg({
         'recency': ['mean', 'median'],
@@ -565,7 +565,7 @@ def rfm_segmentation(
         'monetary': ['mean', 'median', 'sum'],
         customer_id_col: 'count'
     }).round(2)
-    
+
     profiles.columns = [
         'avg_recency', 'median_recency',
         'avg_frequency', 'median_frequency',
@@ -578,7 +578,7 @@ def rfm_segmentation(
     profiles['pct_of_revenue'] = (
         profiles['total_monetary'] / profiles['total_monetary'].sum() * 100
     ).round(1)
-    
+
     return rfm, profiles
 ```
 
@@ -597,27 +597,27 @@ def perform_pca_analysis(df, feature_cols, n_components=None, variance_threshold
     X = df[feature_cols].dropna()
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-    
+
     # Full PCA to determine components
     pca_full = PCA()
     pca_full.fit(X_scaled)
-    
+
     # Determine number of components
     cumulative_variance = np.cumsum(pca_full.explained_variance_ratio_)
     if n_components is None:
         n_components = np.argmax(cumulative_variance >= variance_threshold) + 1
-    
+
     # Fit with selected components
     pca = PCA(n_components=n_components)
     transformed = pca.fit_transform(X_scaled)
-    
+
     # Analyze loadings
     loadings = pd.DataFrame(
         pca.components_.T,
         columns=[f'PC{i+1}' for i in range(n_components)],
         index=feature_cols
     )
-    
+
     # Identify top contributors per component
     top_contributors = {}
     for pc in loadings.columns:
@@ -625,7 +625,7 @@ def perform_pca_analysis(df, feature_cols, n_components=None, variance_threshold
         top_contributors[pc] = [
             (feat, loading) for feat, loading in top_features.items()
         ]
-    
+
     return {
         "n_components": n_components,
         "explained_variance": pca.explained_variance_ratio_.tolist(),
@@ -633,7 +633,7 @@ def perform_pca_analysis(df, feature_cols, n_components=None, variance_threshold
         "loadings": loadings,
         "top_contributors": top_contributors,
         "transformed_data": pd.DataFrame(
-            transformed, 
+            transformed,
             columns=[f'PC{i+1}' for i in range(n_components)],
             index=X.index
         )
@@ -654,7 +654,7 @@ def cohort_retention_analysis(
 ) -> pd.DataFrame:
     """
     Build cohort retention table with period-over-period analysis.
-    
+
     Parameters:
     - df: DataFrame with user interactions
     - user_col: column identifying users
@@ -663,39 +663,39 @@ def cohort_retention_analysis(
     """
     df = df.copy()
     df[date_col] = pd.to_datetime(df[date_col])
-    
+
     # Assign cohort (first interaction period)
     user_cohort = df.groupby(user_col)[date_col].min().reset_index()
     user_cohort.columns = [user_col, 'cohort_date']
     user_cohort['cohort'] = user_cohort['cohort_date'].dt.to_period(cohort_period)
-    
+
     df = df.merge(user_cohort[[user_col, 'cohort']], on=user_col, how='left')
-    
+
     # Assign period number (months since cohort)
     df['period_number'] = (
         df[date_col].dt.to_period(cohort_period) - df['cohort']
     ).apply(lambda x: x.n)
-    
+
     # Build cohort table
     cohort_table = df.groupby(['cohort', 'period_number'])[user_col].nunique().reset_index()
     cohort_table.columns = ['cohort', 'period_number', 'users']
-    
+
     # Pivot to matrix
     cohort_matrix = cohort_table.pivot(
-        index='cohort', 
-        columns='period_number', 
+        index='cohort',
+        columns='period_number',
         values='users'
     )
-    
+
     # Convert to retention rates
     cohort_sizes = cohort_matrix[0]
     retention_matrix = cohort_matrix.divide(cohort_sizes, axis=0) * 100
-    
+
     # Add summary statistics
     retention_matrix['avg_retention_m1'] = retention_matrix[1].mean()
     retention_matrix['avg_retention_m3'] = retention_matrix[3].mean()
     retention_matrix['avg_retention_m6'] = retention_matrix[6].mean()
-    
+
     return retention_matrix.round(2)
 ```
 
@@ -715,18 +715,18 @@ warnings.filterwarnings('ignore')
 def comprehensive_eda(df: pd.DataFrame) -> dict:
     """Run comprehensive EDA on a dataframe."""
     report = {}
-    
+
     # --- Shape and Types ---
     report['shape'] = df.shape
     report['dtypes'] = df.dtypes.value_counts().to_dict()
     report['memory_mb'] = df.memory_usage(deep=True).sum() / 1024**2
-    
+
     # --- Missing Values ---
     missing = df.isnull().sum()
     missing_pct = (missing / len(df) * 100).round(2)
     report['missing'] = missing[missing > 0].to_dict()
     report['complete_rows_pct'] = (df.dropna().shape[0] / len(df) * 100).round(2)
-    
+
     # --- Numeric Variables ---
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     if numeric_cols:
@@ -739,7 +739,7 @@ def comprehensive_eda(df: pd.DataFrame) -> dict:
             (df[numeric_cols] > stats_df['75%'] + 1.5 * stats_df['iqr'])
         ).mean() * 100
         report['numeric_summary'] = stats_df.round(3)
-    
+
     # --- Categorical Variables ---
     cat_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
     if cat_cols:
@@ -751,7 +751,7 @@ def comprehensive_eda(df: pd.DataFrame) -> dict:
                 'pct_top': (df[col].value_counts().iloc[0] / len(df) * 100).round(2)
             }
         report['categorical_summary'] = cat_summary
-    
+
     # --- Correlations ---
     if len(numeric_cols) >= 2:
         corr_matrix = df[numeric_cols].corr(method='pearson')
@@ -768,7 +768,7 @@ def comprehensive_eda(df: pd.DataFrame) -> dict:
         report['strong_correlations'] = sorted(
             strong_corrs, key=lambda x: abs(x['correlation']), reverse=True
         )
-    
+
     # --- Statistical Tests for Normality ---
     if numeric_cols:
         normality = {}
@@ -782,7 +782,7 @@ def comprehensive_eda(df: pd.DataFrame) -> dict:
                     'is_normal': p > 0.05
                 }
         report['normality_tests'] = normality
-    
+
     return report
 
 # Usage
@@ -805,7 +805,7 @@ def analyze_ab_test(
     Complete A/B test analysis with confidence intervals and effect sizes.
     """
     results = {}
-    
+
     # Basic statistics
     results['control'] = {
         'n': len(control_data),
@@ -819,11 +819,11 @@ def analyze_ab_test(
         'std': np.std(treatment_data, ddof=1),
         'se': np.std(treatment_data, ddof=1) / np.sqrt(len(treatment_data))
     }
-    
+
     # Absolute and relative lift
     results['absolute_diff'] = results['treatment']['mean'] - results['control']['mean']
     results['relative_lift'] = results['absolute_diff'] / results['control']['mean']
-    
+
     # Statistical test
     if metric_type == 'continuous':
         stat, p_value = stats.ttest_ind(treatment_data, control_data, equal_var=False)
@@ -837,11 +837,11 @@ def analyze_ab_test(
         stat = (p2 - p1) / se
         p_value = 2 * (1 - stats.norm.cdf(abs(stat)))
         results['test'] = "Two-proportion Z-test"
-    
+
     results['test_statistic'] = stat
     results['p_value'] = p_value
     results['is_significant'] = p_value < alpha
-    
+
     # Effect size (Cohen's d)
     if metric_type == 'continuous':
         pooled_std = np.sqrt(
@@ -857,7 +857,7 @@ def analyze_ab_test(
                 'large'
             )
         }
-    
+
     # Confidence interval for difference
     se_diff = np.sqrt(results['control']['se']**2 + results['treatment']['se']**2)
     z_crit = stats.norm.ppf(1 - alpha/2)
@@ -866,13 +866,13 @@ def analyze_ab_test(
         'upper': results['absolute_diff'] + z_crit * se_diff,
         'confidence_level': 1 - alpha
     }
-    
+
     # Power achieved
     achieved_power = 1 - stats.norm.cdf(
         abs(stat) - z_crit
     )
     results['achieved_power'] = achieved_power
-    
+
     return results
 ```
 
@@ -889,11 +889,11 @@ def test_categorical_association(df, col1, col2, alpha=0.05):
     """
     # Build contingency table
     contingency = pd.crosstab(df[col1], df[col2])
-    
+
     # Check expected counts
     chi2, p_value, dof, expected = chi2_contingency(contingency)
     min_expected = expected.min()
-    
+
     # Choose appropriate test
     if min_expected < 5:
         # Use Fisher's exact test (for 2x2 tables)
@@ -907,12 +907,12 @@ def test_categorical_association(df, col1, col2, alpha=0.05):
     else:
         test_name = "Chi-square test"
         odds_ratio = None
-    
+
     # Cramér's V for effect size
     n = contingency.sum().sum()
     min_dim = min(contingency.shape) - 1
     cramers_v = np.sqrt(chi2 / (n * min_dim)) if min_dim > 0 else 0
-    
+
     return {
         'test': test_name,
         'chi2_statistic': chi2,
@@ -944,18 +944,18 @@ def nonparametric_group_comparison(groups, alpha=0.05):
     Automatically selects appropriate test based on number of groups.
     """
     results = {}
-    
+
     if len(groups) == 2:
         # Two groups: Mann-Whitney U
         stat, p_value = mannwhitneyu(
-            groups[0], groups[1], 
+            groups[0], groups[1],
             alternative='two-sided'
         )
-        
+
         # Effect size (rank-biserial correlation)
         n1, n2 = len(groups[0]), len(groups[1])
         r = 1 - (2 * stat) / (n1 * n2)
-        
+
         results = {
             'test': 'Mann-Whitney U',
             'statistic': stat,
@@ -971,16 +971,16 @@ def nonparametric_group_comparison(groups, alpha=0.05):
             'group_medians': [np.median(g) for g in groups],
             'group_sizes': [len(g) for g in groups]
         }
-        
+
     elif len(groups) > 2:
         # Multiple groups: Kruskal-Wallis
         stat, p_value = kruskal(*groups)
-        
+
         # Effect size (epsilon-squared)
         k = len(groups)
         n = sum(len(g) for g in groups)
         epsilon_sq = (stat - k + 1) / (n - k)
-        
+
         results = {
             'test': 'Kruskal-Wallis H',
             'statistic': stat,
@@ -990,7 +990,7 @@ def nonparametric_group_comparison(groups, alpha=0.05):
             'group_medians': [np.median(g) for g in groups],
             'group_sizes': [len(g) for g in groups]
         }
-        
+
         # Post-hoc pairwise comparisons if significant
         if p_value < alpha:
             from itertools import combinations
@@ -1007,7 +1007,7 @@ def nonparametric_group_comparison(groups, alpha=0.05):
                     'significant': u_p * n_comparisons < alpha
                 })
             results['pairwise_comparisons'] = pairwise
-    
+
     return results
 ```
 
@@ -1024,28 +1024,28 @@ def correlation_analysis(df, method='pearson', threshold=0.3):
     """
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     n = len(numeric_cols)
-    
+
     # Compute correlation matrix
     corr_matrix = df[numeric_cols].corr(method=method)
-    
+
     # Compute p-values for each pair
     p_values = pd.DataFrame(np.ones((n, n)), index=numeric_cols, columns=numeric_cols)
-    
+
     for i in range(n):
         for j in range(i+1, n):
             col_i, col_j = numeric_cols[i], numeric_cols[j]
             valid = df[[col_i, col_j]].dropna()
-            
+
             if method == 'pearson':
                 _, p = stats.pearsonr(valid[col_i], valid[col_j])
             elif method == 'spearman':
                 _, p = stats.spearmanr(valid[col_i], valid[col_j])
             else:
                 _, p = stats.kendalltau(valid[col_i], valid[col_j])
-            
+
             p_values.iloc[i, j] = p
             p_values.iloc[j, i] = p
-    
+
     # Extract significant correlations
     sig_correlations = []
     for i in range(n):
@@ -1065,9 +1065,9 @@ def correlation_analysis(df, method='pearson', threshold=0.3):
                         'strong'
                     )
                 })
-    
+
     sig_correlations.sort(key=lambda x: abs(x['correlation']), reverse=True)
-    
+
     return {
         'correlation_matrix': corr_matrix,
         'p_values': p_values,

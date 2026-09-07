@@ -53,19 +53,23 @@ Create production-ready Docker configurations with optimized builds, security ha
 
 ### Step 2: Create Dockerfile
 
+Pin the runtime major your team actually supports and upgrades deliberately. The `22` below is a
+current Node LTS example, not a claim that a specific minor is permanent: an image tag in a
+playbook should be swapped for the project's own `.nvmrc`, `package.json` engines, or base policy.
+
 ```dockerfile
 # ── Modern multi-stage Dockerfile with BuildKit ──
 # syntax=docker/dockerfile:1
 
 # Stage 1: Dependencies
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --prefer-offline
 
 # Stage 2: Build
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -73,7 +77,7 @@ RUN --mount=type=cache,target=/root/.cache \
     npm run build
 
 # Stage 3: Production runner (distroless or minimal)
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 # Security: non-root user
@@ -205,7 +209,7 @@ COPY --from=builder /app/node_modules ./node_modules
 CMD ["dist/index.js"]
 
 # ── Alpine-based with specific pinned versions ──
-FROM node:20.11.1-alpine3.19 AS runner
+FROM node:22.11.1-alpine3.19 AS runner
 RUN apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "dist/index.js"]
@@ -242,7 +246,7 @@ docker buildx build \
 #     platforms: linux/amd64,linux/arm64
 
 # Dockerfile for multi-arch
-FROM --platform=$TARGETPLATFORM node:20-alpine
+FROM --platform=$TARGETPLATFORM node:22-alpine
 # $TARGETPLATFORM is set by buildx (linux/amd64, linux/arm64, etc.)
 ```
 
@@ -402,7 +406,7 @@ services:
 # ── Security-hardened Dockerfile ──
 
 # 1. Use specific version tags, never :latest
-FROM node:20.11.1-alpine3.19 AS builder
+FROM node:22.11.1-alpine3.19 AS builder
 
 # 2. Don't run as root
 RUN addgroup -g 1001 -S appgroup && \
@@ -513,7 +517,7 @@ COPY package.json ./
 # ADD auto-extracts archives and supports URLs (avoid unless needed)
 
 # ── Pin versions in FROM ──
-FROM node:20.11.1-alpine3.19   # Not node:latest or node:20
+FROM node:22.11.1-alpine3.19   # Not node:latest or node:20
 ```
 
 ## Common Patterns
@@ -673,7 +677,7 @@ docker build --build-arg NODE_VERSION=22 -t myapp:node22 .
 
 ## Edge Cases & Pitfalls
 
-1. **Using `:latest` tag for base images** — Builds are not reproducible; pin exact versions (e.g., `node:20.11.1-alpine3.19`).
+1. **Using `:latest` tag for base images** — Builds are not reproducible; pin exact versions (e.g., `node:22.11.1-alpine3.19`).
 2. **Running as root in production** — Containers running as root can escape and compromise the host; always add a non-root user.
 3. **Ignoring `.dockerignore`** — Sending `.git`, `node_modules`, or secrets as build context slows builds and risks leaking credentials.
 4. **Not using multi-stage builds** — Build tools, compilers, and dev dependencies inflate final image size; separate build from runtime.

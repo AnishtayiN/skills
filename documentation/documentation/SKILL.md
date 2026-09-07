@@ -260,7 +260,7 @@ info:
   description: |
     ## Overview
     This API provides...
-    
+
     ## Authentication
     All endpoints require Bearer token.
   version: 1.0.0
@@ -832,14 +832,14 @@ const handler = new WebhookHandler({
 
 app.post('/webhooks', (req, res) => {
   const event = handler.verify(req.body, req.headers);
-  
+
   switch (event.type) {
     case 'user.created':
       handleUserCreated(event.data);
       break;
     // ... handle other events
   }
-  
+
   res.status(200).send('OK');
 });
 ```
@@ -1006,10 +1006,10 @@ Examples:
 steps:
   - name: Install CLI
     run: npm install -g mycli
-  
+
   - name: Build
     run: myci build --minify
-  
+
   - name: Test
     run: mycli test --coverage
 ```
@@ -1017,7 +1017,7 @@ steps:
 ### Docker
 
 ```dockerfile
-FROM node:18-alpine
+FROM node:22-alpine
 RUN npm install -g mycli
 WORKDIR /app
 COPY . .
@@ -1046,13 +1046,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - uses: actions/checkout@v4
+
       - name: Lint Markdown
         uses: avto-dev/markdown-lint@v1
         with:
           args: './docs/**/*.md'
-      
+
       - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
@@ -1061,21 +1061,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - uses: actions/checkout@v4
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      
+          node-version: '22'
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build docs
         run: npm run docs:build
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./docs-dist
 
@@ -1083,11 +1083,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
     steps:
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/deploy-pages@v4
+        # Or publish to a branch instead:
+        #   uses: peaceiris/actions-gh-pages@v4
+        #   with: { github_token: \${{ secrets.GITHUB_TOKEN }}, publish_dir: ./docs-dist }
           publish_dir: ./docs-dist
 ```
 
@@ -1112,7 +1118,7 @@ const files = fs.readdirSync(docsDir).filter(f => f.endsWith('.md'));
 files.forEach(file => {
   const content = fs.readFileSync(path.join(docsDir, file), 'utf8');
   const html = marked(content);
-  
+
   const outputFile = file.replace('.md', '.html');
   fs.writeFileSync(path.join(outputDir, outputFile), html);
 });
@@ -1131,52 +1137,52 @@ const { marked } = require('marked');
 
 describe('Documentation', () => {
   const docsDir = path.join(__dirname, '../docs');
-  
+
   test('all markdown files are valid', () => {
     const files = fs.readdirSync(docsDir).filter(f => f.endsWith('.md'));
-    
+
     files.forEach(file => {
       const content = fs.readFileSync(path.join(docsDir, file), 'utf8');
       expect(() => marked(content)).not.toThrow();
     });
   });
-  
+
   test('README has required sections', () => {
     const readme = fs.readFileSync(
       path.join(__dirname, '../../README.md'),
       'utf8'
     );
-    
+
     expect(readme).toContain('## Installation');
     expect(readme).toContain('## Usage');
     expect(readme).toContain('## License');
   });
-  
+
   test('code examples are valid', () => {
     const readme = fs.readFileSync(
       path.join(__dirname, '../../README.md'),
       'utf8'
     );
-    
+
     // Extract code blocks
     const codeBlocks = readme.match(/```[\s\S]*?```/g) || [];
-    
+
     codeBlocks.forEach(block => {
       // Check for syntax errors (simplified)
       const code = block.replace(/```\w*\n?/, '').replace(/```$/, '');
       expect(code.length).toBeGreaterThan(0);
     });
   });
-  
+
   test('links are not broken', async () => {
     const readme = fs.readFileSync(
       path.join(__dirname, '../../README.md'),
       'utf8'
     );
-    
+
     // Extract internal links
     const internalLinks = readme.match(/\[.*?\]\(\.\.\/.*?\)/g) || [];
-    
+
     internalLinks.forEach(link => {
       const match = link.match(/\((.*?)\)/);
       if (match) {
@@ -1186,16 +1192,16 @@ describe('Documentation', () => {
       }
     });
   });
-  
+
   test('API docs match implementation', () => {
     const apiDocs = fs.readFileSync(
       path.join(docsDir, 'api.md'),
       'utf8'
     );
-    
+
     // Check documented functions exist in source
     const documentedFunctions = apiDocs.match(/### `(\w+)`/g) || [];
-    
+
     documentedFunctions.forEach(func => {
       const funcName = func.match(/`(\w+)`/)[1];
       // Check in source files (simplified)

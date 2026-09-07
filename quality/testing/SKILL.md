@@ -124,7 +124,7 @@ Test cases to include:
 
 ---
 
-## Test Patterns (5 Patterns with Code Examples)
+## Test Patterns
 
 ### Pattern 1: Data-Driven / Parameterized Tests
 ```python
@@ -422,7 +422,35 @@ users = UserFactory.create_batch(10)
 
 ---
 
-## Common Patterns (5 Patterns with Code Examples)
+## Advanced Techniques
+
+### 1. Test Isolation
+Every test must be independent. No test should depend on another test's execution or state. Use fresh fixtures, clean database state, and isolated file systems.
+
+### 2. Deterministic Test Data
+Avoid time-dependent, random, or externally-dependent data. Use fixed seeds for random generators, mock time functions, and use factories for consistent data.
+
+### 3. Fast Feedback Loops
+Organize tests by speed. Unit tests run on every save. Integration tests run on commit. E2E tests run on PR. This gives developers fast feedback while still comprehensive coverage.
+
+### 4. Test-Driven Development (TDD)
+Red → Green → Refactor cycle:
+1. Write a failing test (Red)
+2. Write minimum code to pass (Green)
+3. Refactor while keeping tests green
+
+### 5. Contract Testing
+For microservices, verify API contracts between services without running the full system. Consumer-driven contracts ensure API compatibility.
+
+### 6. Chaos Testing
+Inject failures intentionally. Kill processes, corrupt data, introduce latency. Verify the system degrades gracefully.
+
+### 7. Regression Test Mining
+When a bug is found, extract the minimal reproduction case and add it as a regression test. This ensures the exact same bug cannot recur.
+
+---
+
+## Common Patterns
 
 ### Pattern 1: Given-When-Then (BDD Style)
 ```python
@@ -582,35 +610,7 @@ def auth_headers(client):
 
 ---
 
-## Advanced Techniques (7 Techniques)
-
-### 1. Test Isolation
-Every test must be independent. No test should depend on another test's execution or state. Use fresh fixtures, clean database state, and isolated file systems.
-
-### 2. Deterministic Test Data
-Avoid time-dependent, random, or externally-dependent data. Use fixed seeds for random generators, mock time functions, and use factories for consistent data.
-
-### 3. Fast Feedback Loops
-Organize tests by speed. Unit tests run on every save. Integration tests run on commit. E2E tests run on PR. This gives developers fast feedback while still comprehensive coverage.
-
-### 4. Test-Driven Development (TDD)
-Red → Green → Refactor cycle:
-1. Write a failing test (Red)
-2. Write minimum code to pass (Green)
-3. Refactor while keeping tests green
-
-### 5. Contract Testing
-For microservices, verify API contracts between services without running the full system. Consumer-driven contracts ensure API compatibility.
-
-### 6. Chaos Testing
-Inject failures intentionally. Kill processes, corrupt data, introduce latency. Verify the system degrades gracefully.
-
-### 7. Regression Test Mining
-When a bug is found, extract the minimal reproduction case and add it as a regression test. This ensures the exact same bug cannot recur.
-
----
-
-## Edge Cases & Pitfalls (15 Items)
+## Edge Cases & Pitfalls
 
 1. **Flaky tests**: Tests that pass/fail non-deterministically. Usually caused by timing, shared state, or external dependencies.
 2. **Test pollution**: One test's state leaking into another via global variables, database, or filesystem.
@@ -740,7 +740,7 @@ Command: `npm test`
 
 ---
 
-## Rules (12 Rules)
+## Rules
 
 1. **Test behavior, not implementation** — Tests should survive refactoring.
 2. **Each test tests ONE thing** — One assertion concept per test method.

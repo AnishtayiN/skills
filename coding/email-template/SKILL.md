@@ -16,8 +16,7 @@ conflicts: []
 
 Email development is a uniquely constrained discipline within web engineering. Unlike browser-based pages, HTML emails must render predictably across dozens of email clients—each with its own rendering engine, CSS support limitations, and quirks. This skill covers the complete lifecycle of building production-grade HTML emails: from foundational table-based layouts and inline CSS strategies to advanced techniques like dark mode support, interactive AMP emails, MJML templating, and automated rendering tests. Mastering email development means mastering compatibility, deliverability, and user experience simultaneously.
 
-## When to Use This Skill (6-9 bullets)
-
+## When to Use This Skill
 - **Building marketing email templates** that must render correctly across Outlook, Gmail, Apple Mail, Yahoo, and Samsung Mail
 - **Designing transactional emails** (password resets, receipts, notifications) requiring maximum compatibility and accessibility
 - **Creating responsive email newsletters** that adapt cleanly from desktop to mobile viewports
@@ -28,8 +27,7 @@ Email development is a uniquely constrained discipline within web engineering. U
 - **Debugging email rendering issues** in specific clients like Outlook 2016 or Gmail's CSS stripping
 - **Integrating email templates with ESP platforms** (Mailchimp, SendGrid, Brevo, Amazon SES)
 
-## When NOT to Use This Skill (5-7 bullets)
-
+## When NOT to Use This Skill
 - **Building web pages or web apps** — standard HTML/CSS applies; email constraints do not
 - **Designing in Figma/Sketch without coding** — this skill covers implementation, not visual design
 - **Sending emails via API only** — if you only need SMTP/API integration without custom templates, use an ESP's built-in editor

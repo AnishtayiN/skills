@@ -271,7 +271,7 @@ For critical paths, trace data through the entire system:
 
 ---
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. Incremental Diff Review
 Review code changes incrementally rather than all at once. Start with the smallest change and build up. This catches issues that a big-bang review misses.
@@ -296,7 +296,7 @@ For each change, identify what existing behavior might be affected. Cross-refere
 
 ---
 
-## Common Patterns (5 Patterns with Code Examples)
+## Common Patterns
 
 ### Pattern 1: Guard Clause (Early Return)
 ```python
@@ -421,7 +421,7 @@ new_user = User("Bob", user.email)  # Create new instead
 
 ---
 
-## Edge Cases & Pitfalls (15 Items)
+## Edge Cases & Pitfalls
 
 1. **Off-by-one in loops**: Review `range(len(arr))` — should it be `range(len(arr)-1)`?
 2. **Null coalescing misuse**: `value || default` fails when value is `0` or `""` in JS.
@@ -554,7 +554,7 @@ new_user = User("Bob", user.email)  # Create new instead
 
 ---
 
-## Rules (12 Rules)
+## Rules
 
 1. **Always read all code before reviewing** — Never review from memory or assumptions.
 2. **Cite file and line number** — Every issue must have a specific location.

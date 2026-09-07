@@ -18,7 +18,11 @@ This repository contains reusable instructions for coding agents. A skill is gui
 classify → inspect → clarify assumptions → plan → change → review diff → verify → report
 ```
 
-Load only the skills relevant to the current task. `project-analysis` is useful when the project or request is unfamiliar; `verification` is the final checkpoint after a change. Do not force every skill into every task.
+Load only the skills relevant to the current task. In an installed project the list of what exists
+is `INDEX.md` next to the playbooks, and the selection rules are `ROUTER.md`; in this repository
+read `ROUTER.md` directly. `project-analysis` is useful when the project or request is unfamiliar;
+`verification` is the final checkpoint after a change. Do not force every skill into every task, and
+do not claim a playbook was applied without opening it.
 
 ## Verification ladder
 

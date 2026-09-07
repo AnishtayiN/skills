@@ -151,11 +151,11 @@ class FeynmanExplainer:
     Framework for creating clear technical explanations
     using the Feynman Technique.
     """
-    
+
     def __init__(self, topic):
         self.topic = topic
         self.steps = []
-    
+
     def step1_define(self):
         """Write the topic name at the top of a blank page."""
         return {
@@ -163,7 +163,7 @@ class FeynmanExplainer:
             "instruction": f"Write '{self.topic}' at the top.",
             "purpose": "Focus your explanation on a specific concept."
         }
-    
+
     def step2_explain_child(self):
         """
         Explain the topic as if teaching a 12-year-old.
@@ -193,7 +193,7 @@ class FeynmanExplainer:
                 "Use short sentences (under 20 words when possible)",
             ]
         }
-    
+
     def step3_identify_gaps(self):
         """
         Review your explanation for gaps or hand-waving.
@@ -215,10 +215,10 @@ class FeynmanExplainer:
                 "Does my analogy actually map to the real concept?"
             ]
         }
-    
+
     def step4_simplify_and_refine(self):
         """
-        Go back to the source material, fill gaps, then 
+        Go back to the source material, fill gaps, then
         simplify your explanation further.
         """
         return {
@@ -245,9 +245,9 @@ print(explainer.step2_explain_child())
 # Output template:
 # ## Kubernetes Pods
 # ### In Simple Terms
-# A Pod is like a backpack for your applications. Just like a backpack 
-# carries everything a hiker needs (water, snacks, map), a Pod carries 
-# everything an application needs to run (the code, the files, the 
+# A Pod is like a backpack for your applications. Just like a backpack
+# carries everything a hiker needs (water, snacks, map), a Pod carries
+# everything an application needs to run (the code, the files, the
 # network connection)...
 ```
 
@@ -264,7 +264,7 @@ def write_code_narrative(code, context, purpose):
     3. How it works (detailed walkthrough)
     4. When to modify it (extension points)
     """
-    
+
     template = f"""## {context}
 
 ### Why This Code Exists
@@ -322,12 +322,12 @@ Structure content so readers can choose their depth of engagement: skim for over
 def progressive_disclosure_content(topic, overview, details, implementation):
     """
     Create content at three levels of detail.
-    
+
     Level 1 (Overview): 30 seconds — what is this and why care?
     Level 2 (Details): 5 minutes — how does it work?
     Level 3 (Implementation): 30 minutes — how do I use it?
     """
-    
+
     content = f"""# {topic}
 
 ## Quick Overview (30 seconds)
@@ -378,11 +378,11 @@ Write effective incident post-mortems that build organizational learning, not as
 def post_mortem_template(incident_data):
     """
     Generate a blameless post-mortem document.
-    
+
     Focus: What happened, why it happened, how we prevent it next time.
     Not: Who caused it.
     """
-    
+
     template = f"""# Post-Mortem: {incident_data.get('title', 'Untitled Incident')}
 
 ## Incident Summary
@@ -464,7 +464,7 @@ def comparison_post_template(comparison_data):
     """
     Framework for writing fair, comprehensive comparison posts.
     """
-    
+
     template = f"""# {comparison_data.get('title', 'Comparison')}
 
 ## TL;DR
@@ -534,7 +534,7 @@ def workshop_module(topic, duration_minutes, learning_objectives, exercises):
     """
     Design a hands-on workshop module with clear learning outcomes.
     """
-    
+
     template = f"""# Workshop Module: {topic}
 
 ## Module Info
@@ -602,7 +602,7 @@ def api_endpoint_doc(endpoint):
     """
     Generate comprehensive API documentation for an endpoint.
     """
-    
+
     template = f"""## `{endpoint['method']} {endpoint['path']}`
 
 {endpoint.get('description', '[Brief description of what this endpoint does]')}
@@ -694,10 +694,10 @@ print(response.json())
 def write_tutorial(topic, prerequisites, steps):
     """
     Structure a tutorial that teaches by doing.
-    
+
     Each step: explain → show → do → verify
     """
-    
+
     template = f"""# Tutorial: {topic}
 
 ## What You'll Build
@@ -788,7 +788,7 @@ def write_concept_explainer(concept, analogy, details):
     """
     Explain a technical concept using the Analogy → Reality → Details pattern.
     """
-    
+
     template = f"""# {concept}
 
 ## The Short Version
@@ -836,7 +836,7 @@ def write_how_to(title, problem, solution):
     """
     Write a problem-solution how-to guide.
     """
-    
+
     template = f"""# How to {title}
 
 **Problem:** {problem.get('description', '[What the reader is trying to do]')}
@@ -898,7 +898,7 @@ def write_release_notes(version, changes):
     """
     Write clear, actionable release notes.
     """
-    
+
     template = f"""# Release Notes — v{version}
 
 **Release Date:** {changes.get('date', 'YYYY-MM-DD')}
@@ -941,7 +941,7 @@ def write_troubleshooting_guide(issue, symptoms, solutions):
     """
     Structure a troubleshooting guide that helps readers diagnose and fix issues.
     """
-    
+
     template = f"""# Troubleshooting: {issue}
 
 ## Symptoms

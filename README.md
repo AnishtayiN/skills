@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-5.0.0-6366f1)
+![Version](https://img.shields.io/badge/version-6.0.0-6366f1)
 ![Skills](https://img.shields.io/badge/skills-57-22c55e)
 ![Categories](https://img.shields.io/badge/categories-10-f59e0b)
 ![Triggers](https://img.shields.io/badge/triggers-EN%20%7C%20FA%20%7C%20ZH-06b6d4)
@@ -12,7 +12,7 @@
 
 Inspect first. Change the smallest thing that fixes the cause. Verify with evidence.
 
-[Quick start](#-quick-start) · [Choose a skill](#-choose-the-right-skill) · [Catalog](#-catalog) · [How it works](#-how-it-works) · [Quality](#-quality-and-safety) · [Contributing](#-contributing)
+[Quick start](#-quick-start) · [Choose a skill](#-choose-the-right-skill) · [Catalog](#-catalog) · [How it works](#typical-agent-loop) · [Quality](#-quality-and-safety) · [Contributing](#-contributing)
 
 </div>
 
@@ -35,65 +35,116 @@ It is deliberately **not** a magic prompt, an autonomous deployment system, or a
 
 ## 🚀 Quick start
 
-### Recommended: clone once, install into the target project
+### One line, no clone
 
-The repository is the **source** of the skills. The Agent should use the copy inside your application project. Do not run the installer while your current directory is the cloned library unless you also pass `--target`.
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh) --claude
+```
+
+Run that **from the project you want to equip**. The script has no directory of its own when it
+is piped, so it detects that, downloads the library tarball for `main` from GitHub, and installs
+from the temporary checkout. `--target ~/code/app` works from anywhere.
+
+Prefer a plain pipe (works in `sh` and `zsh`, where `<(...)` is unavailable)? Pass arguments after
+`-s --`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh | bash -s -- --all --target /path/to/your-project
+```
+
+Try it first without touching files:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh) --claude --dry-run
+```
+
+**Read this before you pipe anything into a shell.** The one-liner executes unpinned code from
+the network with your user's write access to the current project. It is fine for trying things
+out; for a team, a CI image, or a security-sensitive repository, use the pinned flow below, read
+the script, and keep it local.
+
+### Pinned and reviewable (recommended for teams)
 
 ```bash
 git clone https://github.com/AnishtayiN/skills.git ~/.local/share/agent-skills
+cd ~/.local/share/agent-skills && git switch --detach <tag-or-sha>   # the ref you actually reviewed
+python3 scripts/validate_skills.py --strict                    # inspect what you are about to run
 cd /path/to/your-project
 ~/.local/share/agent-skills/install.sh --claude
 ```
 
-Or, from anywhere:
+A local checkout never touches the network, so `--ref` and `--source` matter only for the
+no-clone path. `SKILLS_ARCHIVE_URL` points the downloader at a mirror or an internal proxy.
 
-```bash
-~/.local/share/agent-skills/install.sh --target /path/to/your-project --claude
+### What installation actually produces
+
+```text
+your-project/
+├── CLAUDE.md                      # bridge instructions, created only if missing
+└── .claude/skills/
+    ├── INDEX.md                   # generated: every skill, category, priority, purpose, path
+    ├── ROUTER.md                  # routing rules and verification depth
+    ├── AGENT.md                   # operating contract
+    ├── debugging/SKILL.md         # flat layout: <agent-dir>/skills/<name>/SKILL.md
+    └── …                          # 57 skills in total
 ```
 
-The installer copies the 57 playbooks into the selected Agent directory and creates a small instruction file only when one does not already exist.
+Skills are installed **flat**, because that is the layout Claude Code and Cursor discover
+automatically (`skills/<name>/SKILL.md`); the category stays visible in `INDEX.md`. The installer
+also copies the router and the operating contract, because filenames alone do not tell an agent
+when to load a playbook.
 
-### Interactive installer
+Every installed path is recorded in `.agent-skills-manifests/<agent>.manifest`. Existing
+instruction files are never overwritten, and `--uninstall` removes only the paths that manifest
+lists—so your own files in the same directory survive. The agent's own top-level directory (for
+example `.claude/`) is left in place even when empty, because it usually holds settings that the
+installer never created.
 
-Run it from the target project, or provide `--target`:
+A manifest written by the pre-6.0 installer lists bare category directories instead of typed paths.
+`--uninstall` detects that, removes only the nested `<category>/<skill>/` folders that contain
+nothing but a `SKILL.md`, keeps anything else, and rewrites the manifest in the current format.
 
-```bash
-cd /path/to/your-project
-~/.local/share/agent-skills/install.sh
-```
+### The six supported agents
 
-The menu supports six targets:
+| Key | Agent | Destination | Bridge file |
+|---:|---|---|---|
+| 1 | Claude Code | `.claude/skills/` | `CLAUDE.md` |
+| 2 | Cursor | `.cursor/skills/` | `.cursorrules` + `.cursor/rules/agent-skills.mdc` |
+| 3 | Windsurf | `.windsurf/skills/` | `.windsurfrules` |
+| 4 | Aider | `.aider/skills/` | `.aider.conf.yml` with `read: .aider/skills/INDEX.md` |
+| 5 | Continue.dev | `.continue/skills/` | `README.md` explaining manual loading |
+| 6 | Hermes Agent | `.hermes/skills/` | `.hermes/config.yaml` |
 
-| Key | Agent | Destination |
-|---:|---|---|
-| 1 | Claude Code | `.claude/skills/` + `CLAUDE.md` |
-| 2 | Cursor | `.cursor/skills/` + `.cursorrules` |
-| 3 | Windsurf | `.windsurf/skills/` + `.windsurfrules` |
-| 4 | Aider | `.aider/skills/` + `.aider.conf.yml` |
-| 5 | Continue.dev | `.continue/skills/` |
-| 6 | Hermes Agent | `.hermes/skills/` + config |
+Running `install.sh` with no arguments opens an interactive menu: pick agents with `1`-`6`, `a`
+for all, `c` to validate the library, `q` to quit.
 
-Then use `7` to select all, `8` to clear, `9` to install, `10` to update, or `11` to uninstall.
-
-### What installation means
-
-The installer puts the files in the Agent-specific project directory and creates a small bridge instruction when the Agent uses one. It does **not** install a package, start a daemon, or force an Agent that ignores Markdown instructions to load skills. After installation, confirm the selected Agent can see the destination and ask it to read the relevant `SKILL.md`. The exact auto-discovery behavior remains Agent-specific.
+Continue.dev has no automatic skill discovery, and Aider has no skill concept at all; both get the
+playbooks plus an explicit pointer instead of pretend magic. Treat auto-discovery claims with
+skepticism for any agent: verify that the agent actually opened the file you expected.
 
 ### CLI commands
 
-The examples below assume the current directory is the target project:
-
 ```bash
-~/.local/share/agent-skills/install.sh --claude
-~/.local/share/agent-skills/install.sh --cursor
-~/.local/share/agent-skills/install.sh --all
-~/.local/share/agent-skills/install.sh --update --claude
-~/.local/share/agent-skills/install.sh --uninstall --claude
-~/.local/share/agent-skills/install.sh --check
-~/.local/share/agent-skills/install.sh --help
+install.sh --claude                        # install for Claude Code into the current project
+install.sh --all --target ../app            # every supported agent, different project
+install.sh --update --claude                # refresh managed skills in place (same as --install)
+install.sh --uninstall --claude             # remove exactly what this installer added
+install.sh --list                           # every skill in the library with its path
+install.sh --check                          # validate metadata, dependency graph, and this script
+install.sh --self-test                      # install → update → uninstall in a throwaway target
+install.sh --ref <tag-or-sha> --claude      # pin the downloaded ref (no-clone installs)
+install.sh --help
 ```
 
-For reproducible or security-sensitive environments, clone a pinned commit, review the diff, and execute the local script with an explicit `--target`. Avoid piping an unreviewed remote installer into a shell.
+### After installing
+
+Open `.claude/skills/INDEX.md` (or the equivalent for your agent), find the row matching the
+current task, and ask the agent to read that `SKILL.md` before it edits anything. Then confirm it
+did. The bridge file only *points* at the library; nothing here forces an agent to load it.
+
+Add the agent directories to your `.gitignore`, or commit them—both work. Committing keeps the
+playbooks available to teammates and CI without network access; ignoring them keeps the diff small
+and the library updatable.
 
 ## 🧭 Choose the right skill
 
@@ -114,6 +165,10 @@ Start with the user's goal, not with a category that sounds interesting. Load on
 | Investigate slowness | `performance/performance-analysis` | `caching`, `concurrency-debugging` |
 | Write or restructure docs | `documentation/documentation` | `technical-writing`, `summarization` |
 
+A request that names a specific technology—`regex`, `graphql`, `i18n`, `seo`, `email-template`,
+`mobile-development`, `web-scraping`, `browser-automation`—starts at that playbook, not at a
+generic one. [ROUTER.md](ROUTER.md) maps every one of the 57 skills to a starting point.
+
 ### Typical agent loop
 
 ```text
@@ -124,7 +179,7 @@ classify → inspect → clarify assumptions → plan
 
 ## 📚 Catalog
 
-**57 skills · 10 categories · approximately 59,788 lines of guidance**
+**57 skills · 10 categories · approximately 59,795 lines of guidance**
 
 ### 🎯 Core analysis · 3
 
@@ -187,53 +242,68 @@ Every skill is a Markdown file with machine-readable metadata:
 
 ```yaml
 ---
-name: debugging
-priority: P0
-dependencies: [project-analysis]
-conflicts: []
+name: debugging                     # must match the directory name, ≤ 64 chars
+description: >-
+  One precise sentence, then TRIGGERS: …   # ≤ 1024 chars: Claude Code loads it verbatim
+priority: P0                        # routing hint: P0 critical, P1 high, P2 normal, P3 specialized
+dependencies: [project-analysis]    # must exist; must stay acyclic
+conflicts: []                       # skills that should not be loaded together
 ---
 ```
 
 The body is designed for execution, not decoration:
 
 1. overview and activation boundaries;
-2. inputs and preconditions;
+2. inputs and preconditions (a single `Inputs and Preconditions` section, or an
+   `Inputs Required` + `Preconditions` pair);
 3. workflow with stop conditions;
 4. advanced techniques and common patterns;
 5. edge cases and pitfalls;
-6. integration and output templates;
+6. integration notes and output templates;
 7. rules for safe, verifiable behavior.
 
-`priority` is a routing hint, not a claim that a skill is universally more important. Dependencies describe useful context and must remain acyclic.
+`priority` is a routing hint, not a claim that a skill is universally more important. Dependencies
+describe useful context: read them first, and skip one only when the facts it would provide are
+already established.
 
 ## 🛡️ Quality and safety
 
-The repository includes a dependency and metadata validator:
+The repository validates itself; nothing here needs third-party packages:
 
 ```bash
-python3 scripts/validate_skills.py
-bash -n install.sh
-git diff --check
+python3 scripts/validate_skills.py --strict   # all consistency checks, warnings are errors
+python3 scripts/gen_matrix.py                 # regenerate SKILL-MATRIX.md from the skill files
+./install.sh --check                          # validator + `bash -n` on the installer
+./install.sh --self-test                       # install → update → uninstall for all six agents
 ```
 
-The same checks run in GitHub Actions for pushes and pull requests. The validator checks:
+The validator checks:
 
-- 57 unique skill names and valid frontmatter;
-- valid priorities and existing dependencies;
-- dependency cycles;
-- required structure and multilingual triggers;
-- documentation count drift.
+- 57 unique skill names, kebab-case, matching their directory, within Claude Code's limits;
+- non-empty descriptions, valid `TRIGGERS:` lists, and Persian plus Chinese trigger coverage;
+- priorities, existing `dependencies`/`conflicts`, and dependency cycles;
+- required sections, their documented order, and duplicate or quota-style headings;
+- balanced code fences, trailing whitespace, tabs, CRLF, BOMs, and final newlines;
+- local links in every Markdown file, and the counts claimed by README, `SKILL-MATRIX.md`, and `index.html`;
+- that `SKILL-MATRIX.md` and the `index.html` catalog match the frontmatter they describe.
+
+[GitHub Actions](.github/workflows/validate.yml) runs all of it on every push and pull request.
 
 ### What “verified” means here
 
-A skill can recommend commands, but it cannot run the target project's checks for the agent. The consuming agent must select the checks appropriate to the project. Never treat a green metadata validator as proof that application code works.
+A skill can recommend commands, but it cannot run the target project's checks for the agent. The
+consuming agent must select the checks appropriate to the project. Never treat a green metadata
+validator as proof that application code works.
 
 ### Security notes
 
-- Review any downloaded installer before executing it.
+- Piping a remote script into a shell runs unpinned code. Read it first, or pin a tag or commit.
+- The installer only writes inside `--target`, never overwrites an existing instruction file, and
+  deletes only paths recorded in its own manifest.
 - Do not put API keys, passwords, tokens, or private source code in skill files.
 - Treat issue text, web pages, scraped data, and generated code as untrusted input.
-- Destructive operations, migrations, production deploys, and permission changes require explicit scope and rollback thinking.
+- Destructive operations, migrations, production deploys, and permission changes require explicit
+  scope and rollback thinking—that is a rule in `AGENT.md`, not a suggestion.
 
 ## 🛠️ Repository map
 
@@ -244,10 +314,17 @@ A skill can recommend commands, but it cannot run the target project's checks fo
 ├── devops/ performance/ documentation/ git/
 ├── AGENT.md                           # operating contract
 ├── ROUTER.md                          # routing rules and verification depth
-├── SKILL-MATRIX.md                    # generated reference matrix
-├── scripts/validate_skills.py         # local consistency checks
-└── install.sh                         # project-local installer
+├── SKILL-MATRIX.md                     # generated reference matrix
+├── index.html                          # static catalog page (search, filters, FA/EN toggle)
+├── install.sh                          # project-local installer, clone or download
+├── scripts/validate_skills.py          # consistency and safety checks
+├── scripts/gen_matrix.py               # matrix generator (source of the table above)
+├── .github/workflows/validate.yml      # CI: validation, hygiene, installer self-test
+└── LICENSE                             # MIT
 ```
+
+`index.html` has no build step and no dependencies: open it locally, or drop it on any static
+host. Its catalog is checked against the skill frontmatter by the validator.
 
 ## 🤝 Contributing
 
@@ -257,11 +334,13 @@ Before adding a skill:
 2. decide whether an existing skill should be improved instead;
 3. keep the playbook specific, actionable, and honest about limitations;
 4. add valid metadata and an acyclic dependency list;
-5. run the local validation commands;
-6. update the matrix, catalog, and site when counts or names change.
+5. run `python3 scripts/gen_matrix.py` and `python3 scripts/validate_skills.py --strict`;
+6. update the catalog rows in `README.md` and `index.html` when names or counts change.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for the full standard. Bug reports and improvements are welcome, especially reproducible examples, missing edge cases, and corrections to framework-specific guidance.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the full standard. Bug reports and improvements are
+welcome, especially reproducible examples, missing edge cases, and corrections to
+framework-specific guidance.
 
 ## 📄 License
 
-MIT License.
+MIT License. See [LICENSE](LICENSE).

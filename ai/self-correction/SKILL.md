@@ -99,9 +99,9 @@ if errors:
     corrected = llm.generate("""
     Your previous output had validation errors:
     {errors}
-    
+
     Original output: {output}
-    
+
     Fix ONLY the errors listed above. Keep everything else the same.
     Return the corrected JSON.
     """)
@@ -113,8 +113,8 @@ Generate claims, then systematically verify each claim independently:
 
 ```
 Step 1: Generate the response
-"The Eiffel Tower is 330 meters tall, was completed in 1889, and was designed 
-by Gustave Eiffel. It was originally intended to be temporary and was supposed 
+"The Eiffel Tower is 330 meters tall, was completed in 1889, and was designed
+by Gustave Eiffel. It was originally intended to be temporary and was supposed
 to be demolished after 20 years."
 
 Step 2: Extract individual claims
@@ -132,8 +132,8 @@ Claim 4: VERIFIED (originally permitted for 20 years)
 Claim 5: NEEDS CLARIFICATION (20-year permit, not explicitly "supposed to be demolished")
 
 Step 4: Revise with verified claims only
-"The Eiffel Tower stands 330 meters tall (including antenna), was completed in 1889, 
-and was designed by Gustave Eiffel. It was originally permitted for only 20 years 
+"The Eiffel Tower stands 330 meters tall (including antenna), was completed in 1889,
+and was designed by Gustave Eiffel. It was originally permitted for only 20 years
 and was at risk of demolition."
 ```
 
@@ -144,7 +144,7 @@ Generate the same answer multiple times and check for agreement:
 ```
 Generate answer 3 times:
 Run 1: "Python was created by Guido van Rossum in 1991"
-Run 2: "Python was created by Guido van Rossum in 1991"  
+Run 2: "Python was created by Guido van Rossum in 1991"
 Run 3: "Python was developed by Guido van Rossum, first released in 1991"
 
 Consistency analysis:
@@ -195,7 +195,7 @@ Step 3: Generate section 2 (uses CHECKPOINT_1, CHECKPOINT_2) → CHECKPOINT_3
 
 ROLLBACK to CHECKPOINT_1
   Retry Step 2 with added constraint: "Maintain consistency with outline point 3"
-  
+
 Step 2 (retry): → CHECKPOINT_2b
   ✓ Validation passed
 
@@ -243,11 +243,11 @@ Round 2: Evaluator provides structured feedback
 }
 
 Round 3: Refine based on feedback
-"Climate change is increasing the frequency and intensity of heatwaves, 
-heavy precipitation events, and tropical cyclones. According to IPCC AR6, 
-heatwaves have become 5x more likely since pre-industrial times. 
-Organizations should: 1) Assess climate risks to operations, 2) Develop 
-adaptation plans for extreme weather scenarios, 3) Reduce emissions to 
+"Climate change is increasing the frequency and intensity of heatwaves,
+heavy precipitation events, and tropical cyclones. According to IPCC AR6,
+heatwaves have become 5x more likely since pre-industrial times.
+Organizations should: 1) Assess climate risks to operations, 2) Develop
+adaptation plans for extreme weather scenarios, 3) Reduce emissions to
 limit future warming."
 
 Round 4: Re-evaluate
@@ -271,7 +271,7 @@ Validate output before sending to the user:
 def generate_with_preflight(prompt, constraints):
     # Generate
     output = llm.generate(prompt)
-    
+
     # Pre-flight checks
     checks = {
         "format_valid": validate_format(output, constraints.format),
@@ -280,12 +280,12 @@ def generate_with_preflight(prompt, constraints):
         "no_hallucination_markers": not has_hedging(output),
         "schema_valid": validate_schema(output, constraints.schema),
     }
-    
+
     failures = [k for k, v in checks.items() if not v]
-    
+
     if not failures:
         return output
-    
+
     # Correct failures
     corrected = llm.generate(f"""
     Fix the following issues in this output:
@@ -293,7 +293,7 @@ def generate_with_preflight(prompt, constraints):
     Output: {output}
     Constraints: {constraints}
     """)
-    
+
     # Re-validate
     rechecks = run_checks(corrected, constraints)
     if all(rechecks.values()):
@@ -313,7 +313,7 @@ YOUR OUTPUT:
 "The population of Tokyo is approximately 38 million people in the city proper."
 
 CORRECT VERSION:
-"The population of Tokyo is approximately 14 million in the city proper, 
+"The population of Tokyo is approximately 14 million in the city proper,
 or approximately 37 million in the greater metropolitan area."
 
 The error: Conflating city proper population with metropolitan area population.
@@ -351,7 +351,7 @@ def confidence_gated_pipeline(output, confidence_score):
     if confidence_score >= 0.9:
         # High confidence: direct output
         return output
-    
+
     elif confidence_score >= 0.7:
         # Medium confidence: single verification pass
         verified = verify(output)
@@ -359,7 +359,7 @@ def confidence_gated_pipeline(output, confidence_score):
             return output
         else:
             return correct_and_verify(output, verified.errors)
-    
+
     elif confidence_score >= 0.4:
         # Low confidence: multiple verification passes
         for attempt in range(3):
@@ -368,7 +368,7 @@ def confidence_gated_pipeline(output, confidence_score):
                 return output
             output = correct(output, verified.errors)
         return flag_for_review(output)
-    
+
     else:
         # Very low confidence: don't use this output
         return regenerate_with_different_approach(output)

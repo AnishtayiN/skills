@@ -117,14 +117,14 @@ def test_regex(pattern, should_match, should_not_match, description=""):
     print(f"\n{'='*60}")
     print(f"Testing: {description or pattern}")
     print(f"{'='*60}")
-    
+
     for text in should_match:
         match = re.search(pattern, text)
         status = "PASS" if match else "FAIL"
         print(f"  [{status}] MATCH:    '{text}'")
         if match:
             print(f"         Groups: {match.groups()}")
-    
+
     for text in should_not_match:
         match = re.search(pattern, text)
         status = "PASS" if not match else "FAIL"
@@ -245,7 +245,7 @@ if match:
     print(f"Time: {match.group('hour')}:{match.group('minute')}:{match.group('second')}")
 ```
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. Lookahead and Lookbehind Assertions
 
@@ -370,26 +370,26 @@ import re
 # Python equivalent using regex module (pip install regex)
 try:
     import regex
-    
+
     # Atomic group syntax in the regex module
     atomic_pattern = regex.compile(r'(?>\d+\.)\d+')
-    
+
     # Compare with non-atomic
     non_atomic = re.compile(r'\d+\.\d+')
-    
+
     # Adversarial input that causes backtracking in non-atomic
     test = '1' * 25 + '.' + '2' * 25 + '!'
-    
+
     import time
-    
+
     start = time.time()
     non_atomic.search(test)
     non_atomic_time = time.time() - start
-    
+
     start = time.time()
     atomic_pattern.search(test)
     atomic_time = time.time() - start
-    
+
     print(f"Non-atomic: {non_atomic_time:.6f}s")
     print(f"Atomic:     {atomic_time:.6f}s")
 except ImportError:
@@ -450,31 +450,31 @@ import re
 
 try:
     import regex
-    
+
     # Match any Arabic text
     arabic_text = 'مرحبا بالعالم Hello 世界'
     arabic_words = regex.findall(r'\p{Arabic}+', arabic_text)
     print(f"Arabic: {arabic_words}")  # ['مرحبا', 'بالعالم']
-    
+
     # Match any CJK characters
     cjk_words = regex.findall(r'\p{Han}+', arabic_text)
     print(f"CJK: {cjk_words}")  # ['世界']
-    
+
     # Match any letter from any script
     all_letters = regex.findall(r'\p{L}+', arabic_text)
     print(f"All letters: {all_letters}")
-    
+
     # Match emoji
     emoji_text = 'Hello 🌍! Welcome 🎉🎊🎈'
     emojis = regex.findall(r'\p{Emoji_Presentation}+', emoji_text)
     print(f"Emoji: {emojis}")
-    
+
     # Unicode-aware word boundaries
     # \b in Unicode matches word boundaries for all scripts
     persian = 'سلام دنیا'
     words = regex.findall(r'\b\p{L}+\b', persian)
     print(f"Persian words: {words}")
-    
+
 except ImportError:
     print("Install 'regex' module for full Unicode support: pip install regex")
 ```
@@ -495,7 +495,7 @@ class ReDoSDetector:
     - Overlapping alternatives: (a|a)+
     - Adjacent quantifiers with overlap: a+a+
     """
-    
+
     VULNERABLE_PATTERNS = [
         (r'\([^)]*\+\)[\+*]', "Nested quantifier: (X+)+ or (X+)*"),
         (r'\([^)]*\*\)[\+*]', "Nested quantifier: (X*)+ or (X*)*"),
@@ -503,27 +503,27 @@ class ReDoSDetector:
         (r'(\w+|\d+)+', "Overlapping alternatives"),
         (r'\[\^?\][\+*]\[\^?\][\+*]', "Adjacent character classes: [a]+[b]+"),
     ]
-    
+
     @classmethod
     def analyze(cls, pattern_str):
         """Analyze a regex pattern for ReDoS vulnerabilities."""
         warnings = []
-        
+
         for vuln_pattern, description in cls.VULNERABLE_PATTERNS:
             if re.search(vuln_pattern, pattern_str):
                 warnings.append(description)
-        
+
         # Check for backtracking-heavy patterns
         if re.search(r'(\.\*){2,}', pattern_str):
             warnings.append("Multiple .* can cause excessive backtracking")
-        
+
         return warnings
-    
+
     @classmethod
     def benchmark(cls, pattern_str, test_input, max_time=1.0):
         """Benchmark a regex against adversarial input."""
         compiled = re.compile(pattern_str)
-        
+
         start = time.time()
         try:
             compiled.search(test_input)
@@ -609,11 +609,11 @@ def translate_regex(pattern, source_flavor, target_flavor):
     key = f"{source_flavor}_to_{target_flavor}"
     if key not in FLAVOR_MAP:
         return pattern
-    
+
     result = pattern
     for old, new in FLAVOR_MAP[key].items():
         result = result.replace(old, new)
-    
+
     return result
 
 
@@ -643,9 +643,9 @@ EMAIL_REGEX = re.compile(r"""
     # Local part
     [a-zA-Z0-9]                    # Start with alphanumeric
     [a-zA-Z0-9._%+\-]*            # Allow dots, underscores, etc.
-    
+
     @                               # @ separator
-    
+
     # Domain
     [a-zA-Z0-9]                    # Start with alphanumeric
     [a-zA-Z0-9.\-]*               # Allow dots and hyphens
@@ -851,7 +851,7 @@ def extract_template_vars(template, syntax='mustache'):
         'jinja': JINJA_VAR,
         'vue': VUE_VAR,
     }
-    
+
     pattern = patterns.get(syntax, MUSTACHE_VARS)
     return list(set(pattern.findall(template)))
 
