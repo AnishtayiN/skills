@@ -4,6 +4,7 @@ description: >-
   English: API integration with external services, REST clients, GraphQL queries, WebSocket connections, gRPC services, Server-Sent Events (SSE), OAuth 2.0 authentication, JWT token handling, API key management, webhook implementation, rate limiting, circuit breaker pattern, idempotency, retry with exponential backoff, response validation with Zod, OpenAPI code generation.
   Farsi: اتصال API با سرویس‌های خارجی، کلاینت‌های REST، کوئری‌های GraphQL، اتصالات WebSocket، سرویس‌های gRPC، رویدادهای سمت سرور (SSE)، احراز هویت OAuth 2.0، مدیریت توکن JWT، مدیریت کلید API، پیاده‌سازی وب‌هوک، محدودیت نرخ، الگوی مدار شکن، عدم وابستگی، تلاش مجدد با پشتیبانی نمایی، اعتبارسنجی پاسخ با Zod.
   Chinese: API集成与外部服务，REST客户端，GraphQL查询，WebSocket连接，gRPC服务，服务端事件(SSE)，OAuth 2.0认证，JWT令牌处理，API密钥管理，Webhook实现，速率限制，断路器模式，幂等性，指数退避重试，Zod响应验证，OpenAPI代码生成。
+  TRIGGERS: API integration, REST client, OAuth, webhook, یکپارچه‌سازی API, وب‌هوک, API 集成, Webhook
 priority: P2
 dependencies: [project-analysis]
 conflicts: []

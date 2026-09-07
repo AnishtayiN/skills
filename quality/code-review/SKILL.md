@@ -1,4 +1,4 @@
-﻿---
+---
 name: code-review
 description: >-
   Multi-dimensional code review: correctness, security, performance, maintainability, architecture.

@@ -11,7 +11,7 @@ description: >-
   بازنویسی سیستم قدیمی, کد میراثی, 迁移代码, 框架迁移, 语言迁移,
   代码重构, 代码升级, 遗留代码, 转换代码, 代码现代化
 priority: P0
-dependencies: [algorithm-design, testing, code-review]
+dependencies: [testing, code-review]
 conflicts: []
 ---
 

@@ -11,6 +11,7 @@ description: >-
     پارادوکس سیمپسون، جلوگیری از p-hacking.
   中文: 数据分析，探索性数据分析，统计检验，假设检验，时间序列分析，队列分析，A/B测试，
     主成分分析，聚类分析，RFM分析，辛普森悖论，p值操纵预防，多重检验校正。
+  TRIGGERS: data analysis, statistics, dataset, experiment, تحلیل داده, آمار, 数据分析, 统计
 priority: P2
 dependencies: []
 conflicts: []

@@ -8,7 +8,7 @@ description: >-
   دسترسی‌پذیری, قابلیت دسترسی, بهینه‌سازی برای معلولین, پشتیبانی از صفحه‌خوان, کنتراست رنگ,
   无障碍, WCAG, 屏幕阅读器, ARIA, 键盘导航, 无障碍测试, 对比度, 焦点管理
 priority: P1
-dependencies: [testing-e2e]
+dependencies: [testing]
 conflicts: []
 ---
 

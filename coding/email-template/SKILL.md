@@ -6,7 +6,7 @@ description: >-
   قالب ایمیل, طراحی ایمیل, ایمیل اچ‌تی‌ام‌ال, ایمیل ریسپانسیو, ایمیل خبرنامه, ایمیل مارکتینگ,
   邮件模板, 邮件设计, HTML邮件, 邮件开发, 邮件布局, 邮件响应式
 priority: P1
-dependencies: [performance-optimization]
+dependencies: []
 conflicts: []
 ---
 

@@ -1,4 +1,4 @@
-﻿---
+---
 name: refactoring
 description: >-
   Improve code structure without changing behavior. Extract, rename, move, simplify, optimize.

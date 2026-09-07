@@ -8,7 +8,7 @@ description: >-
   تست E2E، تست یکپارچه، تست مرورگر، تست خودکار، Playwright، Cypress,
   端到端测试, E2E测试, Playwright, Cypress, 浏览器测试, 截图测试, 视觉回归
 priority: P2
-dependencies: [ci-cd, testing]
+dependencies: [testing]
 conflicts: []
 ---
 

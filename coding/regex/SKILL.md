@@ -10,7 +10,7 @@ description: >-
   بازنویسی عبارت باقاعده, اعتبارسنجی الگو, گروه‌بندی, 正则表达式, 正则,
   模式匹配, 文本提取, 字符串解析, 查找替换, 验证正则, 捕获组
 priority: P1
-dependencies: [algorithm-design, testing]
+dependencies: [testing]
 conflicts: []
 ---
 

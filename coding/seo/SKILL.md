@@ -6,7 +6,7 @@ description: >-
   سئو, بهینه‌سازی موتور جستجو, متاتگ, نقشه سایت, سرعت صفحه, بهینه‌سازی سئو,
   SEO优化, 搜索引擎优化, 站点地图, 元标签, 网站速度, 结构化数据
 priority: P1
-dependencies: [performance-optimization]
+dependencies: []
 conflicts: []
 ---
 

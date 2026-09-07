@@ -9,6 +9,7 @@ description: >-
   امتیازدهی اطمینان، و تکرار ظریف.
   AI智能体的自我纠错与错误恢复。涵盖输出验证、事实核查、一致性检查、错误检测、
   回滚策略、质量门控、置信度评分和迭代优化。包含系统性捕获和修复AI错误的方法。
+  TRIGGERS: self correction, critique output, recover from error, خوداصلاحی, اصلاح خطا, 自我纠错, 错误恢复
 priority: P1
 dependencies: [prompt-engineering]
 conflicts: []

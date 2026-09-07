@@ -9,6 +9,7 @@ description: >-
   facade pattern. معماری تمیز و اصول SOLID، قاعده وابستگی، الگوی Repository،
   CQRS، رویدادهای دامنه، معماری شش‌لایه، معماری پیازی. 清洁架构，SOLID原则，
   依赖规则，仓储模式，领域事件，六边形架构
+  TRIGGERS: clean architecture, hexagonal architecture, ports and adapters, معماری تمیز, معماری شش‌ضلعی, 整洁架构, 六边形架构
 priority: P2
 dependencies: [project-analysis, refactoring]
 conflicts: []

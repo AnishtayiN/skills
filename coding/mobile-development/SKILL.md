@@ -6,7 +6,7 @@ description: >-
   توسعه موبایل, اپلیکیشن موبایل, ری‌اکت نیتیو, فلاتر, توسعه iOS, توسعه Android,
   移动开发, React Native开发, Flutter开发, 跨平台移动应用, 应用商店上架
 priority: P1
-dependencies: [performance-optimization]
+dependencies: []
 conflicts: []
 ---
 

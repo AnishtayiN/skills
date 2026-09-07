@@ -4,6 +4,7 @@ description: >-
   English: Browser automation with Playwright, Puppeteer, Selenium, page object model, selectors strategy, waiting strategies, network interception, authentication state, parallel testing, visual regression testing, accessibility testing, mobile emulation, file downloads and uploads, shadow DOM handling, cross-browser testing, test orchestration.
   Farsi: اتوماسیون مرورگر با Playwright، Puppeteer، Selenium، مدل شیء صفحه، استراتژی انتخابگرها، استراتژی‌های انتظار، رهگیری شبکه، وضعیت احراز هویت، تست موازی، تست بازگشت بصری، تست دسترسی‌پذیری، شبیه‌سازی موبایل، دانلود و آپلود فایل، مدیریت shadow DOM.
   Chinese: 浏览器自动化与Playwright、Puppeteer、Selenium，页面对象模型，选择器策略，等待策略，网络拦截，认证状态，并行测试，视觉回归测试，可访问性测试，移动端模拟，文件下载上传，Shadow DOM处理。
+  TRIGGERS: browser automation, Playwright, Puppeteer, Selenium, اتوماسیون مرورگر, تست مرورگر, 浏览器自动化, Playwright
 priority: P3
 dependencies: []
 conflicts: []

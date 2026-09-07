@@ -11,6 +11,7 @@ description: >-
   帕累托前沿分析、六顶思考帽、思维导图和决策矩阵。包含何时使用以及何时不使用结构化头脑风暴。
   结构化头脑风暴和创意激发技术，包含SCAMPER方法、反转思维、约束移除、类比映射、
   帕累托前沿分析、六顶思考帽、思维导图和决策矩阵，以及系统性创意问题解决框架。
+  TRIGGERS: brainstorm, ideation, generate ideas, طوفان فکری, ایده‌پردازی, 头脑风暴, 创意
 priority: P2
 dependencies: [requirement-analysis]
 conflicts: []
