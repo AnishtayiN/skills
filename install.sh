@@ -426,12 +426,49 @@ install_agent() {
   ok "Installed $n skills for $(agent_label "$agent") ($(wc -l < "$manifest" | tr -d ' ') managed paths)"
 }
 
+# A manifest written by the pre-6.0 installer listed bare category directories
+# ("coding") instead of typed paths. v5 copied only SKILL.md files, so a subdir holding
+# exactly one SKILL.md is provably ours; anything else belongs to the user and stays.
+uninstall_legacy_manifest() {
+  local destination="$1" manifest="$2" category skill dir files removed=0
+  while IFS= read -r category; do
+    [[ -n "$category" && "$category" != /* && "$category" != *..* ]] || continue
+    [[ "$category" == dir:* || "$category" == file:* ]] && continue
+    [[ -d "$destination/$category" ]] || continue
+    for skill in "$destination/$category"/*/; do
+      [[ -d "$skill" ]] || continue
+      files="$(find "$skill" -type f | wc -l | tr -d ' ')"
+      [[ -f "$skill/SKILL.md" && "$files" == "1" ]] || { warn "Kept $(basename "$skill"): not a v5-installed skill directory"; continue; }
+      if (( DRY_RUN )); then
+        info "Would remove ${skill#"$TARGET"/}"
+      else
+        dir="$(dirname -- "$skill")"
+        rm -rf -- "${skill%/}"
+        [[ -d "$dir" ]] && find "$dir" -depth -type d -empty -delete
+        removed=$((removed + 1))
+      fi
+    done
+  done < "$manifest"
+  if (( DRY_RUN )); then
+    ok "Dry run: a v5 manifest was found; managed paths would be reconciled"
+    return
+  fi
+  rm -f -- "$manifest"
+  [[ -d "$destination" ]] && find "$destination" -depth -type d -empty -delete
+  rmdir --ignore-fail-on-non-empty -- "$(dirname -- "$manifest")" 2>/dev/null || true
+  warn "Migrated a pre-6.0 manifest: removed $removed v5-managed skill director(ies)"
+}
+
 uninstall_agent() {
   local agent="$1" destination manifest entry removed=0
   destination="$(agent_skills_dir "$agent")"
   manifest="$(agent_manifest "$agent")"
   if [[ ! -f "$manifest" ]]; then
     warn "No managed manifest for $(agent_label "$agent"); nothing removed"
+    return
+  fi
+  if ! grep -qE '^(dir|file):' "$manifest"; then
+    uninstall_legacy_manifest "$destination" "$manifest"
     return
   fi
   while IFS= read -r entry; do
@@ -497,8 +534,22 @@ self_test() {
     fi
   done
   [[ -e "$target/.agent-skills-manifests" ]] && { warn "self-test: manifest directory survived uninstall"; status=1; }
+
+  # A pre-6.0 manifest listed bare category directories. The migration may remove only the
+  # nested skill dirs that hold nothing but a SKILL.md — this guards the one rm -rf path that
+  # runs against a layout the installer did not create in this format.
+  local legacy="$target/.claude/skills/quality/review" user="$target/.claude/skills/quality/mine"
+  mkdir -p "$legacy" "$user" "$(dirname -- "$(agent_manifest claude)")"
+  : > "$legacy/SKILL.md"
+  : > "$user/SKILL.md"
+  : > "$user/helper.py"
+  printf 'quality\n' > "$(agent_manifest claude)"
+  uninstall_agent claude > /dev/null 2>&1 || { warn "self-test: legacy manifest uninstall failed"; status=1; }
+  [[ ! -e "$legacy" ]] || { warn "self-test: v5-managed skill directory was left behind"; status=1; }
+  [[ -f "$user/helper.py" ]] || { warn "self-test: legacy cleanup deleted a user file"; status=1; }
+  [[ ! -e "$(agent_manifest claude)" ]] || { warn "self-test: legacy manifest was not rewritten"; status=1; }
   if (( status == 0 )); then
-    ok "self-test passed: ${before} skills × ${#all_agents[@]} agents install/update/uninstall is clean"
+    ok "self-test passed: ${before} skills × ${#all_agents[@]} agents install/update/uninstall is clean, and the v5 manifest migration is safe"
   fi
   return "$status"
 }

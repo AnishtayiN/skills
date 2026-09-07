@@ -100,6 +100,10 @@ lists—so your own files in the same directory survive. The agent's own top-lev
 example `.claude/`) is left in place even when empty, because it usually holds settings that the
 installer never created.
 
+A manifest written by the pre-6.0 installer lists bare category directories instead of typed paths.
+`--uninstall` detects that, removes only the nested `<category>/<skill>/` folders that contain
+nothing but a `SKILL.md`, keeps anything else, and rewrites the manifest in the current format.
+
 ### The six supported agents
 
 | Key | Agent | Destination | Bridge file |
