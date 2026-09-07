@@ -70,6 +70,10 @@ for doc in (ROOT / "README.md", ROOT / "SKILL-MATRIX.md", ROOT / "index.html"):
     text = doc.read_text(encoding="utf-8")
     if str(expected) not in text:
         warn.append(f"{doc}: does not mention current skill count ({expected})")
+index_text = (ROOT / "index.html").read_text(encoding="utf-8")
+for name in skills:
+    if f"'{name}'" not in index_text and f'\"{name}\"' not in index_text:
+        warn.append(f"index.html: skill {name} is missing from the catalog")
 
 print(f"Checked {expected} skills")
 for item in warn: print("WARN:", item)
