@@ -40,8 +40,8 @@
   <main id="top">
     <div class="wrap hero">
       <div><span class="eyebrow" data-i18n="eyebrow">For serious coding agents</span><h1 data-i18n="heroTitle">Make agents <span>think clearly</span> and ship safely.</h1><p class="hero-copy" data-i18n="heroCopy">57 focused playbooks for understanding codebases, changing code, designing systems, handling incidents, and proving the result.</p><div class="actions"><a class="button primary" href="#install" data-i18n="getStarted">Get started →</a><a class="button" href="https://github.com/AnishtayiN/skills" data-i18n="viewGithub">View on GitHub ↗</a></div></div>
-      <div class="terminal"><div class="terminal-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div><pre><span class="comment"># install for the current project</span>
-<span class="prompt">$</span> ./install.sh --claude
+      <div class="terminal"><div class="terminal-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div><pre><span class="comment"># install from a skills checkout into the current project</span>
+<span class="prompt">$</span> ~/.local/share/agent-skills/install.sh --claude
 <span class="comment"># select only what the task needs</span>
 <span class="prompt">$</span> python3 scripts/validate_skills.py
 <span class="prompt">✓</span> Checked 57 skills
@@ -55,9 +55,9 @@
 
     <section id="workflow"><div class="wrap"><div class="section-head"><div><h2 data-i18n="workflowTitle">A reliable loop for every task.</h2><p data-i18n="workflowCopy">Route narrowly, execute deliberately, and leave an evidence trail.</p></div></div><div class="workflow"><div class="flow"><b>Classify</b><span>Identify goal, scope, and risk.</span></div><div class="flow"><b>Inspect</b><span>Read project instructions and relevant files.</span></div><div class="flow"><b>Plan</b><span>State assumptions and stop conditions.</span></div><div class="flow"><b>Execute</b><span>Load only the useful skills.</span></div><div class="flow"><b>Verify</b><span>Run project-native checks.</span></div><div class="flow"><b>Report</b><span>Share changes, evidence, and limits.</span></div></div></div></section>
 
-    <section id="install"><div class="wrap"><div class="section-head"><div><h2 data-i18n="installTitle">Install it where your agent works.</h2><p data-i18n="installCopy">Project-local by default. Existing user instruction files are preserved.</p></div></div><div class="install"><article class="install-card"><h3 data-i18n="recommended">Recommended</h3><p data-i18n="recommendedCopy">Clone, review, and run the installer from the target project.</p><div class="code-box"><button class="copy" data-copy="git clone https://github.com/AnishtayiN/skills.git\ncd skills\n./install.sh --claude">Copy</button><code>git clone https://github.com/AnishtayiN/skills.git
-cd skills
-./install.sh --claude</code></div></article><article class="install-card"><h3 data-i18n="safeInstall">Validate before installing</h3><p data-i18n="safeInstallCopy">The repository includes a dependency and metadata checker.</p><div class="code-box"><button class="copy" data-copy="python3 scripts/validate_skills.py\nbash -n install.sh\n./install.sh --help">Copy</button><code>python3 scripts/validate_skills.py
+    <section id="install"><div class="wrap"><div class="section-head"><div><h2 data-i18n="installTitle">Install it where your agent works.</h2><p data-i18n="installCopy">Project-local by default. Existing user instruction files are preserved.</p></div></div><div class="install"><article class="install-card"><h3 data-i18n="recommended">Recommended</h3><p data-i18n="recommendedCopy">Clone, review, and run the installer from the target project.</p><div class="code-box"><button class="copy" data-copy="git clone https://github.com/AnishtayiN/skills.git ~/.local/share/agent-skills\ncd /path/to/your-project\n~/.local/share/agent-skills/install.sh --claude">Copy</button><code>git clone https://github.com/AnishtayiN/skills.git ~/.local/share/agent-skills
+cd /path/to/your-project
+~/.local/share/agent-skills/install.sh --claude</code></div></article><article class="install-card"><h3 data-i18n="safeInstall">Validate before installing</h3><p data-i18n="safeInstallCopy">The repository includes a dependency and metadata checker.</p><div class="code-box"><button class="copy" data-copy="python3 scripts/validate_skills.py\nbash -n install.sh\n./install.sh --help">Copy</button><code>python3 scripts/validate_skills.py
 bash -n install.sh
 ./install.sh --help</code></div><p style="font-size:13px;margin:16px 0 0">Supports Claude Code, Cursor, Windsurf, Aider, Continue.dev, and Hermes Agent.</p></article></div></div></section>
   </main>

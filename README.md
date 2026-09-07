@@ -35,20 +35,31 @@ It is deliberately **not** a magic prompt, an autonomous deployment system, or a
 
 ## 🚀 Quick start
 
-### Recommended: clone, inspect, install
+### Recommended: clone once, install into the target project
+
+The repository is the **source** of the skills. The Agent should use the copy inside your application project. Do not run the installer while your current directory is the cloned library unless you also pass `--target`.
 
 ```bash
-git clone https://github.com/AnishtayiN/skills.git
-cd skills
-./install.sh --claude
+git clone https://github.com/AnishtayiN/skills.git ~/.local/share/agent-skills
+cd /path/to/your-project
+~/.local/share/agent-skills/install.sh --claude
 ```
 
-The installer copies the library into the selected agent's project-local directory. Run it from the project where the agent should use the skills.
+Or, from anywhere:
+
+```bash
+~/.local/share/agent-skills/install.sh --target /path/to/your-project --claude
+```
+
+The installer copies the 57 playbooks into the selected Agent directory and creates a small instruction file only when one does not already exist.
 
 ### Interactive installer
 
+Run it from the target project, or provide `--target`:
+
 ```bash
-./install.sh
+cd /path/to/your-project
+~/.local/share/agent-skills/install.sh
 ```
 
 The menu supports six targets:
@@ -64,26 +75,25 @@ The menu supports six targets:
 
 Then use `7` to select all, `8` to clear, `9` to install, `10` to update, or `11` to uninstall.
 
+### What installation means
+
+The installer puts the files in the Agent-specific project directory and creates a small bridge instruction when the Agent uses one. It does **not** install a package, start a daemon, or force an Agent that ignores Markdown instructions to load skills. After installation, confirm the selected Agent can see the destination and ask it to read the relevant `SKILL.md`. The exact auto-discovery behavior remains Agent-specific.
+
 ### CLI commands
 
-```bash
-./install.sh --claude
-./install.sh --cursor
-./install.sh --all
-./install.sh --update all
-./install.sh --uninstall claude
-./install.sh --help
-```
-
-### One-line convenience install
-
-Use this only when you have reviewed the script and trust the branch being downloaded:
+The examples below assume the current directory is the target project:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AnishtayiN/skills/main/install.sh) --claude
+~/.local/share/agent-skills/install.sh --claude
+~/.local/share/agent-skills/install.sh --cursor
+~/.local/share/agent-skills/install.sh --all
+~/.local/share/agent-skills/install.sh --update --claude
+~/.local/share/agent-skills/install.sh --uninstall --claude
+~/.local/share/agent-skills/install.sh --check
+~/.local/share/agent-skills/install.sh --help
 ```
 
-For reproducible or security-sensitive environments, clone a pinned commit, review the diff, and execute locally instead.
+For reproducible or security-sensitive environments, clone a pinned commit, review the diff, and execute the local script with an explicit `--target`. Avoid piping an unreviewed remote installer into a shell.
 
 ## 🧭 Choose the right skill
 

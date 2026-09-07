@@ -90,7 +90,7 @@ skill_count() { available_skill_paths | wc -l | tr -d ' '; }
 safe_target() {
   [[ -d "$TARGET" ]] || fail "Target directory does not exist: $TARGET"
   TARGET="$(cd -- "$TARGET" && pwd)"
-  [[ "$TARGET" != "$SCRIPT_DIR" ]] || warn "Installing into the library itself; a project target is usually safer."
+  [[ "$TARGET" != "$SCRIPT_DIR" ]] || fail "Target is the skills library itself. Run from your project or pass --target /path/to/project."
 }
 
 copy_instruction_if_missing() {
