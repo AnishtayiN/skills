@@ -9,7 +9,7 @@ description: >-
   کشینگ، حافظه کش، بهینه‌سازی کش، redis، cdn، حافظه پنهان، انقضای کش، کلید کش,
   缓存, 缓存策略, Redis缓存, CDN缓存, 浏览器缓存, 缓存失效, 缓存穿透, 缓存雪崩, 缓存击穿
 priority: P2
-dependencies: [performance-optimization]
+dependencies: [performance-analysis]
 conflicts: []
 ---
 

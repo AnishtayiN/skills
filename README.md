@@ -4,11 +4,11 @@
 
 ![Version](https://img.shields.io/badge/version-5.0.0-blue)
 ![Skills](https://img.shields.io/badge/skills-57-green)
-![Lines](https://img.shields.io/badge/lines-60%2C000+-purple)
+![Lines](https://img.shields.io/badge/lines-59%2C000%2B-purple)
 ![Languages](https://img.shields.io/badge/triggers-EN%20%7C%20FA%20%7C%20ZH-orange)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
-**A professional, verification-first, root-cause-driven skill library for autonomous coding agents.**
+**A focused, verification-first skill library for coding agents: inspect, change minimally, and prove the result.**
 
 [Installation](#-installation) • [Skills](#-skills) • [Routing](#-routing) • [Contributing](#-contributing)
 
@@ -184,16 +184,16 @@ See [ROUTER.md](ROUTER.md), [AGENT.md](AGENT.md), and [SKILL-MATRIX.md](SKILL-MA
 
 ## ✅ Quality Standard
 
-Every skill passes the same verification checklist:
+Skills are reviewed against a practical consistency checklist:
 
 | Requirement | Standard |
 |-------------|----------|
 | Sections | Overview, When to Use, When NOT to Use, Workflow, Advanced Techniques, Common Patterns, Edge Cases, Integration, Templates, Rules |
-| Advanced Techniques | ≥ 7 |
-| Common Patterns | ≥ 5 (with code) |
-| Edge Cases & Pitfalls | ≥ 15 |
-| Output Templates | ≥ 4 |
-| Rules | ≥ 10 |
+| Actionability | Observable steps, stop conditions, and evidence |
+| Safety | Secrets, destructive actions, and untrusted input addressed |
+| Examples | Assumptions and environment-specific values are explicit |
+| Integration | Dependencies and neighboring skills are accurate |
+| Verification | Commands and expected evidence are stated |
 | Triggers | English + فارسی + 中文 |
 
 ---

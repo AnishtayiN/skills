@@ -1,4 +1,4 @@
-﻿---
+---
 name: testing
 description: >-
   Create, run, and manage tests: unit, integration, E2E, regression, performance.

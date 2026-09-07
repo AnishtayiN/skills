@@ -10,7 +10,7 @@ description: >-
   محدودیت ابزار, اجرای موازی ابزار,
   工具调用, 工具错误, 工具重试, 工具验证, 速率限制, 并行工具
 priority: P1
-dependencies: [agent-orchestration, context-management]
+dependencies: [context-management]
 conflicts: []
 ---
 

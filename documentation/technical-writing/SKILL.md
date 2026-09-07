@@ -9,6 +9,7 @@ description: >-
     سبک‌نامه، استراتژی محتوا، زبان ساده، نوشتن تجربه کاربری، یادداشت‌های انتشار.
   中文: 技术写作，文档编写，教程，API文档，README，用户指南，知识库，风格指南，
     内容策略，纯语言，用户体验写作，发布说明，白皮书，案例研究。
+  TRIGGERS: technical writing, tutorial, developer guide, نویسندگی فنی, آموزش فنی, 技术写作, 开发者指南
 priority: P3
 dependencies: []
 conflicts: []

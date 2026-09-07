@@ -1,4 +1,4 @@
-﻿---
+---
 name: verification
 description: >-
   Verify that changes work correctly. Build, test, lint, type-check, and smoke test.

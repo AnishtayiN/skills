@@ -10,6 +10,7 @@ description: >-
   حفاظت‌ها، دفاع در برابر تزریق، آزمون A/B پرامپت، و نسخه‌داری پرامپت.
   混元精工，专业大模型提示词工程，包括提示架构、少样本设计、思维链提示、
   系统提示设计、角色工程、输出格式化、防护栏、注入防御、A/B测试提示和版本控制。
+  TRIGGERS: prompt design, prompt optimization, system prompt, طراحی پرامپت, بهینه‌سازی پرامپت, 提示词设计, 提示词优化
 priority: P1
 dependencies: []
 conflicts: []

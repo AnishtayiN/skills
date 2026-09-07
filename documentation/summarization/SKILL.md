@@ -9,6 +9,7 @@ description: >-
     بازبینی، یادداشت جلسات، خلاصه مقاله، خلاصه کتاب، خلاصه پژوهش.
   中文: 摘要生成，文本摘要，执行摘要，关键点提取，内容提炼，会议纪要摘要，
     文章摘要，书籍摘要，研究摘要，简报。
+  TRIGGERS: summarize, summary, meeting notes, خلاصه‌سازی, خلاصه جلسه, 摘要, 会议纪要
 priority: P3
 dependencies: []
 conflicts: []

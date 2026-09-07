@@ -9,7 +9,7 @@ description: >-
   گراف, بهینه‌سازی, برنامه‌نویسی پویا, الگوریتم حریصانه, جستجو, بازگشتی,
   算法, 数据结构, 复杂度, 排序, 图论, 动态规划, 贪心, 优化, 二分查找, 树
 priority: P0
-dependencies: [code-migration, regex]
+dependencies: [testing]
 conflicts: []
 ---
 

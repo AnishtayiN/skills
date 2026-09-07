@@ -10,6 +10,7 @@ description: >-
     حذف تکراری، اعتبارسنجی طرحواره، نرمال‌سازی رمزگذاری، نرمال‌سازی متن، ادغام چند منبعه.
   中文: 数据清洗，数据预处理，缺失值插补，异常值检测，去重，模式验证，类型推断，
     编码规范化，文本规范化，数据质量，ETL，数据整理，MCAR/MAR/MNAR分析。
+  TRIGGERS: data cleaning, normalize data, missing values, پاک‌سازی داده, داده گمشده, 数据清洗, 缺失值
 priority: P2
 dependencies: []
 conflicts: []

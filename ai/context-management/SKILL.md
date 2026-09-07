@@ -7,9 +7,10 @@ description: >-
   summarize context, compress context, token management, context optimization,
   sliding window, context priority, key information extraction,
   کانتکست, توکن, محدودیت توکن, ساختار مکالمه, مدیریت حافظه,
-  بهینه‌سازی کانتکست, فشرده‌سازی کانتکست
+  بهینه‌سازی کانتکست, فشرده‌سازی کانتکست,
+  上下文管理, 上下文窗口, 令牌限制, 上下文压缩
 priority: P1
-dependencies: [tool-management]
+dependencies: []
 conflicts: []
 ---
 

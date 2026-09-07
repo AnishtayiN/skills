@@ -4,6 +4,7 @@ description: >-
   English: Web scraping and data extraction, HTTP clients, HTML parsing, CSS selectors, XPath queries, headless browsers, anti-bot detection bypass, proxy rotation, rate limiting, pagination handling, JavaScript rendering, API reverse-engineering, robots.txt compliance, ethical scraping practices, data transformation, structured extraction.
   Farsi: استخراج داده‌های وب و کراولینگ، کلاینت‌های HTTP، پارس HTML، انتخابگرهای CSS، کوئری‌های XPath، مرورگرهای بدون سر، دور زدن تشخیص ربات، چرخش پراکسی، محدودیت نرخ، مدیریت صفحه‌بندی، رندرینگ JavaScript، مهندسی معکوس API، رعایت robots.txt، شیوه‌های اخلاقی کراولینگ.
   Chinese: 网页抓取和数据提取，HTTP客户端，HTML解析，CSS选择器，XPath查询，无头浏览器，反机器人检测绕过，代理轮换，速率限制，分页处理，JavaScript渲染，API逆向工程，robots.txt合规性，道德抓取实践。
+  TRIGGERS: web scraping, crawl website, extract web data, وب اسکرپینگ, استخراج داده از سایت, 网页抓取, 网站数据提取
 priority: P3
 dependencies: []
 conflicts: []

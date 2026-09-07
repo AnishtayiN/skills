@@ -1,149 +1,60 @@
-# 🧭 Skill Router
+# Skill router
 
-## How Skill Routing Works
+The router selects a small, ordered set of skills. It is intentionally conservative: a skill is loaded when it changes the agent's next action, not merely because it is related to the topic.
 
-```
-User Request
-     ↓
-┌─────────────────┐
-│ Task Classifier  │  What type of task is this?
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Skill Detector   │  Which skills are relevant?
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Priority Sort    │  What's the priority order?
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Dependency Check │  What must run first?
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Conflict Check   │  Are any skills conflicting?
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Load Skills      │  Load ONLY needed skills
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Execute          │  Run skills in order
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Verify           │  Check results
-└────────┬────────┘
-         ↓
-     Response
+## Routing algorithm
+
+```text
+request
+  → classify goal and risk
+  → inspect project and constraints
+  → select one primary skill
+  → add only required prerequisites and risk checks
+  → execute
+  → verify with evidence
 ```
 
-## Task Classification
+### 1. Classify the request
 
-| Task Type | Primary Skills | Secondary Skills |
-|-----------|---------------|-----------------|
-| **New Feature** | project-analysis, requirement-analysis, task-planning, code-generation | code-review, testing, verification |
-| **Bug Fix** | debugging, verification | testing, code-review |
-| **Code Review** | code-review | security-audit, performance-analysis |
-| **Refactoring** | refactoring, code-review | testing, verification |
-| **Architecture** | system-design, api-design, database-design | project-analysis |
-| **Microservices** | microservices, queue, api-design | system-design, dockerization |
-| **DevOps** | dockerization, ci-cd, deployment | testing, security-audit |
-| **Release** | feature-flag, deployment, changelog | ci-cd, monitoring-observability |
-| **Incident** | incident-response, monitoring-observability | debugging, concurrency-debugging |
-| **Security** | security-audit | code-review, debugging |
-| **Performance** | performance-analysis, performance-optimization | caching, concurrency-debugging |
-| **Documentation** | documentation | project-analysis |
-| **Testing** | testing, testing-e2e, verification | code-review |
-| **Accessibility** | accessibility | code-review, testing-e2e |
-| **i18n / SEO / Mobile** | i18n / seo / mobile-development | code-generation, testing |
-| **Algorithm Work** | algorithm-design | refactoring, testing |
-| **Regex / Email / Migration** | regex / email-template / code-migration | code-review, testing |
+| Goal | Primary | Add when relevant |
+|---|---|---|
+| understand an unfamiliar repository | `core/project-analysis` | `documentation` |
+| clarify a feature or bug report | `core/requirement-analysis` | `core/task-planning` |
+| implement a feature | `coding/code-generation` | `testing`, `security-audit`, `verification` |
+| edit a small known location | `coding/code-editing` | `verification` |
+| diagnose a failure | `coding/debugging` | `testing`, `verification` |
+| review a diff or PR | `quality/code-review` | `security-audit`, `performance-analysis` |
+| change structure without behavior change | `coding/refactoring` | `testing`, `verification` |
+| design a system/API/data model | `architecture/system-design` | `api-design`, `database-design` |
+| deploy or automate delivery | `devops/ci-cd` or `devops/deployment` | `security-audit`, `monitoring-observability` |
+| respond to an incident | `devops/incident-response` | `monitoring-observability`, `debugging` |
+| optimize a slow path | `performance/performance-analysis` | `caching`, `concurrency-debugging` |
+| write or update docs | `documentation/documentation` | `technical-writing` |
 
-## Routing Rules
+Use specialized skills (`graphql`, `regex`, `i18n`, `browser-automation`, and so on) only when the request actually names or requires that domain.
 
-### Rule 1: Always Start with Analysis
+### 2. Order and dependencies
 
-```
-If task is unclear OR project is unfamiliar:
-  → project-analysis (always first)
-```
+Read declared dependencies first, in dependency order. Dependencies are context providers, not mandatory work products: skip a dependency's execution when the needed facts are already established, but record that decision.
 
-### Rule 2: Debug Before Refactor
+### 3. Resolve overlap
 
-```
-If code has bugs AND needs refactoring:
-  → debugging FIRST, then refactoring
-```
+- debugging precedes refactoring;
+- implementation precedes review;
+- testing and security checks happen before deployment;
+- performance work starts with measurement, never with a guessed optimization;
+- verification is a checkpoint, not a claim that every possible check must pass.
 
-### Rule 3: Verify After Every Change
+### 4. Scope and risk
 
-```
-After ANY code change:
-  → verification (always last)
-```
+Choose a verification depth:
 
-### Rule 4: Security by Default
+- **quick:** syntax, focused test, diff review;
+- **standard:** project lint/type/test commands plus a smoke test;
+- **release:** standard checks, integration/E2E, security, migration/rollback review.
 
-```
-If code handles user input OR sensitive data:
-  → security-audit (include by default)
-```
+Increase depth for authentication, payments, destructive operations, public APIs, concurrency, migrations, or production incidents.
 
-### Rule 5: Test Before Deploy
+## Output from routing
 
-```
-If deploying:
-  → testing BEFORE deployment
-```
-
-## Priority Order
-
-| Priority | When to Use |
-|----------|------------|
-| **P0** | Critical: debugging, verification, security-audit |
-| **P1** | High: code-review, testing, code-generation, project-analysis |
-| **P2** | Normal: refactoring, system-design, git-workflow, api-design |
-| **P3** | Standard: documentation, deployment, performance-analysis |
-
-## Dependency Resolution
-
-```
-If skill A depends on skill B:
-  → Execute B first
-
-If skill A conflicts with skill B:
-  → Execute higher priority first
-  → Re-evaluate after execution
-
-If circular dependency:
-  → Break the circle by removing one dependency
-```
-
-## Conflict Resolution
-
-| Conflict | Resolution |
-|----------|------------|
-| debugging vs refactoring | Debug first, refactor after fix |
-| code-review vs code-generation | Generate first, review after |
-| security vs performance | Security first |
-| minimal-fix vs refactoring | Default to minimal-fix |
-
-## Dynamic Loading
-
-```
-NEVER load all skills at once.
-
-1. Classify the task
-2. Load ONLY relevant skills
-3. Execute
-4. Unload
-```
-
-This prevents:
-- Token waste
-- Context pollution
-- Skill conflicts
-- Confused behavior
+Before execution, keep a short internal plan with: goal, files likely involved, selected skills, assumptions, verification commands, and stop conditions. Do not expose private chain-of-thought; report decisions and evidence instead.

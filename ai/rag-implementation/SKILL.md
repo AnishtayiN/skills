@@ -9,6 +9,7 @@ description: >-
     تکه‌تکه‌سازی اسناد، بازrank‌بندی، تزریق زمینه، جلوگیری از توهم، ارزیابی RAGAS.
   中文: 检索增强生成，向量搜索，语义搜索，嵌入模型，文档分块，重排序，上下文注入，
     幻觉预防，RAGAS评估，知识库问答。
+  TRIGGERS: RAG, retrieval augmented generation, vector search, پیاده‌سازی RAG, جستجوی برداری, 检索增强生成, 向量搜索
 priority: P2
 dependencies: [api-integration]
 conflicts: []
