@@ -148,19 +148,19 @@ def hierarchical_summary(document, levels=None):
     """
     if levels is None:
         levels = [1, 2, 3, 4]
-    
+
     # Extract key information
     key_points = extract_key_points(document)
     main_argument = extract_main_argument(document)
     supporting_evidence = extract_supporting_evidence(document)
     conclusions = extract_conclusions(document)
-    
+
     summary = {}
-    
+
     if 1 in levels:
         # One-line TL;DR
         summary['tldr'] = f"{main_argument['claim']}. {conclusions['primary']}"
-    
+
     if 2 in levels:
         # Brief paragraph summary
         sentences = [
@@ -171,7 +171,7 @@ def hierarchical_summary(document, levels=None):
         if main_argument.get('limitation'):
             sentences.append(f"The authors note that {main_argument['limitation']}")
         summary['brief'] = ' '.join(sentences)
-    
+
     if 3 in levels:
         # Detailed summary with key points
         summary['detailed'] = {
@@ -181,7 +181,7 @@ def hierarchical_summary(document, levels=None):
             'limitations': extract_limitations(document),
             'implications': extract_implications(document)
         }
-    
+
     if 4 in levels:
         # Section-by-section summary
         sections = extract_sections(document)
@@ -191,13 +191,13 @@ def hierarchical_summary(document, levels=None):
                 'key_point': section['main_idea'],
                 'supporting': section['supporting_points'][:3]
             }
-    
+
     return summary
 
 def extract_key_points(document):
     """Extract the most important points from a document."""
     sentences = split_into_sentences(document)
-    
+
     # Score sentences by importance signals
     scores = []
     for sent in sentences:
@@ -207,7 +207,7 @@ def extract_key_points(document):
             score += 2
         if sentences.index(sent) >= len(sentences) - 2:
             score += 2
-        
+
         # Signal words
         signal_phrases = [
             'the key finding', 'in conclusion', 'we show that',
@@ -218,19 +218,19 @@ def extract_key_points(document):
             if phrase in sent.lower():
                 score += 3
                 break
-        
+
         # Length bonus (not too short, not too long)
         word_count = len(sent.split())
         if 10 <= word_count <= 30:
             score += 1
-        
+
         # Contains numbers or data
         import re
         if re.search(r'\d+\.?\d*', sent):
             score += 1
-        
+
         scores.append((sent, score))
-    
+
     # Return top sentences
     scores.sort(key=lambda x: x[1], reverse=True)
     return [s[0] for s in scores[:10]]
@@ -249,20 +249,20 @@ def confidence_flagged_summary(document):
     - INTERPRETED: Requires reader judgment or domain knowledge
     """
     key_points = extract_key_points(document)
-    
+
     summary = []
-    
+
     for point in key_points:
         # Determine confidence level
         confidence = classify_confidence(point, document)
-        
+
         summary.append({
             'claim': point,
             'confidence': confidence,
             'source_location': find_source_location(point, document),
             'supporting_quote': find_supporting_quote(point, document)
         })
-    
+
     return summary
 
 def classify_confidence(claim, document):
@@ -271,19 +271,19 @@ def classify_confidence(claim, document):
     """
     claim_lower = claim.lower()
     doc_lower = document.lower()
-    
+
     # Check for direct quotes or near-quotes
     claim_words = claim_lower.split()
     for i in range(len(claim_words) - 3):
         phrase = ' '.join(claim_words[i:i+4])
         if phrase in doc_lower:
             return 'DIRECT'
-    
+
     # Check for signal words indicating inference
     inference_signals = ['suggests', 'implies', 'indicates', 'appears to', 'seems']
     if any(signal in claim_lower for signal in inference_signals):
         return 'INFERRED'
-    
+
     # Default to interpreted
     return 'INTERPRETED'
 ```
@@ -300,20 +300,20 @@ def action_first_summary(meeting_notes):
     """
     # Extract action items
     action_items = extract_action_items(meeting_notes)
-    
+
     # Extract decisions
     decisions = extract_decisions(meeting_notes)
-    
+
     # Extract key discussion points
     discussion_points = extract_discussion_points(meeting_notes)
-    
+
     summary = {
         'action_items': [],
         'decisions': [],
         'key_discussion': [],
         'next_meeting': None
     }
-    
+
     # Prioritize action items by urgency
     for item in action_items:
         summary['action_items'].append({
@@ -323,13 +323,13 @@ def action_first_summary(meeting_notes):
             'priority': item.get('priority', 'Medium'),
             'context': item.get('context', '')
         })
-    
+
     # Sort by priority
     priority_order = {'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3}
     summary['action_items'].sort(
         key=lambda x: priority_order.get(x['priority'], 2)
     )
-    
+
     # Add decisions with rationale
     for decision in decisions:
         summary['decisions'].append({
@@ -337,7 +337,7 @@ def action_first_summary(meeting_notes):
             'rationale': decision.get('rationale', ''),
             'dissent': decision.get('dissent', None)
         })
-    
+
     # Add key discussion points (what influenced the decisions)
     summary['key_discussion'] = [
         {
@@ -347,7 +347,7 @@ def action_first_summary(meeting_notes):
         }
         for point in discussion_points[:5]
     ]
-    
+
     return summary
 ```
 
@@ -358,30 +358,30 @@ For reviews, feedback, or opinion-heavy content, summarize while preserving sent
 ```python
 def sentiment_aware_summary(document):
     """
-    Create a summary that preserves the sentiment distribution 
+    Create a summary that preserves the sentiment distribution
     of the source document.
     """
     from collections import Counter
-    
+
     sentences = split_into_sentences(document)
-    
+
     # Classify sentiment for each sentence
     sentiment_groups = {'positive': [], 'negative': [], 'neutral': []}
-    
+
     for sent in sentences:
         sentiment = classify_sentiment(sent)
         sentiment_groups[sentiment].append(sent)
-    
+
     # Calculate proportions
     total = len(sentences)
     sentiment_distribution = {
-        k: len(v) / total if total > 0 else 0 
+        k: len(v) / total if total > 0 else 0
         for k, v in sentiment_groups.items()
     }
-    
+
     # Create balanced summary that reflects proportions
     summary_parts = []
-    
+
     # Lead with the dominant sentiment
     dominant = max(sentiment_distribution, key=sentiment_distribution.get)
     if sentiment_groups[dominant]:
@@ -389,7 +389,7 @@ def sentiment_aware_summary(document):
         # Include top sentences from dominant sentiment
         for sent in sentiment_groups[dominant][:2]:
             summary_parts.append(sent)
-    
+
     # Include notable points from other sentiments
     for sentiment in ['positive', 'negative', 'neutral']:
         if sentiment != dominant and sentiment_groups[sentiment]:
@@ -399,7 +399,7 @@ def sentiment_aware_summary(document):
                 key=lambda s: sentiment_strength(s)
             )
             summary_parts.append(strongest)
-    
+
     return {
         'summary': ' '.join(summary_parts),
         'sentiment_distribution': sentiment_distribution,
@@ -426,17 +426,17 @@ def summarize_codebase(structure, key_files):
         'dependencies': [],
         'patterns_used': []
     }
-    
+
     # Analyze structure
     total_files = sum(len(files) for files in structure.values())
     languages = detect_languages(structure)
-    
+
     summary['overview'] = (
         f"This codebase contains {total_files} files across "
         f"{len(structure)} directories. Primary languages: "
         f"{', '.join(languages[:3])}."
     )
-    
+
     # Identify key components
     for path, files in structure.items():
         if any(kw in path.lower() for kw in ['src', 'lib', 'core']):
@@ -445,26 +445,26 @@ def summarize_codebase(structure, key_files):
                 'purpose': infer_purpose(path, files),
                 'file_count': len(files)
             })
-    
+
     # Identify entry points
     for path, files in structure.items():
         for f in files:
             if any(name in f.lower() for name in ['main', 'index', 'app', 'server']):
                 summary['entry_points'].append(f"{path}/{f}")
-    
+
     # Analyze key files for patterns
     for file_path, content in key_files.items():
         patterns = detect_patterns(content)
         summary['patterns_used'].extend(patterns)
-    
+
     summary['patterns_used'] = list(set(summary['patterns_used']))
-    
+
     return summary
 
 def detect_patterns(content):
     """Detect common code patterns in source files."""
     patterns = []
-    
+
     if 'class ' in content and 'def __init__' in content:
         patterns.append('OOP')
     if 'async def' in content or 'await ' in content:
@@ -477,7 +477,7 @@ def detect_patterns(content):
         patterns.append('error handling')
     if 'logging' in content or 'logger' in content:
         patterns.append('structured logging')
-    
+
     return patterns
 ```
 
@@ -491,7 +491,7 @@ def multi_document_summary(documents, topic=None):
     Create a unified summary from multiple documents on the same topic.
     Handles conflicting information and identifies consensus vs. disagreement.
     """
-    
+
     # Extract key points from each document
     all_points = []
     for doc in documents:
@@ -502,10 +502,10 @@ def multi_document_summary(documents, topic=None):
                 'source': doc['title'],
                 'confidence': classify_confidence(point, doc['content'])
             })
-    
+
     # Cluster similar points
     clusters = cluster_similar_points(all_points)
-    
+
     # Build consensus summary
     summary = {
         'consensus_points': [],
@@ -513,7 +513,7 @@ def multi_document_summary(documents, topic=None):
         'unique_points': [],
         'coverage_analysis': {}
     }
-    
+
     for cluster in clusters:
         if len(cluster) >= 3:
             # Consensus: mentioned by multiple sources
@@ -525,10 +525,10 @@ def multi_document_summary(documents, topic=None):
         elif len(cluster) == 1:
             # Unique: mentioned by only one source
             summary['unique_points'].append(cluster[0])
-    
+
     # Detect conflicts
     summary['conflicting_points'] = detect_conflicts(all_points)
-    
+
     # Coverage analysis
     total_sources = len(documents)
     summary['coverage_analysis'] = {
@@ -538,7 +538,7 @@ def multi_document_summary(documents, topic=None):
             for doc in documents
         }
     }
-    
+
     return summary
 ```
 
@@ -550,26 +550,26 @@ Create summaries that build in detail, allowing readers to expand sections they 
 def progressive_summary(document, depth=3):
     """
     Create a progressive summary with expandable sections.
-    
+
     Depth 1: Executive summary (1 paragraph)
     Depth 2: Key points (bullet list)
     Depth 3: Detailed section summaries
     Depth 4: Full analysis with evidence
     """
-    
+
     sections = extract_sections(document)
-    
+
     result = {}
-    
+
     # Depth 1: Executive summary
     result['executive_summary'] = create_executive_summary(document)
-    
+
     # Depth 2: Key points
     result['key_points'] = [
-        extract_key_point(section) 
+        extract_key_point(section)
         for section in sections
     ]
-    
+
     # Depth 3: Section details (if requested)
     if depth >= 3:
         result['section_details'] = {}
@@ -579,7 +579,7 @@ def progressive_summary(document, depth=3):
                 'key_evidence': extract_evidence(section)[:3],
                 'supporting_points': extract_supporting_points(section)[:5]
             }
-    
+
     # Depth 4: Full analysis (if requested)
     if depth >= 4:
         result['full_analysis'] = {
@@ -589,7 +589,7 @@ def progressive_summary(document, depth=3):
             'implications': extract_implications(document),
             'further_reading': suggest_related_work(document)
         }
-    
+
     return result
 ```
 
@@ -605,7 +605,7 @@ def summarize_research_paper(paper):
     Create a structured summary of a research paper.
     Follows the standard academic structure.
     """
-    
+
     summary = {
         'citation': format_citation(paper),
         'one_line': '',
@@ -616,24 +616,24 @@ def summarize_research_paper(paper):
         'significance': '',
         'relevance_to_practice': ''
     }
-    
+
     # Extract from structured sections
     if 'abstract' in paper:
         summary['one_line'] = extract_main_claim(paper['abstract'])
-    
+
     if 'introduction' in paper:
         summary['problem'] = extract_problem_statement(paper['introduction'])
-    
+
     if 'methods' in paper:
         summary['approach'] = extract_methodology(paper['methods'])
-    
+
     if 'results' in paper:
         summary['key_findings'] = extract_findings(paper['results'])
-    
+
     if 'discussion' in paper:
         summary['limitations'] = extract_limitations(paper['discussion'])
         summary['significance'] = extract_significance(paper['discussion'])
-    
+
     # Generate formatted summary
     formatted = f"""## {summary['citation']}
 
@@ -651,7 +651,7 @@ def summarize_research_paper(paper):
 
 **Significance:** {summary['significance']}
 """
-    
+
     return formatted
 ```
 
@@ -662,12 +662,12 @@ def summarize_meeting(transcript, attendees=None):
     """
     Create structured meeting notes from a transcript or notes.
     """
-    
+
     # Extract components
     discussions = extract_discussions(transcript)
     decisions = extract_decisions(transcript)
     action_items = extract_action_items(transcript)
-    
+
     summary = {
         'meeting_info': {
             'attendees': attendees or extract_attendees(transcript),
@@ -680,7 +680,7 @@ def summarize_meeting(transcript, attendees=None):
         'parking_lot': [],  # Topics deferred
         'next_meeting': extract_next_meeting(transcript)
     }
-    
+
     # Process discussions
     for discussion in discussions:
         item = {
@@ -690,7 +690,7 @@ def summarize_meeting(transcript, attendees=None):
             'time_spent': discussion.get('duration', 'Unknown')
         }
         summary['agenda_items'].append(item)
-    
+
     # Format action items
     for action in action_items:
         summary['action_items'].append({
@@ -699,12 +699,12 @@ def summarize_meeting(transcript, attendees=None):
             'deadline': action.get('deadline', 'TBD'),
             'status': 'New'
         })
-    
+
     return summary
 
 def format_meeting_summary(summary):
     """Format meeting summary as markdown."""
-    
+
     output = f"""# Meeting Summary
 
 **Date:** {summary['meeting_info']['date']}
@@ -728,7 +728,7 @@ def format_meeting_summary(summary):
 ## Next Meeting
 {summary['next_meeting'] or 'TBD'}
 """
-    
+
     return output
 ```
 
@@ -738,13 +738,13 @@ def format_meeting_summary(summary):
 def summarize_article(article, style='inverted_pyramid'):
     """
     Summarize a news article or blog post.
-    
+
     Styles:
     - inverted_pyramid: Most important info first (news style)
     - chronological: Events in order
     - thematic: Organized by theme
     """
-    
+
     # Extract key elements
     who = extract_entities(article, ['person', 'organization'])
     what = extract_main_event(article)
@@ -752,7 +752,7 @@ def summarize_article(article, style='inverted_pyramid'):
     where = extract_location(article)
     why = extract_reason(article)
     impact = extract_impact(article)
-    
+
     if style == 'inverted_pyramid':
         summary = f"""**What happened:** {what}
 
@@ -763,7 +763,7 @@ def summarize_article(article, style='inverted_pyramid'):
 **Why it matters:** {impact}
 
 **Key details:** {why}"""
-    
+
     elif style == 'chronological':
         events = extract_events(article)
         summary = f"""**Timeline of events:**
@@ -771,7 +771,7 @@ def summarize_article(article, style='inverted_pyramid'):
 {chr(10).join(f"- **{e['time']}:** {e['description']}" for e in events)}
 
 **Current status:** {extract_current_status(article)}"""
-    
+
     return summary
 ```
 
@@ -782,13 +782,13 @@ def summarize_technical_doc(document, audience='developer'):
     """
     Summarize technical documentation for a specific audience.
     """
-    
+
     # Extract technical content
     api_endpoints = extract_api_endpoints(document)
     key_concepts = extract_concepts(document)
     code_examples = extract_code_examples(document)
     common_tasks = extract_common_tasks(document)
-    
+
     if audience == 'developer':
         summary = f"""## Quick Start
 
@@ -808,7 +808,7 @@ def summarize_technical_doc(document, audience='developer'):
 {extract_quickstart_command(document)}
 ```
 """
-    
+
     elif audience == 'manager':
         summary = f"""## Overview
 
@@ -822,7 +822,7 @@ def summarize_technical_doc(document, audience='developer'):
 
 **Estimated implementation time:** {extract_effort_estimate(document)}
 """
-    
+
     return summary
 ```
 
@@ -833,13 +833,13 @@ def summarize_book_chapter(chapter, chapter_number=None):
     """
     Create a structured summary of a book chapter.
     """
-    
+
     # Extract chapter elements
     thesis = extract_chapter_thesis(chapter)
     key_arguments = extract_arguments(chapter)
     examples = extract_examples(chapter)
     conclusions = extract_chapter_conclusions(chapter)
-    
+
     summary = f"""## Chapter {chapter_number or '?'} Summary
 
 ### Core Thesis
@@ -861,7 +861,7 @@ def summarize_book_chapter(chapter, chapter_number=None):
 - **Builds on:** {extract_prerequisites(chapter)}
 - **Leads to:** {extract_follow_up_topics(chapter)}
 """
-    
+
     return summary
 ```
 

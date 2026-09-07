@@ -163,8 +163,8 @@ Remove STAFFING constraint: "What if we had no support staff?"
 → Community-driven support → forums, peer-to-peer help
 → Perfect documentation → zero-contact resolution
 
-Key insight: The most innovative solutions came from removing the technology and 
-staffing constraints, suggesting investment in self-service and community would 
+Key insight: The most innovative solutions came from removing the technology and
+staffing constraints, suggesting investment in self-service and community would
 have the highest ROI.
 ```
 
@@ -198,8 +198,8 @@ Source Domain 3: Military logistics
 - Communication protocol → Service-to-service protocols
 - Redundancy → High availability, failover
 
-Insight: City planning is the most productive analogy because both systems 
-involve independent entities following standards, interacting through defined 
+Insight: City planning is the most productive analogy because both systems
+involve independent entities following standards, interacting through defined
 channels, with centralized governance and distributed execution.
 ```
 
@@ -222,7 +222,7 @@ Pareto front: A, B, C (D is dominated by C; E is dominated by A)
 A → B: +Performance +Reliability, -Cost (moderate)
 B → C: +Performance +Reliability, -Cost (significant)
 
-Decision: B dominates for most scenarios. C only if maximum performance/reliability 
+Decision: B dominates for most scenarios. C only if maximum performance/reliability
 justifies the cost premium. A only if budget is the absolute constraint.
 
 Not on Pareto front: D (over-engineered, dominated by C) and E (too cheap, dominated by A)
@@ -275,8 +275,8 @@ Problem: "Should we launch our AI product now or delay 3 months?"
 - Evaluate Green hat options against Black hat risks
 - Decision framework: risk-adjusted value of early vs. late launch
 
-SYNTHESIS: Option 3 (Launch core features now, announce roadmap) balances 
-market timing with quality concerns. It captures early revenue while 
+SYNTHESIS: Option 3 (Launch core features now, announce roadmap) balances
+market timing with quality concerns. It captures early revenue while
 maintaining credibility.
 ```
 
@@ -327,7 +327,7 @@ Cross-connections:
 - "First PR" connects to "First week" AND "CI/CD"
 - "Architecture overview" connects to "First week" AND "Knowledge"
 
-Emergent insight: Automation of dev environment setup would improve both 
+Emergent insight: Automation of dev environment setup would improve both
 Day 1 experience and Week 1 productivity — high-leverage investment.
 ```
 
@@ -343,14 +343,14 @@ def structured_brainstorm(problem, technique, num_ideas=30):
         batch = llm.generate(f"""
         Problem: {problem}
         Technique: {technique}
-        
+
         Generate 5 NEW ideas that are different from previously generated ideas:
         {format_ideas(ideas)}
-        
+
         Push beyond conventional thinking. Ideas #{len(ideas)+1} to #{len(ideas)+5}:
         """)
         ideas.extend(parse_ideas(batch))
-    
+
     # Phase 2: Evaluate and rank
     ranked = llm.generate(f"""
     Evaluate each idea against these criteria:
@@ -358,12 +358,12 @@ def structured_brainstorm(problem, technique, num_ideas=30):
     2. Impact (1-5): How much value would this create?
     3. Novelty (1-5): How different is this from existing approaches?
     4. Risk (1-5, inverted): How low is the risk?
-    
+
     Ideas: {format_ideas(ideas)}
-    
+
     Score each idea and rank from best to worst.
     """)
-    
+
     return ranked
 ```
 
@@ -398,7 +398,7 @@ Business A   │ A1+A: Idea 1   │ A1+B: Idea 2   │ A1+C: Idea 3
 Business B   │ A2+A: Idea 4   │ A2+B: Idea 5   │ A2+C: Idea 6
 Business C   │ A3+A: Idea 7   │ A3+B: Idea 8   │ A3+C: Idea 9
 
-Example: 
+Example:
 Rows: [Subscription model, Marketplace, Freemium]
 Columns: [AI, Blockchain, AR/VR]
 
@@ -450,7 +450,7 @@ def weighted_decision_matrix(options, criteria, weights):
     criteria: list of evaluation criteria
     weights: importance weight for each criterion (sum to 1.0)
     """
-    
+
     # Example evaluation
     matrix = {
         "Option A: Build in-house": {
@@ -475,7 +475,7 @@ def weighted_decision_matrix(options, criteria, weights):
             "Team expertise": 3,
         }
     }
-    
+
     weights = {
         "Cost": 0.25,
         "Time to market": 0.30,
@@ -483,13 +483,13 @@ def weighted_decision_matrix(options, criteria, weights):
         "Maintenance burden": 0.15,
         "Team expertise": 0.10,
     }
-    
+
     # Calculate weighted scores
     scores = {}
     for option, ratings in matrix.items():
         score = sum(ratings[c] * weights[c] for c in criteria)
         scores[option] = round(score, 2)
-    
+
     ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     return ranked
 

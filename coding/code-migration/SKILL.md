@@ -102,11 +102,11 @@ class TrafficRouter:
         self.old = old_impl
         self.new = new_impl
         self.flags = feature_flags
-    
+
     def handle_request(self, request):
         # Check if this route has been migrated
         route_key = f"migrated:{request.path}:{request.method}"
-        
+
         if self.flags.get(route_key):
             # New implementation with error fallback
             try:
@@ -118,7 +118,7 @@ class TrafficRouter:
                 return self.old.handle(request)
         else:
             return self.old.handle(request)
-    
+
     def migrate_route(self, path, method="GET"):
         """Mark a specific route as migrated to new implementation."""
         self.flags.set(f"migrated:{path}:{method}", True)
@@ -141,7 +141,7 @@ class Py2ToPy3Migration:
     Automated transformations for Python 2 to 3 migration.
     Handles print statements, string handling, imports, and exception syntax.
     """
-    
+
     # Mapping of Python 2 builtins to Python 3
     BUILTIN_MAP = {
         'raw_input': 'input',
@@ -152,7 +152,7 @@ class Py2ToPy3Migration:
         'execfile': None,  # Must be handled specially
         'reduce': 'functools.reduce',
     }
-    
+
     # Import remapping
     IMPORT_MAP = {
         'StringIO': ('io', 'StringIO'),
@@ -162,24 +162,24 @@ class Py2ToPy3Migration:
         'httplib': ('http.client', 'HTTPConnection'),
         'ConfigParser': ('configparser', 'ConfigParser'),
     }
-    
+
     def migrate_file(self, filepath):
         """Apply all Python 2 to 3 transformations to a file."""
         source = Path(filepath).read_text(encoding='utf-8')
         original = source
-        
+
         source = self._convert_print(source)
         source = self._convert_exceptions(source)
         source = self._convert_imports(source)
         source = self._convert_string_prefixes(source)
         source = self._convert_division(source)
         source = self._convert_dict_methods(source)
-        
+
         if source != original:
             Path(filepath).write_text(source, encoding='utf-8')
             return True
         return False
-    
+
     def _convert_print(self, source):
         """Convert print statements to print() function calls."""
         # Simple print statement → function
@@ -197,7 +197,7 @@ class Py2ToPy3Migration:
                 line = line.rstrip() + ')'
             result.append(line)
         return '\n'.join(result)
-    
+
     def _convert_exceptions(self, source):
         """Convert except Exception, e to except Exception as e."""
         source = re.sub(
@@ -211,7 +211,7 @@ class Py2ToPy3Migration:
             r"raise Exception('\1')",
             source
         )
-    
+
     def _convert_imports(self, source):
         """Remap moved standard library imports."""
         for old_module, (new_module, new_name) in self.IMPORT_MAP.items():
@@ -224,14 +224,14 @@ class Py2ToPy3Migration:
                 f'from {new_module} import {new_name}'
             )
         return source
-    
+
     def _convert_string_prefixes(self, source):
         """Remove u'' and b'' prefixes where appropriate."""
         # In Python 3, all strings are unicode by default
         source = re.sub(r"u'([^']*)'", r"'\1'", source)
         source = re.sub(r'u"([^"]*)"', r'"\1"', source)
         return source
-    
+
     def _convert_division(self, source):
         """Add __future__ import for Python 3 division semantics."""
         if 'from __future__ import division' not in source:
@@ -241,7 +241,7 @@ class Py2ToPy3Migration:
             'from __future__ import division\nfrom __future__ import division',
             'from __future__ import division'
         )
-    
+
     def _convert_dict_methods(self, source):
         """Convert .iteritems()/.iterkeys()/.itervalues() to .items()/.keys()/.values()."""
         source = source.replace('.iteritems()', '.items()')
@@ -279,29 +279,29 @@ class TestUserServiceParity:
     Run the same tests against both old and new implementations
     to verify behavioral equivalence.
     """
-    
+
     def test_create_user(self, service):
         user = service.create_user("alice", "alice@example.com")
         assert user.username == "alice"
         assert user.email == "alice@example.com"
         assert user.id is not None
-    
+
     def test_create_duplicate_user(self, service):
         service.create_user("bob", "bob@example.com")
         with pytest.raises(ValueError, match="already exists"):
             service.create_user("bob", "bob2@example.com")
-    
+
     def test_find_user_by_email(self, service):
         service.create_user("carol", "carol@example.com")
         found = service.find_by_email("carol@example.com")
         assert found is not None
         assert found.username == "carol"
-    
+
     def test_delete_user(self, service):
         user = service.create_user("dave", "dave@example.com")
         service.delete_user(user.id)
         assert service.find_by_id(user.id) is None
-    
+
     def test_pagination(self, service):
         for i in range(25):
             service.create_user(f"user{i}", f"user{i}@example.com")
@@ -331,34 +331,34 @@ class ParallelRunner:
     logs discrepancies, and returns the old implementation's result
     until validation passes.
     """
-    
+
     def __init__(self, old_impl, new_impl):
         self.old = old_impl
         self.new = new_impl
         self.discrepancies = []
         self.total_requests = 0
         self.matched_requests = 0
-    
+
     def execute(self, method: str, *args, **kwargs) -> Any:
         """Execute on both and compare results."""
         self.total_requests += 1
-        
+
         old_result = getattr(self.old, method)(*args, **kwargs)
-        
+
         try:
             new_result = getattr(self.new, method)(*args, **kwargs)
             self._compare(method, args, kwargs, old_result, new_result)
         except Exception as e:
             self._log_discrepancy(method, args, "EXCEPTION", str(e))
             return old_result  # Fallback to old
-        
+
         return old_result  # Always return old result during validation
-    
+
     def _compare(self, method, args, kwargs, old_result, new_result):
         """Deep-compare results and log discrepancies."""
         old_serialized = self._serialize(old_result)
         new_serialized = self._serialize(new_result)
-        
+
         if old_serialized == new_serialized:
             self.matched_requests += 1
         else:
@@ -366,13 +366,13 @@ class ParallelRunner:
                 method, args, "MISMATCH",
                 f"old={old_serialized} new={new_serialized}"
             )
-    
+
     def _serialize(self, obj) -> str:
         """Serialize result for comparison."""
         if hasattr(obj, '__dict__'):
             return json.dumps(obj.__dict__, sort_keys=True, default=str)
         return json.dumps(obj, sort_keys=True, default=str)
-    
+
     def _log_discrepancy(self, method, args, kind, detail):
         entry = {
             'timestamp': datetime.utcnow().isoformat(),
@@ -383,12 +383,12 @@ class ParallelRunner:
         }
         self.discrepancies.append(entry)
         logger.warning(f"Migration discrepancy: {entry}")
-    
+
     def get_accuracy(self) -> float:
         if self.total_requests == 0:
             return 1.0
         return self.matched_requests / self.total_requests
-    
+
     def get_report(self) -> Dict[str, Any]:
         return {
             'total_requests': self.total_requests,
@@ -410,7 +410,7 @@ Final migration steps:
 6. **Update documentation** — Reflect new architecture, dependencies, and deployment.
 7. **Retrospective** — Document lessons learned, update the migration playbook.
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. Abstract Syntax Tree (AST) Transformation
 
@@ -424,12 +424,12 @@ class PythonToTypeScriptAST:
     Example AST transformer: extract Python function signatures
     to generate TypeScript type definitions.
     """
-    
+
     def extract_functions(self, source: str) -> list:
         """Parse Python source and extract function signatures."""
         tree = ast.parse(source)
         functions = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 func_info = {
@@ -437,7 +437,7 @@ class PythonToTypeScriptAST:
                     'args': [],
                     'return_type': None,
                 }
-                
+
                 # Extract argument types from annotations
                 for arg in node.args.args:
                     arg_info = {'name': arg.arg}
@@ -446,21 +446,21 @@ class PythonToTypeScriptAST:
                     else:
                         arg_info['type'] = 'any'
                     func_info['args'].append(arg_info)
-                
+
                 # Extract return type
                 if node.returns:
                     func_info['return_type'] = ast.unparse(node.returns)
                 else:
                     func_info['return_type'] = 'void'
-                
+
                 functions.append(func_info)
-        
+
         return functions
-    
+
     def generate_typescript(self, functions: list) -> str:
         """Generate TypeScript function signatures from extracted info."""
         lines = []
-        
+
         for func in functions:
             # Map Python types to TypeScript types
             type_map = {
@@ -473,17 +473,17 @@ class PythonToTypeScriptAST:
                 'dict': 'Record<string, any>',
                 'Optional': 'T | null',
             }
-            
+
             args = []
             for arg in func['args']:
                 ts_type = type_map.get(arg['type'], arg['type'])
                 args.append(f"{arg['name']}: {ts_type}")
-            
+
             return_type = type_map.get(func['return_type'], func['return_type'])
-            
+
             sig = f"function {func['name']}({', '.join(args)}): {return_type};"
             lines.append(sig)
-        
+
         return '\n'.join(lines)
 
 
@@ -517,16 +517,16 @@ class DependencyAnalyzer:
     Analyzes module dependencies to determine safe migration order.
     Modules with no internal dependents migrate first (leaves).
     """
-    
+
     def __init__(self):
         self.depends_on: Dict[str, Set[str]] = defaultdict(set)
         self.depended_by: Dict[str, Set[str]] = defaultdict(set)
-    
+
     def add_dependency(self, module: str, depends_on: str):
         """Record that `module` depends on `depends_on`."""
         self.depends_on[module].add(depends_on)
         self.depended_by[depends_on].add(module)
-    
+
     def migration_order(self) -> List[str]:
         """
         Topological sort: modules with no dependents migrate first.
@@ -536,24 +536,24 @@ class DependencyAnalyzer:
         in_degree = {}
         for module in set(list(self.depends_on.keys()) + list(self.depended_by.keys())):
             in_degree[module] = len(self.depended_by.get(module, set()))
-        
+
         # Start with leaf modules (nothing depends on them)
         queue = [m for m, d in in_degree.items() if d == 0]
         order = []
-        
+
         while queue:
             queue.sort()  # Deterministic ordering
             module = queue.pop(0)
             order.append(module)
-            
+
             # Reduce in-degree for modules this one depends on
             for dep in self.depends_on.get(module, set()):
                 in_degree[dep] -= 1
                 if in_degree[dep] == 0:
                     queue.append(dep)
-        
+
         return order
-    
+
     def blast_radius(self, module: str) -> Set[str]:
         """Find all modules that would be affected if `module` changes."""
         affected = set()
@@ -640,36 +640,36 @@ CONFIG_MAP = {
 
 class ConfigMapper:
     """Apply configuration mappings between framework versions."""
-    
+
     def __init__(self, mappings: dict):
         self.mappings = mappings
-    
+
     def migrate_config(self, old_config: dict, framework: str) -> dict:
         """Transform old config to new format."""
         if framework not in self.mappings:
             raise ValueError(f"No mappings for framework: {framework}")
-        
+
         new_config = {}
         framework_map = self.mappings[framework]
-        
+
         for old_key, mapping in framework_map.items():
             if old_key not in old_config:
                 continue
-            
+
             new_key = mapping.get('new_key', old_key)
             value = old_config[old_key]
-            
+
             # Apply simple value transformations
             if 'old_values' in mapping.get('nested', {}).get(old_key, {}):
                 value_map = mapping['nested'][old_key]['old_values']
                 value = value_map.get(value, value)
-            
+
             # Apply transformation functions
             for transform in mapping.get('transforms', []):
                 value = transform(value)
-            
+
             new_config[new_key] = value
-        
+
         return new_config
 ```
 
@@ -703,7 +703,7 @@ class MigrationGenerator:
     Generate SQL migration scripts from schema diffs.
     Supports PostgreSQL, MySQL, and SQLite.
     """
-    
+
     TYPE_MAP = {
         'mysql': {
             'string': 'VARCHAR(255)',
@@ -726,13 +726,13 @@ class MigrationGenerator:
             'json': 'JSONB',
         },
     }
-    
+
     def generate(self, diffs: List[TableDiff], dialect: str = 'postgresql') -> str:
         """Generate SQL migration from table diffs."""
         statements = []
         statements.append(f"-- Generated migration — {dialect}")
         statements.append("BEGIN;\n")
-        
+
         for diff in diffs:
             if diff.added:
                 statements.append(self._create_table(diff, dialect))
@@ -742,7 +742,7 @@ class MigrationGenerator:
                 statements.append(
                     f"ALTER TABLE {diff.renamed_from} RENAME TO {diff.name};\n"
                 )
-            
+
             for col in diff.columns:
                 if col.added:
                     col_type = self.TYPE_MAP[dialect].get(col.new_type, 'TEXT')
@@ -764,10 +764,10 @@ class MigrationGenerator:
                         f"ALTER TABLE {diff.name} ALTER COLUMN {col.name} "
                         f"TYPE {new_type};"
                     )
-        
+
         statements.append("\nCOMMIT;")
         return '\n'.join(statements)
-    
+
     def _create_table(self, diff: TableDiff, dialect: str) -> str:
         cols = []
         for col in diff.columns:
@@ -820,7 +820,7 @@ paths:
           - add_header: X-API-Version: 3
         deprecated: true
         sunset: "2025-06-01"
-  
+
   /api/v3/users:
     get:
       summary: List users (v3)
@@ -854,19 +854,19 @@ class MigrationFlag(Enum):
 
 class FeatureFlagStore:
     """Simple in-memory feature flag store (replace with Redis/DB in production)."""
-    
+
     def __init__(self):
         self._flags = {}
-    
+
     def is_enabled(self, flag: MigrationFlag, default=False) -> bool:
         return self._flags.get(flag.value, default)
-    
+
     def enable(self, flag: MigrationFlag):
         self._flags[flag.value] = True
-    
+
     def disable(self, flag: MigrationFlag):
         self._flags[flag.value] = False
-    
+
     def toggle(self, flag: MigrationFlag):
         current = self.is_enabled(flag)
         self._flags[flag.value] = not current
@@ -904,12 +904,12 @@ class RollbackManager:
     Each step is reversible; the manager tracks the current position
     in the migration sequence.
     """
-    
+
     def __init__(self):
         self.steps = []
         self.completed = []
         self.checkpoints = {}
-    
+
     def add_step(self, name: str, apply_fn, rollback_fn):
         """Register a migration step with its rollback function."""
         self.steps.append({
@@ -918,7 +918,7 @@ class RollbackManager:
             'rollback': rollback_fn,
             'applied': False,
         })
-    
+
     def apply_all(self):
         """Apply all steps in order, stopping on failure."""
         for i, step in enumerate(self.steps):
@@ -933,7 +933,7 @@ class RollbackManager:
                 print("Initiating rollback...")
                 self.rollback_to(-1)
                 raise
-    
+
     def rollback_to(self, step_index: int):
         """Rollback to a specific step index (or -1 for full rollback)."""
         for i in reversed(self.completed):
@@ -948,7 +948,7 @@ class RollbackManager:
             except Exception as e:
                 print(f"CRITICAL: Rollback failed for {step['name']}: {e}")
                 raise
-    
+
     def _save_checkpoint(self, step_index: int):
         self.checkpoints[step_index] = {
             'completed_steps': list(self.completed),
@@ -1129,21 +1129,21 @@ class CompatibilityTester:
     Tests that a new API version maintains backward compatibility
     with documented v2 contracts.
     """
-    
+
     def __init__(self, v2_base: str, v3_base: str):
         self.v2 = v2_base
         self.v3 = v3_base
         self.results = []
-    
+
     def test_endpoint(self, method: str, path: str, payload: Dict = None,
                       headers: Dict = None) -> Dict[str, Any]:
         """Test the same request against both API versions."""
         url_v2 = f"{self.v2}{path}"
         url_v3 = f"{self.v3}{path}"
-        
+
         resp_v2 = requests.request(method, url_v2, json=payload, headers=headers)
         resp_v3 = requests.request(method, url_v3, json=payload, headers=headers)
-        
+
         result = {
             'endpoint': f"{method} {path}",
             'v2_status': resp_v2.status_code,
@@ -1152,10 +1152,10 @@ class CompatibilityTester:
             'v2_body': resp_v2.json() if resp_v2.headers.get('content-type', '').startswith('application/json') else None,
             'v3_body': resp_v3.json() if resp_v3.headers.get('content-type', '').startswith('application/json') else None,
         }
-        
+
         self.results.append(result)
         return result
-    
+
     def run_full_suite(self):
         """Run compatibility tests against all documented endpoints."""
         endpoints = [
@@ -1165,13 +1165,13 @@ class CompatibilityTester:
             ('PUT', '/api/users/1', {'name': 'Updated'}),
             ('DELETE', '/api/users/1'),
         ]
-        
+
         for method, path, *args in payload in args else (None,):
             self.test_endpoint(method, path, payload)
-        
+
         passed = sum(1 for r in self.results if r['status_match'])
         print(f"\nCompatibility: {passed}/{len(self.results)} endpoints matched")
-        
+
         for r in self.results:
             status = "PASS" if r['status_match'] else "FAIL"
             print(f"  [{status}] {r['endpoint']}: v2={r['v2_status']}, v3={r['v3_status']}")

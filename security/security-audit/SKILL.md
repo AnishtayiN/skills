@@ -385,11 +385,11 @@ from typing import Any, Callable, List
 class InputValidator:
     def __init__(self):
         self.rules: List[Callable] = []
-    
+
     def add_rule(self, rule: Callable):
         self.rules.append(rule)
         return self
-    
+
     def validate(self, value: Any) -> tuple[bool, str]:
         for rule in self.rules:
             valid, error = rule(value)
@@ -418,7 +418,7 @@ class RateLimiter:
         self.redis = redis_client
         self.max_requests = max_requests
         self.window = window
-    
+
     def is_allowed(self, key: str) -> bool:
         current = self.redis.incr(key)
         if current == 1:
@@ -439,7 +439,7 @@ from datetime import datetime, timedelta
 class SessionManager:
     def __init__(self, db):
         self.db = db
-    
+
     def create_session(self, user_id: str) -> str:
         session_token = secrets.token_urlsafe(32)
         self.db.store_session(
@@ -451,7 +451,7 @@ class SessionManager:
             user_agent=request.user_agent.string
         )
         return session_token
-    
+
     def validate_session(self, token: str) -> bool:
         session = self.db.get_session(token)
         if not session:

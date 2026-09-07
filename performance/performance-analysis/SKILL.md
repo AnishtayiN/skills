@@ -109,12 +109,12 @@ def profile_function(func, *args, **kwargs):
     profiler.enable()
     result = func(*args, **kwargs)
     profiler.disable()
-    
+
     stream = StringIO()
     stats = pstats.Stats(profiler, stream=stream)
     stats.sort_stats('cumulative')
     stats.print_stats(20)
-    
+
     print(stream.getvalue())
     return result
 
@@ -177,15 +177,15 @@ flamegraph.pl out.folded > flamegraph.svg
 // Performance API for measuring
 function measurePerformance() {
     performance.mark('start');
-    
+
     // Code to measure
     for (let i = 0; i < 1000000; i++) {
         // Work
     }
-    
+
     performance.mark('end');
     performance.measure('operation', 'start', 'end');
-    
+
     const measures = performance.getEntriesByName('operation');
     console.log(`Duration: ${measures[0].duration}ms`);
 }
@@ -281,7 +281,7 @@ class LRUCache:
         self.max_size = max_size
         self.ttl = ttl
         self.access_order = []
-    
+
     def get(self, key: str) -> Optional[Any]:
         if key in self.cache:
             entry = self.cache[key]
@@ -295,7 +295,7 @@ class LRUCache:
                 del self.cache[key]
                 self.access_order.remove(key)
         return None
-    
+
     def set(self, key: str, value: Any):
         if key in self.cache:
             self.access_order.remove(key)
@@ -303,7 +303,7 @@ class LRUCache:
             # Remove least recently used
             lru_key = self.access_order.pop(0)
             del self.cache[lru_key]
-        
+
         self.cache[key] = {'value': value, 'time': time.time()}
         self.access_order.append(key)
 
@@ -339,7 +339,7 @@ class LazyLoader:
     def __init__(self, loader_func):
         self.loader_func = loader_func
         self._data = None
-    
+
     @property
     def data(self):
         if self._data is None:
@@ -359,7 +359,7 @@ def batch_process(items: List, batch_size: int, processor):
 def process_large_dataset():
     # Lazy loading - data loaded only when accessed
     data = LazyLoader(lambda: load_huge_dataset())
-    
+
     # Batch processing - process 1000 items at a time
     for batch in batch_process(data.data, 1000, process_batch):
         yield batch
@@ -379,16 +379,16 @@ import objgraph
 def find_memory_leaks():
     """Find objects that are growing unboundedly"""
     gc.collect()
-    
+
     # Show most common types
     objgraph.show_most_common_types(limit=10)
-    
+
     # Find objects growing between snapshots
     snapshot1 = objgraph.take_snapshot()
     # ... run code ...
     gc.collect()
     snapshot2 = objgraph.take_snapshot()
-    
+
     growth = objgraph.growth(snapshot1, snapshot2)
     print("Object growth:")
     for stat in growth[:10]:
@@ -401,7 +401,7 @@ class Node:
     def __init__(self, name):
         self.name = name
         self._children = []
-    
+
     def add_child(self, child):
         self._children.append(weakref.ref(child))
 ```
@@ -418,9 +418,9 @@ def benchmark(func, number=1000, repeat=7):
         number=number,
         repeat=repeat
     )
-    
+
     times_per_call = [t / number for t in times]
-    
+
     return {
         'mean': statistics.mean(times_per_call),
         'median': statistics.median(times_per_call),
@@ -449,16 +449,16 @@ from typing import Optional, Any
 class RedisCache:
     def __init__(self, redis_client):
         self.redis = redis_client
-    
+
     def get(self, key: str) -> Optional[Any]:
         data = self.redis.get(key)
         if data:
             return json.loads(data)
         return None
-    
+
     def set(self, key: str, value: Any, ttl: int = 300):
         self.redis.setex(key, ttl, json.dumps(value))
-    
+
     def invalidate(self, pattern: str):
         keys = self.redis.keys(pattern)
         if keys:
@@ -472,7 +472,7 @@ def get_user_cached(user_id: int):
     result = cache.get(cache_key)
     if result:
         return result
-    
+
     result = db.query(User).get(user_id)
     cache.set(cache_key, result.__dict__, ttl=60)
     return result

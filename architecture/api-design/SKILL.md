@@ -459,7 +459,7 @@ components:
 
 ---
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. API-First Design
 Design the API contract before implementation. Use OpenAPI/GraphQL schema as the source of truth. Generate server stubs and client SDKs from the spec.
@@ -542,7 +542,7 @@ Response:
 
 ---
 
-## Common Patterns (5 Patterns with Code Examples)
+## Common Patterns
 
 ### Pattern 1: Resource Transformation Layer
 ```python
@@ -691,7 +691,7 @@ def get_user(id):
 
 ---
 
-## Edge Cases & Pitfalls (15 Items)
+## Edge Cases & Pitfalls
 
 1. **N+1 API calls**: Client makes separate calls for related resources. Use includes/embeds to batch.
 2. **Missing pagination**: Unbounded lists grow forever and kill performance. Always paginate.
@@ -829,7 +829,7 @@ Auth: Bearer token
 
 ---
 
-## Rules (12 Rules)
+## Rules
 
 1. **Use plural nouns for resources** — `/users` not `/user`.
 2. **Use HTTP methods correctly** — GET is safe/idempotent, POST is not.

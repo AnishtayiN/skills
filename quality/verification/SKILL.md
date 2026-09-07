@@ -375,7 +375,32 @@ pgrep -f "my-app" || exit 1
 
 ---
 
-## Common Patterns (5 Patterns with Code Examples)
+## Advanced Techniques
+
+### 1. Progressive Verification
+Start with the cheapest checks and escalate only when cheaper checks pass. This saves time by catching obvious issues early.
+
+### 2. Parallel Verification
+Run independent verification stages concurrently. Lint, type-check, and unit tests can often run in parallel.
+
+### 3. Verification Caching
+Cache verification results for unchanged files. Tools like `nx affected`, `turborepo`, or `vitest --changed` only verify what changed.
+
+### 4. Snapshot Verification
+For generated outputs (build artifacts, API responses), use snapshot testing to detect unexpected changes.
+
+### 5. Contract Verification
+Verify API contracts between services without running the full system. Use consumer-driven contracts.
+
+### 6. Visual Verification
+For UI changes, use visual regression testing (screenshot comparison) to detect unintended visual changes.
+
+### 7. Canary Verification
+After deployment, gradually route traffic to the new version while monitoring for errors. Roll back automatically if error rate exceeds threshold.
+
+---
+
+## Common Patterns
 
 ### Pattern 1: Verification Pipeline Script
 ```bash
@@ -545,32 +570,7 @@ else:
 
 ---
 
-## Advanced Techniques (7 Techniques)
-
-### 1. Progressive Verification
-Start with the cheapest checks and escalate only when cheaper checks pass. This saves time by catching obvious issues early.
-
-### 2. Parallel Verification
-Run independent verification stages concurrently. Lint, type-check, and unit tests can often run in parallel.
-
-### 3. Verification Caching
-Cache verification results for unchanged files. Tools like `nx affected`, `turborepo`, or `vitest --changed` only verify what changed.
-
-### 4. Snapshot Verification
-For generated outputs (build artifacts, API responses), use snapshot testing to detect unexpected changes.
-
-### 5. Contract Verification
-Verify API contracts between services without running the full system. Use consumer-driven contracts.
-
-### 6. Visual Verification
-For UI changes, use visual regression testing (screenshot comparison) to detect unintended visual changes.
-
-### 7. Canary Verification
-After deployment, gradually route traffic to the new version while monitoring for errors. Roll back automatically if error rate exceeds threshold.
-
----
-
-## Edge Cases & Pitfalls (15 Items)
+## Edge Cases & Pitfalls
 
 1. **"It works on my machine"**: Local environment differs from CI/CD. Always verify in a clean environment.
 2. **Environment-dependent tests**: Tests that pass locally but fail in CI due to different env vars, paths, or permissions.
@@ -691,7 +691,7 @@ All checks passed. Ready for review.
 
 ---
 
-## Rules (12 Rules)
+## Rules
 
 1. **NEVER claim success without verification** — "I think it works" is not verification.
 2. **ALWAYS run the cheapest checks first** — Compile before testing, lint before running full suite.

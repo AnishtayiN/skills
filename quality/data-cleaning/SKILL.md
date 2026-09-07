@@ -221,26 +221,26 @@ from scipy import stats
 def diagnose_missingness_mechanism(df, target_col, alpha=0.05):
     """
     Diagnose whether missingness in target_col is MCAR, MAR, or MNAR.
-    
+
     Uses logistic regression approach: predict missingness from other variables.
     If other variables predict missingness, it's likely MAR.
     """
     results = {}
-    
+
     # Create missingness indicator
     missing_indicator = df[target_col].isnull().astype(int)
-    
+
     # Test 1: Little's MCAR test (simplified)
     # Compare means of other variables between missing and non-missing groups
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     mcar_tests = {}
-    
+
     for col in numeric_cols:
         if col == target_col:
             continue
         group_missing = df.loc[missing_indicator == 1, col].dropna()
         group_present = df.loc[missing_indicator == 0, col].dropna()
-        
+
         if len(group_missing) > 5 and len(group_present) > 5:
             stat, p = stats.mannwhitneyu(group_missing, group_present, alternative='two-sided')
             mcar_tests[col] = {
@@ -251,15 +251,15 @@ def diagnose_missingness_mechanism(df, target_col, alpha=0.05):
                 'mean_when_missing': group_missing.mean(),
                 'mean_when_present': group_present.mean()
             }
-    
-    # If none of the other variables differ significantly between 
+
+    # If none of the other variables differ significantly between
     # missing/non-missing groups, evidence for MCAR
     n_significant = sum(1 for t in mcar_tests.values() if t['significant_diff'])
-    
+
     results['mcar_tests'] = mcar_tests
     results['n_significant_predictors'] = n_significant
     results['total_predictors'] = len(mcar_tests)
-    
+
     # Classification
     if n_significant == 0:
         results['mechanism'] = 'MCAR'
@@ -273,7 +273,7 @@ def diagnose_missingness_mechanism(df, target_col, alpha=0.05):
         results['mechanism'] = 'MAR (strong evidence)'
         results['confidence'] = 'high'
         results['recommendation'] = 'Use model-based imputation that conditions on observed predictors.'
-    
+
     # Test for MNAR (requires domain knowledge)
     # Check if missingness correlates with the target's own distribution
     # This is heuristic — true MNAR testing requires sensitivity analysis
@@ -283,7 +283,7 @@ def diagnose_missingness_mechanism(df, target_col, alpha=0.05):
         "values (e.g., high earners not reporting income), assume MNAR and use "
         "selection models or pattern-mixture models."
     )
-    
+
     return results
 ```
 
@@ -301,7 +301,7 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 def mice_imputation(df, categorical_cols=None, n_imputations=5, random_state=42):
     """
     Perform MICE imputation with automatic type handling.
-    
+
     Parameters:
     - df: DataFrame with missing values
     - categorical_cols: list of categorical column names
@@ -309,10 +309,10 @@ def mice_imputation(df, categorical_cols=None, n_imputations=5, random_state=42)
     """
     if categorical_cols is None:
         categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
-    
+
     # Separate numeric and categorical
     numeric_cols = [c for c in df.columns if c not in categorical_cols]
-    
+
     # Encode categoricals as integers for imputation
     label_encoders = {}
     df_encoded = df.copy()
@@ -320,7 +320,7 @@ def mice_imputation(df, categorical_cols=None, n_imputations=5, random_state=42)
         df_encoded[col] = df[col].astype('category').cat.codes
         df_encoded[col] = df_encoded[col].replace(-1, np.nan)  # -1 was NaN
         label_encoders[col] = df[col].astype('category').cat.categories
-    
+
     # Run MICE
     imputed_datasets = []
     for i in range(n_imputations):
@@ -330,19 +330,19 @@ def mice_imputation(df, categorical_cols=None, n_imputations=5, random_state=42)
             random_state=random_state + i,
             sample_posterior=True  # For proper uncertainty
         )
-        
+
         imputed_array = imputer.fit_transform(df_encoded)
         imputed_df = pd.DataFrame(imputed_array, columns=df.columns, index=df.index)
-        
+
         # Decode categoricals
         for col in categorical_cols:
             imputed_df[col] = imputed_df[col].round().astype(int)
             imputed_df[col] = imputed_df[col].map(
                 dict(enumerate(label_encoders[col]))
             )
-        
+
         imputed_datasets.append(imputed_df)
-    
+
     # Pool results (Rubin's rules for numeric)
     pooled = {}
     for col in numeric_cols:
@@ -351,13 +351,13 @@ def mice_imputation(df, categorical_cols=None, n_imputations=5, random_state=42)
         within_var = values.var(axis=0).mean()
         between_var = values.mean(axis=0).var()
         total_var = within_var + (1 + 1/n_imputations) * between_var
-        
+
         pooled[col] = {
             'mean': pooled_mean,
             'variance': total_var,
             'imputed_values': [ds[col].values for ds in imputed_datasets]
         }
-    
+
     return {
         'imputed_datasets': imputed_datasets,
         'pooled_results': pooled,
@@ -383,21 +383,21 @@ def winsorize_column(series, lower_percentile=0.01, upper_percentile=0.99):
 def winsorize_dataframe(df, columns=None, lower=0.01, upper=0.99, method='column'):
     """
     Winsorize multiple columns with different strategies.
-    
+
     Methods:
     - 'column': Winsorize each column independently
     - 'row': Winsorize based on Mahalanobis distance (multivariate)
     - 'mad': Use Median Absolute Deviation (robust to skewness)
     """
     df_result = df.copy()
-    
+
     if columns is None:
         columns = df.select_dtypes(include=[np.number]).columns
-    
+
     if method == 'column':
         for col in columns:
             df_result[col] = winsorize_column(df[col], lower, upper)
-    
+
     elif method == 'mad':
         for col in columns:
             median = df[col].median()
@@ -408,87 +408,87 @@ def winsorize_dataframe(df, columns=None, lower=0.01, upper=0.99, method='column
             lower_bound = median - 3 * 1.4826 * mad
             upper_bound = median + 3 * 1.4826 * mad
             df_result[col] = df[col].clip(lower=lower_bound, upper=upper_bound)
-    
+
     elif method == 'row':
         # Mahalanobis distance for multivariate outlier detection
         clean_data = df[columns].dropna()
         if len(clean_data) < len(columns) + 1:
             return df_result
-        
+
         mean = clean_data.mean().values
         cov = clean_data.cov().values
-        
+
         try:
             cov_inv = np.linalg.inv(cov)
         except np.linalg.LinAlgError:
             return df_result
-        
+
         distances = []
         for _, row in clean_data.iterrows():
             diff = row.values - mean
             dist = np.sqrt(diff @ cov_inv @ diff)
             distances.append(dist)
-        
+
         # Cap at 99th percentile of Mahalanobis distances
         threshold = np.percentile(distances, upper * 100)
         outlier_mask = np.array(distances) > threshold
-        
+
         for col in columns:
             col_values = df_result[col].copy()
             col_values[clean_data.index[outlier_mask]] = np.nan
             # Re-impute with median for multivariate outliers
             col_values.fillna(col.median(), inplace=True)
             df_result[col] = col_values
-    
+
     return df_result
 
 def detect_outliers_comprehensive(df, columns=None):
     """Detect outliers using multiple methods and cross-validate."""
     if columns is None:
         columns = df.select_dtypes(include=[np.number]).columns
-    
+
     outlier_report = {}
-    
+
     for col in columns:
         series = df[col].dropna()
         methods = {}
-        
+
         # IQR method
         q1, q3 = series.quantile(0.25), series.quantile(0.75)
         iqr = q3 - q1
         iqr_outliers = ((series < q1 - 1.5 * iqr) | (series > q3 + 1.5 * iqr))
         methods['IQR'] = iqr_outliers.sum()
-        
+
         # Z-score method
         z_scores = np.abs(stats.zscore(series))
         methods['Z-score_3'] = (z_scores > 3).sum()
         methods['Z-score_2.5'] = (z_scores > 2.5).sum()
-        
+
         # MAD method
         median = series.median()
         mad = np.median(np.abs(series - median))
         if mad > 0:
             modified_z = 0.6745 * (series - median) / mad
             methods['MAD'] = (np.abs(modified_z) > 3.5).sum()
-        
+
         # Percentile-based
         methods['P01_P99'] = (
-            (series < series.quantile(0.01)) | 
+            (series < series.quantile(0.01)) |
             (series > series.quantile(0.99))
         ).sum()
-        
+
         # Consensus: flagged by 3+ methods
         outlier_flags = pd.DataFrame({
-            method: (series.index.isin(series[flagged].index)) 
+            method: (series.index.isin(series[flagged].index))
             for method, flagged in [('IQR', iqr_outliers)].items()
         })
-        
+
         outlier_report[col] = {
             'counts_by_method': methods,
             'n_rows': len(series),
             'pct_outliers': {k: round(v / len(series) * 100, 2) for k, v in methods.items()}
         }
-    
+
     return outlier_report
 ```
 
@@ -502,21 +502,21 @@ from collections import defaultdict
 from difflib import SequenceMatcher
 
 def fuzzy_deduplicate(
-    df, 
-    key_columns, 
+    df,
+    key_columns,
     similarity_threshold=0.85,
     blocking_column=None
 ):
     """
     Fuzzy deduplication with optional blocking.
-    
+
     Parameters:
     - df: DataFrame to deduplicate
     - key_columns: columns to compare for similarity
     - similarity_threshold: minimum similarity to consider a match
     - blocking_column: optional column to block on (e.g., first letter of name)
     """
-    
+
     def compute_similarity(row1, row2):
         """Compute average similarity across key columns."""
         similarities = []
@@ -526,7 +526,7 @@ def fuzzy_deduplicate(
             sim = SequenceMatcher(None, val1, val2).ratio()
             similarities.append(sim)
         return np.mean(similarities)
-    
+
     # Build blocks
     if blocking_column:
         blocks = defaultdict(list)
@@ -535,7 +535,7 @@ def fuzzy_deduplicate(
             blocks[block_key].append(idx)
     else:
         blocks = {"all": list(df.index)}
-    
+
     # Find duplicates within blocks
     duplicates = []
     for block_key, indices in blocks.items():
@@ -543,7 +543,7 @@ def fuzzy_deduplicate(
             for j in range(i + 1, len(indices)):
                 idx1, idx2 = indices[i], indices[j]
                 sim = compute_similarity(df.loc[idx1], df.loc[idx2])
-                
+
                 if sim >= similarity_threshold:
                     duplicates.append({
                         'idx1': idx1,
@@ -551,17 +551,17 @@ def fuzzy_deduplicate(
                         'similarity': sim,
                         'block': block_key
                     })
-    
+
     # Merge duplicates (keep first, flag others)
     duplicate_indices = set()
     merge_map = {}
-    
+
     for dup in duplicates:
         idx1, idx2 = dup['idx1'], dup['idx2']
         if idx2 not in merge_map:
             merge_map[idx2] = idx1
             duplicate_indices.add(idx2)
-    
+
     return {
         'n_duplicates_found': len(duplicate_indices),
         'duplicate_indices': duplicate_indices,
@@ -579,14 +579,14 @@ from datetime import datetime
 
 class SchemaValidator:
     """Validate DataFrame against a defined schema."""
-    
+
     def __init__(self):
         self.schema = {}
         self.errors = []
         self.warnings = []
-    
-    def define_column(self, name, dtype=None, nullable=True, 
-                      min_value=None, max_value=None, 
+
+    def define_column(self, name, dtype=None, nullable=True,
+                      min_value=None, max_value=None,
                       allowed_values=None, pattern=None,
                       unique=False, min_length=None, max_length=None):
         """Define expected schema for a column."""
@@ -602,12 +602,12 @@ class SchemaValidator:
             'max_length': max_length
         }
         return self
-    
+
     def validate(self, df):
         """Run full schema validation."""
         self.errors = []
         self.warnings = []
-        
+
         # Check for missing columns
         for col_name in self.schema:
             if col_name not in df.columns:
@@ -617,14 +617,14 @@ class SchemaValidator:
                     'severity': 'critical',
                     'message': f"Required column '{col_name}' not found in DataFrame"
                 })
-        
+
         # Validate each column
         for col_name, rules in self.schema.items():
             if col_name not in df.columns:
                 continue
-            
+
             series = df[col_name]
-            
+
             # Check nullability
             if not rules['nullable'] and series.isnull().any():
                 n_nulls = series.isnull().sum()
@@ -635,7 +635,7 @@ class SchemaValidator:
                     'count': n_nulls,
                     'message': f"Column '{col_name}' has {n_nulls} null values but is required"
                 })
-            
+
             # Check data type
             if rules['dtype']:
                 if rules['dtype'] == 'datetime':
@@ -656,7 +656,7 @@ class SchemaValidator:
                             'severity': 'critical',
                             'message': f"Column '{col_name}' is not numeric"
                         })
-            
+
             # Check value ranges
             if rules['min_value'] is not None:
                 violations = (series.dropna() < rules['min_value']).sum()
@@ -668,7 +668,7 @@ class SchemaValidator:
                         'count': violations,
                         'message': f"Column '{col_name}' has {violations} values below {rules['min_value']}"
                     })
-            
+
             if rules['max_value'] is not None:
                 violations = (series.dropna() > rules['max_value']).sum()
                 if violations > 0:
@@ -679,7 +679,7 @@ class SchemaValidator:
                         'count': violations,
                         'message': f"Column '{col_name}' has {violations} values above {rules['max_value']}"
                     })
-            
+
             # Check allowed values
             if rules['allowed_values'] is not None:
                 invalid = ~series.dropna().isin(rules['allowed_values'])
@@ -691,7 +691,7 @@ class SchemaValidator:
                         'count': invalid.sum(),
                         'message': f"Column '{col_name}' has {invalid.sum()} values not in allowed set"
                     })
-            
+
             # Check pattern (regex)
             if rules['pattern'] is not None:
                 non_null = series.dropna().astype(str)
@@ -704,7 +704,7 @@ class SchemaValidator:
                         'count': pattern_violations.sum(),
                         'message': f"Column '{col_name}' has {pattern_violations.sum()} values not matching pattern"
                     })
-            
+
             # Check uniqueness
             if rules['unique']:
                 duplicates = series.duplicated().sum()
@@ -716,7 +716,7 @@ class SchemaValidator:
                         'count': duplicates,
                         'message': f"Column '{col_name}' has {duplicates} duplicate values"
                     })
-        
+
         return {
             'is_valid': len([e for e in self.errors if e['severity'] == 'critical']) == 0,
             'errors': self.errors,
@@ -735,17 +735,17 @@ import pandas as pd
 
 class TextNormalizer:
     """Comprehensive text normalization for data cleaning."""
-    
+
     def __init__(self):
         self.corrections = {}
-    
+
     def normalize(self, series, steps=None):
         """Apply normalization pipeline to a text series."""
         if steps is None:
             steps = ['unicode', 'whitespace', 'case', 'strip']
-        
+
         result = series.copy()
-        
+
         for step in steps:
             if step == 'unicode':
                 result = result.apply(self._normalize_unicode)
@@ -759,9 +759,9 @@ class TextNormalizer:
                 result = result.apply(self._normalize_numbers)
             elif step == 'corrections':
                 result = result.apply(self._apply_corrections)
-        
+
         return result
-    
+
     def _normalize_unicode(self, text):
         if pd.isna(text):
             return text
@@ -770,7 +770,7 @@ class TextNormalizer:
         # Remove control characters
         text = ''.join(c for c in text if unicodedata.category(c) != 'Cc')
         return text
-    
+
     def _normalize_whitespace(self, text):
         if pd.isna(text):
             return text
@@ -779,7 +779,7 @@ class TextNormalizer:
         # Remove zero-width characters
         text = re.sub(r'[\u200b\u200c\u200d\ufeff]', '', text)
         return text
-    
+
     def _normalize_numbers(self, text):
         if pd.isna(text):
             return text
@@ -789,7 +789,7 @@ class TextNormalizer:
         # Standardize decimal points
         text = text.replace(',', '.')
         return text
-    
+
     def _apply_corrections(self, text):
         if pd.isna(text):
             return text
@@ -797,10 +797,10 @@ class TextNormalizer:
         for wrong, right in self.corrections.items():
             text = text.replace(wrong, right)
         return text
-    
+
     def add_correction(self, wrong, right):
         self.corrections[wrong] = right
-    
+
     def add_corrections_from_mapping(self, mapping: dict):
         self.corrections.update(mapping)
 
@@ -831,7 +831,7 @@ def merge_datasets_with_conflicts(
 ):
     """
     Merge multiple datasets with conflict resolution.
-    
+
     Parameters:
     - datasets: list of (name, DataFrame) tuples
     - key_columns: columns to join on
@@ -840,7 +840,7 @@ def merge_datasets_with_conflicts(
     """
     if priority_order is None:
         priority_order = [name for name, _ in datasets]
-    
+
     # Rename columns with source prefix for tracking
     renamed_datasets = []
     for name, df in datasets:
@@ -849,27 +849,27 @@ def merge_datasets_with_conflicts(
         rename_map = {col: f"{col}__{name}" for col in non_key_cols}
         df_renamed = df_renamed.rename(columns=rename_map)
         renamed_datasets.append((name, df_renamed))
-    
+
     # Progressive merge
     result = renamed_datasets[0][1].copy()
-    
+
     for name, df in renamed_datasets[1:]:
         # Outer merge to keep all records
         result = result.merge(
             df, on=key_columns, how='outer', suffixes=('', f'__{name}')
         )
-    
+
     # Resolve conflicts
     original_columns = [c for c in result.columns if '__' not in c]
     all_source_cols = {}
-    
+
     for col in original_columns:
         source_cols = [c for c in result.columns if c.startswith(f"{col}__")]
         if source_cols:
             all_source_cols[col] = source_cols
-    
+
     conflict_log = []
-    
+
     for col, sources in all_source_cols.items():
         for idx in result.index:
             values = {}
@@ -878,7 +878,7 @@ def merge_datasets_with_conflicts(
                 if pd.notna(val):
                     source_name = source_col.split('__')[1]
                     values[source_name] = val
-            
+
             if len(values) > 1:
                 # Conflict detected
                 if conflict_strategy == 'priority':
@@ -890,7 +890,7 @@ def merge_datasets_with_conflicts(
                     result.at[idx, col] = f"CONFLICT: {values}"
                 elif conflict_strategy == 'combine':
                     result.at[idx, col] = '|'.join(str(v) for v in values.values())
-                
+
                 conflict_log.append({
                     'row': idx,
                     'column': col,
@@ -898,11 +898,11 @@ def merge_datasets_with_conflicts(
                 })
             elif len(values) == 1:
                 result.at[idx, col] = list(values.values())[0]
-    
+
     # Drop source-prefixed columns
     cols_to_drop = [c for c in result.columns if '__' in c]
     result = result.drop(columns=cols_to_drop)
-    
+
     return {
         'merged_data': result,
         'n_conflicts': len(conflict_log),
@@ -923,7 +923,7 @@ import numpy as np
 def cleaning_pipeline(df, config=None):
     """
     End-to-end data cleaning pipeline.
-    
+
     config dict keys:
     - drop_duplicates: bool
     - duplicate_subset: list of columns
@@ -943,66 +943,66 @@ def cleaning_pipeline(df, config=None):
             'outlier_method': 'iqr',
             'outlier_action': 'winsorize'
         }
-    
+
     report = {'original_shape': df.shape, 'steps': []}
     result = df.copy()
-    
+
     # Step 1: Drop columns with too many missing values
     missing_pct = result.isnull().mean()
     cols_to_drop = missing_pct[missing_pct > config['missing_threshold']].index.tolist()
     if cols_to_drop:
         result = result.drop(columns=cols_to_drop)
         report['steps'].append(f"Dropped {len(cols_to_drop)} columns with >{config['missing_threshold']*100}% missing")
-    
+
     # Step 2: Drop exact duplicates
     if config['drop_duplicates']:
         n_before = len(result)
         result = result.drop_duplicates(subset=config['duplicate_subset'])
         n_dropped = n_before - len(result)
         report['steps'].append(f"Dropped {n_dropped} duplicate rows")
-    
+
     # Step 3: Handle missing values
     numeric_cols = result.select_dtypes(include=[np.number]).columns
     categorical_cols = result.select_dtypes(include=['object', 'category']).columns
-    
+
     for col in numeric_cols:
         if result[col].isnull().any():
             if config['impute_numeric'] == 'mean':
                 result[col].fillna(result[col].mean(), inplace=True)
             elif config['impute_numeric'] == 'median':
                 result[col].fillna(result[col].median(), inplace=True)
-    
+
     for col in categorical_cols:
         if result[col].isnull().any():
             if config['impute_categorical'] == 'mode':
                 result[col].fillna(result[col].mode()[0] if not result[col].mode().empty else 'Unknown', inplace=True)
             elif config['impute_categorical'] == 'unknown':
                 result[col].fillna('Unknown', inplace=True)
-    
+
     report['steps'].append(f"Imputed missing values: numeric={config['impute_numeric']}, categorical={config['impute_categorical']}")
-    
+
     # Step 4: Handle outliers
     if config['outlier_method'] and config['outlier_action']:
         for col in numeric_cols:
             if col not in result.columns:
                 continue
-            
+
             if config['outlier_method'] == 'iqr':
                 q1, q3 = result[col].quantile(0.25), result[col].quantile(0.75)
                 iqr = q3 - q1
                 lower, upper = q1 - 1.5 * iqr, q3 + 1.5 * iqr
-                
+
                 if config['outlier_action'] == 'winsorize':
                     result[col] = result[col].clip(lower=lower, upper=upper)
                 elif config['outlier_action'] == 'remove':
                     result = result[(result[col] >= lower) & (result[col] <= upper)]
                 elif config['outlier_action'] == 'flag':
                     result[f'{col}_outlier'] = (result[col] < lower) | (result[col] > upper)
-    
+
     report['steps'].append(f"Outlier treatment: method={config['outlier_method']}, action={config['outlier_action']}")
     report['final_shape'] = result.shape
     report['rows_removed'] = report['original_shape'][0] - report['final_shape'][0]
-    
+
     return result, report
 ```
 
@@ -1020,20 +1020,20 @@ def analyze_missing_values(df):
     # Quantify missingness
     total_cells = np.prod(df.shape)
     total_missing = df.isnull().sum().sum()
-    
+
     missing_by_col = df.isnull().sum().sort_values(ascending=False)
     missing_pct = (missing_by_col / len(df) * 100).round(2)
-    
+
     # Missing patterns
     missing_matrix = df.isnull().astype(int)
     missing_patterns = missing_matrix.drop_duplicates()
-    
+
     # Correlation of missingness between columns
     missing_corr = missing_matrix.corr()
-    
+
     # Row-level completeness
     row_completeness = (1 - df.isnull().mean(axis=1)) * 100
-    
+
     # Recommendations
     recommendations = []
     for col, pct in missing_pct.items():
@@ -1067,7 +1067,7 @@ def analyze_missing_values(df):
                 'strategy': 'Consider dropping column or using as binary indicator',
                 'rationale': 'High missingness — imputation may introduce substantial bias'
             })
-    
+
     return {
         'total_missing_cells': total_missing,
         'total_cells': total_cells,
@@ -1096,14 +1096,14 @@ def infer_and_convert_types(df, strict=False):
     """
     result = df.copy()
     conversions = {}
-    
+
     for col in df.columns:
         original_dtype = df[col].dtype
         series = df[col].dropna()
-        
+
         if len(series) == 0:
             continue
-        
+
         # Try datetime
         try:
             parsed = pd.to_datetime(series, infer_datetime_format=True)
@@ -1112,7 +1112,7 @@ def infer_and_convert_types(df, strict=False):
             continue
         except (ValueError, TypeError):
             pass
-        
+
         # Try numeric
         if series.dtype == 'object':
             try:
@@ -1122,22 +1122,22 @@ def infer_and_convert_types(df, strict=False):
                 continue
             except (ValueError, AttributeError):
                 pass
-        
+
         # Try boolean
         if series.dtype == 'object':
             bool_values = {'true', 'false', 'yes', 'no', '1', '0', 't', 'f', 'y', 'n'}
             if series.str.lower().isin(bool_values).mean() > 0.9:
-                bool_map = {'true': True, 'false': False, 'yes': True, 'no': False, 
+                bool_map = {'true': True, 'false': False, 'yes': True, 'no': False,
                            '1': True, '0': False, 't': True, 'f': False, 'y': True, 'n': False}
                 result[col] = result[col].str.lower().map(bool_map)
                 conversions[col] = {'from': str(original_dtype), 'to': 'bool'}
                 continue
-        
+
         # Try category (if low cardinality)
         if series.dtype == 'object' and series.nunique() / len(series) < 0.05:
             result[col] = result[col].astype('category')
             conversions[col] = {'from': str(original_dtype), 'to': 'category'}
-    
+
     return result, conversions
 ```
 
@@ -1153,46 +1153,46 @@ def detect_and_fix_encoding(df, text_columns=None, sample_size=10000):
     """
     if text_columns is None:
         text_columns = df.select_dtypes(include=['object']).columns
-    
+
     encoding_report = {}
-    
+
     for col in text_columns:
         # Sample for encoding detection
         sample = df[col].dropna().head(sample_size).str.cat()
         raw_bytes = sample.encode('raw_unicode_escape')
-        
+
         # Detect encoding
         detection = chardet.detect(raw_bytes)
         detected_encoding = detection['encoding']
         confidence = detection['confidence']
-        
+
         encoding_report[col] = {
             'detected_encoding': detected_encoding,
             'confidence': confidence
         }
-        
+
         # Common fixes
         if detected_encoding and confidence > 0.7:
             try:
                 df[col] = df[col].apply(
-                    lambda x: x.encode(detected_encoding).decode('utf-8') 
+                    lambda x: x.encode(detected_encoding).decode('utf-8')
                     if pd.notna(x) else x
                 )
                 encoding_report[col]['action'] = 'converted_to_utf8'
             except (UnicodeDecodeError, UnicodeEncodeError):
                 encoding_report[col]['action'] = 'conversion_failed'
-        
+
         # Normalize Unicode
         df[col] = df[col].apply(
             lambda x: unicodedata.normalize('NFC', str(x)) if pd.notna(x) else x
         )
-        
+
         # Remove invisible characters
         df[col] = df[col].apply(
-            lambda x: re.sub(r'[\u200b\u200c\u200d\ufeff\u00a0]', ' ', str(x)) 
+            lambda x: re.sub(r'[\u200b\u200c\u200d\ufeff\u00a0]', ' ', str(x))
             if pd.notna(x) else x
         )
-    
+
     return df, encoding_report
 ```
 
@@ -1205,7 +1205,7 @@ import numpy as np
 def compute_data_quality_score(df, weights=None):
     """
     Compute a composite data quality score for the dataset.
-    
+
     Dimensions:
     - Completeness: % of non-null values
     - Uniqueness: % of non-duplicate rows
@@ -1221,15 +1221,15 @@ def compute_data_quality_score(df, weights=None):
             'accuracy': 0.2,
             'timeliness': 0.1
         }
-    
+
     scores = {}
-    
+
     # Completeness
     scores['completeness'] = (1 - df.isnull().mean().mean()) * 100
-    
+
     # Uniqueness
     scores['uniqueness'] = (1 - df.duplicated().mean()) * 100
-    
+
     # Consistency (check string columns for consistent formatting)
     consistency_scores = []
     for col in df.select_dtypes(include=['object']).columns:
@@ -1241,7 +1241,7 @@ def compute_data_quality_score(df, weights=None):
         upper_ratio = (non_null.str.upper() == non_null).mean()
         consistency_scores.append(max(lower_ratio, upper_ratio))
     scores['consistency'] = np.mean(consistency_scores) * 100 if consistency_scores else 100
-    
+
     # Accuracy (check numeric columns for reasonable ranges)
     accuracy_scores = []
     for col in df.select_dtypes(include=[np.number]).columns:
@@ -1253,7 +1253,7 @@ def compute_data_quality_score(df, weights=None):
         in_range = ((series >= q1 - 3*iqr) & (series <= q3 + 3*iqr)).mean()
         accuracy_scores.append(in_range)
     scores['accuracy'] = np.mean(accuracy_scores) * 100 if accuracy_scores else 100
-    
+
     # Timeliness (check date columns)
     timeliness_scores = []
     for col in df.columns:
@@ -1264,10 +1264,10 @@ def compute_data_quality_score(df, weights=None):
             recent_pct = (dates > dates.max() - pd.Timedelta(days=365)).mean()
             timeliness_scores.append(recent_pct)
     scores['timeliness'] = np.mean(timeliness_scores) * 100 if timeliness_scores else 100
-    
+
     # Composite score
     composite = sum(scores[dim] * weights[dim] for dim in weights)
-    
+
     return {
         'dimension_scores': scores,
         'composite_score': round(composite, 2),

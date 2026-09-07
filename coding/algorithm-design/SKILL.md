@@ -111,7 +111,7 @@ def closest_pair(points: List[Tuple[float, float]]) -> float:
     """
     Find the minimum Euclidean distance between any two points.
     Uses divide-and-conquer with a sweep-line optimization.
-    
+
     Time:  O(N log^2 N) — O(N log N) merge with bounded strip scan.
     Space: O(N) for the sorted auxiliary array.
     """
@@ -119,27 +119,27 @@ def closest_pair(points: List[Tuple[float, float]]) -> float:
         return math.hypot(a[0] - b[0], a[1] - b[1])
 
     pts = sorted(points, key=lambda p: p[0])
-    
+
     def _solve(sorted_x):
         n = len(sorted_x)
         if n <= 3:
             return min(dist(sorted_x[i], sorted_x[j])
                        for i in range(n) for j in range(i + 1, n))
-        
+
         mid = n // 2
         mid_x = sorted_x[mid][0]
-        
+
         left = sorted_x[:mid]
         right = sorted_x[mid:]
-        
+
         dl = _solve(left)
         dr = _solve(right)
         d = min(dl, dr)
-        
+
         # Build strip: points within distance d of the dividing line
         strip = [p for p in sorted_x if abs(p[0] - mid_x) < d]
         strip.sort(key=lambda p: p[1])  # Sort by y-coordinate
-        
+
         # Scan strip — at most 7 comparisons per point
         min_d = d
         for i in range(len(strip)):
@@ -147,9 +147,9 @@ def closest_pair(points: List[Tuple[float, float]]) -> float:
             while j < len(strip) and (strip[j][1] - strip[i][1]) < min_d:
                 min_d = min(min_d, dist(strip[i], strip[j]))
                 j += 1
-        
+
         return min_d
-    
+
     return _solve(pts)
 
 
@@ -185,7 +185,7 @@ def dist(a, b):
 test_closest_pair()
 ```
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. Amortized Analysis and Potential Methods
 
@@ -195,10 +195,10 @@ Amortized analysis provides tight bounds on sequences of operations rather than 
 class DynamicArray:
     """
     Dynamic array (like Python list) with amortized O(1) append.
-    
+
     When the array is full, we double its capacity. Each copy costs O(n),
     but each element is copied at most log2(n) times over n appends.
-    
+
     Amortized cost per append: O(1).
     Total cost for n appends: O(n) actual work, O(n) amortized.
     """
@@ -230,19 +230,19 @@ def find_two_non_repeating(nums):
     """
     Find two elements that appear exactly once in an array where
     all other elements appear exactly twice.
-    
+
     Time: O(N), Space: O(1)
-    
+
     Key insight: XOR of two non-repeating numbers gives a number
     where each set bit distinguishes one from the other.
     """
     xor_all = 0
     for num in nums:
         xor_all ^= num
-    
+
     # Find any set bit (rightmost)
     diff_bit = xor_all & (-xor_all)
-    
+
     # Partition into two groups based on that bit
     a, b = 0, 0
     for num in nums:
@@ -250,7 +250,7 @@ def find_two_non_repeating(nums):
             a ^= num
         else:
             b ^= num
-    
+
     return a, b
 
 result = find_two_non_repeating([1, 2, 3, 2, 1, 4])
@@ -265,7 +265,7 @@ Union-Find (Disjoint Set Union) supports near-O(1) merge and find operations usi
 class UnionFind:
     """
     Disjoint Set Union with path compression and union by rank.
-    
+
     Amortized time per operation: O(alpha(N)) — inverse Ackermann, effectively constant.
     """
     def __init__(self, n):
@@ -313,7 +313,7 @@ Segment trees answer range queries (sum, min, max, GCD) and range updates in O(l
 class SegmentTree:
     """
     Segment tree for range sum queries with point updates.
-    
+
     Build: O(N), Query: O(log N), Update: O(log N)
     Space: O(4N)
     """
@@ -374,9 +374,9 @@ from collections import deque
 def sliding_window_max(nums, k):
     """
     Find the maximum in every contiguous window of size k.
-    
+
     Time: O(N), Space: O(K)
-    
+
     Maintains a deque of indices in decreasing order of values.
     The front always holds the current window's maximum index.
     """
@@ -391,7 +391,7 @@ def sliding_window_max(nums, k):
         dq.append(i)
         if i >= k - 1:
             result.append(nums[dq[0]])
-    
+
     return result
 
 
@@ -409,7 +409,7 @@ from collections import defaultdict, deque
 def topological_sort(n, edges):
     """
     Kahn's algorithm for topological sorting.
-    
+
     Returns the topological order, or None if a cycle exists.
     Time: O(V + E), Space: O(V + E)
     """
@@ -590,7 +590,7 @@ def min_ship_capacity(weights, days):
             else:
                 current_load += w
         return day_count <= days
-    
+
     lo = max(weights)
     hi = sum(weights)
     return binary_search_on_answer(lo, hi, can_ship)
@@ -716,13 +716,13 @@ Greedy algorithms make locally optimal choices at each step. The key is proving 
 def activity_selection(activities):
     """
     Activity Selection Problem: select maximum non-overlapping activities.
-    
+
     Greedy choice: pick activity with earliest finish time that doesn't conflict.
-    
+
     Proof sketch (exchange argument): If an optimal solution doesn't include
     the earliest-finishing activity, we can swap it in without reducing
     the total count.
-    
+
     Time: O(N log N) for sorting, O(N) for selection.
     """
     sorted_acts = sorted(activities, key=lambda x: x[1])
@@ -753,21 +753,21 @@ import math
 class SparseTable:
     """
     Sparse Table for range minimum queries (RMQ).
-    
+
     Preprocessing: O(N log N), Query: O(1) using idempotent property.
     Only works for idempotent operations (min, max, gcd).
     """
     def __init__(self, data):
         n = len(data)
         k = math.floor(math.log2(n)) + 1
-        
+
         self.st = [[0] * n for _ in range(k)]
         self.st[0] = data[:]
         self.log = [0] * (n + 1)
-        
+
         for i in range(2, n + 1):
             self.log[i] = self.log[i // 2] + 1
-        
+
         for j in range(1, k):
             for i in range(n - (1 << j) + 1):
                 self.st[j][i] = min(self.st[j-1][i],

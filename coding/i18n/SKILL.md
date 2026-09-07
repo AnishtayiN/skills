@@ -150,11 +150,11 @@ i18n
   .init({
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
-    
+
     // Namespace configuration
     ns: ['common', 'auth', 'profile', 'errors', 'validation'],
     defaultNS: 'common',
-    
+
     // Interpolation settings
     interpolation: {
       escapeValue: false, // React already escapes
@@ -168,11 +168,11 @@ i18n
         return value;
       },
     },
-    
+
     // Pluralization
     pluralSeparator: '_',
     contextSeparator: '_',
-    
+
     // Detection order
     detection: {
       order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
@@ -437,7 +437,7 @@ console.log(pluralize(5, { one: '# عنصر', few: '# عناصر', many: '# عن
 // "5 عناصر"
 ```
 
-## Advanced Techniques (7 Techniques)
+## Advanced Techniques
 
 ### 1. Pseudo-Localization for Internationalization Testing
 
@@ -466,15 +466,15 @@ function pseudoLocalize(str) {
   if (str.startsWith('{{') || str.startsWith('http') || str.startsWith('/')) {
     return str;
   }
-  
+
   let result = '';
   for (const char of str.toLowerCase()) {
     result += PSEUDO_MAP[char] || char;
   }
-  
+
   // Add 30% padding to simulate longer translations
   const padding = '.'.repeat(Math.floor(str.length * 0.3));
-  
+
   return `[${result}${padding}]`;
 }
 
@@ -517,10 +517,10 @@ function getFirstDayOfWeek(locale) {
   const region = locale.split('-')[1];
   const saturdayRegions = ['AE', 'BH', 'DJ', 'DZ', 'EG', 'IQ', 'JO', 'KW', 'LY', 'OM', 'QA', 'SA', 'SD', 'SY', 'YE'];
   if (saturdayRegions.includes(region)) return 6;
-  
+
   const sundayRegions = ['US', 'CA', 'JP', 'TW', 'KR', 'PH', 'TH', 'SA', 'VE'];
   if (sundayRegions.includes(region)) return 0;
-  
+
   return 1; // Default: Monday (most of Europe, Asia)
 }
 
@@ -530,13 +530,13 @@ function getFirstDayOfWeek(locale) {
 function getWeekDays(locale) {
   const weekDays = [];
   const startDay = getFirstDayOfWeek(locale);
-  
+
   for (let i = 0; i < 7; i++) {
     const dayIndex = (startDay + i) % 7;
     const date = new Date(2024, 0, 1 + dayIndex); // A Sunday in January 2024
     weekDays.push(new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date));
   }
-  
+
   return weekDays;
 }
 
@@ -561,35 +561,35 @@ Handle the complexity of parsing numbers across different locale conventions:
 function parseLocaleNumber(str, locale = navigator.language) {
   // Remove currency symbols and whitespace
   let cleaned = str.replace(/[\s$\u00a0\u200b]/g, '');
-  
+
   // Remove currency codes and symbols at start/end
   cleaned = cleaned.replace(/^[A-Z]{3}\s*/, '');
   cleaned = cleaned.replace(/\s*[A-Z]{3}$/, '');
   cleaned = cleaned.replace(/^[£€¥₹руб]/, '');
   cleaned = cleaned.replace(/[£€¥₹руб]$/, '');
-  
+
   // Convert Arabic-Indic digits to Western Arabic
   cleaned = cleaned.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660));
   // Convert Eastern Arabic-Indic digits
   cleaned = cleaned.replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06F0));
-  
+
   // Determine grouping and decimal separators from locale
   const sample = new Intl.NumberFormat(locale).format(1234567.89);
   const groupingChar = sample.includes('.') && sample.includes(',')
     ? (sample.indexOf('.') < sample.indexOf(',') ? '.' : ',')
     : (sample.includes(',') ? ',' : null);
   const decimalChar = sample.includes('.') ? '.' : (sample.includes(',') ? ',' : null);
-  
+
   // Remove grouping separators
   if (groupingChar) {
     cleaned = cleaned.split(groupingChar).join('');
   }
-  
+
   // Replace locale decimal separator with JavaScript decimal point
   if (decimalChar && decimalChar !== '.') {
     cleaned = cleaned.replace(decimalChar, '.');
   }
-  
+
   return parseFloat(cleaned);
 }
 
@@ -766,29 +766,29 @@ class I18nLinter:
     Catches common issues: missing translations, inconsistent interpolation,
     RTL/LTR conflicts, and formatting problems.
     """
-    
+
     def __init__(self, base_locale: str = 'en'):
         self.base_locale = base_locale
         self.issues = []
-    
+
     def lint_directory(self, locales_dir: str) -> List[Dict]:
         """Lint all translation files in a directory."""
         base_path = Path(locales_dir)
         base_files = self._load_locale(base_path, self.base_locale)
-        
+
         for locale_dir in base_path.iterdir():
             if not locale_dir.is_dir() or locale_dir.name == self.base_locale:
                 continue
-            
+
             locale_files = self._load_locale(locale_dir, locale_dir.name)
             self._check_missing_keys(base_files, locale_files, locale_dir.name)
             self._check_extra_keys(base_files, locale_files, locale_dir.name)
             self._check_interpolation_args(base_files, locale_files, locale_dir.name)
             self._check_empty_translations(locale_files, locale_dir.name)
             self._check_untranslated_content(base_files, locale_files, locale_dir.name)
-        
+
         return self.issues
-    
+
     def _load_locale(self, path: Path, locale: str) -> Dict[str, str]:
         """Load all JSON translation files for a locale."""
         result = {}
@@ -798,7 +798,7 @@ class I18nLinter:
             for key, value in self._flatten(data).items():
                 result[f"{namespace}.{key}"] = value
         return result
-    
+
     def _flatten(self, data: dict, prefix: str = '') -> dict:
         """Flatten nested dict to dot-notation keys."""
         result = {}
@@ -809,7 +809,7 @@ class I18nLinter:
             else:
                 result[full_key] = str(value)
         return result
-    
+
     def _check_missing_keys(self, base: Dict, target: Dict, locale: str):
         """Check for translation keys present in base but missing in target."""
         missing = set(base.keys()) - set(target.keys())
@@ -820,7 +820,7 @@ class I18nLinter:
                 'key': key,
                 'message': f'Missing translation key: {key}',
             })
-    
+
     def _check_extra_keys(self, base: Dict, target: Dict, locale: str):
         """Check for translation keys present in target but not in base (unused)."""
         extra = set(target.keys()) - set(base.keys())
@@ -831,18 +831,18 @@ class I18nLinter:
                 'key': key,
                 'message': f'Extra key not in base locale: {key}',
             })
-    
+
     def _check_interpolation_args(self, base: Dict, target: Dict, locale: str):
         """Check that interpolation variables match between base and target."""
         interpolation_pattern = re.compile(r'\{\{(\w+)\}\}|%\{(\w+)\}|:__(\w+)__')
-        
+
         for key in set(base.keys()) & set(target.keys()):
             base_vars = set(self._extract_vars(base[key], interpolation_pattern))
             target_vars = set(self._extract_vars(target[key], interpolation_pattern))
-            
+
             missing = base_vars - target_vars
             extra = target_vars - base_vars
-            
+
             if missing:
                 self.issues.append({
                     'severity': 'ERROR',
@@ -857,11 +857,11 @@ class I18nLinter:
                     'key': key,
                     'message': f'Extra interpolation variables: {extra}',
                 })
-    
+
     def _extract_vars(self, text: str, pattern) -> list:
         """Extract interpolation variable names from a string."""
         return [match for groups in pattern.findall(text) for match in groups if match]
-    
+
     def _check_empty_translations(self, translations: Dict, locale: str):
         """Check for empty or whitespace-only translations."""
         for key, value in translations.items():
@@ -872,7 +872,7 @@ class I18nLinter:
                     'key': key,
                     'message': 'Empty translation value',
                 })
-    
+
     def _check_untranslated_content(self, base: Dict, target: Dict, locale: str):
         """Check if translated values are identical to base (possibly untranslated)."""
         for key in set(base.keys()) & set(target.keys()):
@@ -920,19 +920,19 @@ function detectLocale(supportedLocales, defaultLocale = 'en') {
   if (urlLang && isSupported(urlLang, supportedLocales)) {
     return urlLang;
   }
-  
+
   // 2. Check cookie
   const cookieLang = getCookie('i18n_lang');
   if (cookieLang && isSupported(cookieLang, supportedLocales)) {
     return cookieLang;
   }
-  
+
   // 3. Check localStorage
   const storedLang = localStorage.getItem('i18n_lang');
   if (storedLang && isSupported(storedLang, supportedLocales)) {
     return storedLang;
   }
-  
+
   // 4. Check Accept-Language header
   const browserLocales = getBrowserLocales();
   for (const browserLocale of browserLocales) {
@@ -944,7 +944,7 @@ function detectLocale(supportedLocales, defaultLocale = 'en') {
     const match = supportedLocales.find(l => l.startsWith(langOnly));
     if (match) return match;
   }
-  
+
   // 5. Fallback
   return defaultLocale;
 }
@@ -986,7 +986,7 @@ const translationKeys = {
   'nav.home': 'Home',
   'nav.about': 'About Us',
   'nav.contact': 'Contact',
-  
+
   // Auth module
   'auth.login.title': 'Sign In',
   'auth.login.email.label': 'Email Address',
@@ -995,13 +995,13 @@ const translationKeys = {
   'auth.login.submit': 'Sign In',
   'auth.login.error.invalidCredentials': 'Invalid email or password',
   'auth.login.error.tooManyAttempts': 'Too many attempts. Please try again in {{minutes}} minutes.',
-  
+
   // Profile module
   'profile.welcome': 'Welcome, {{name}}!',
   'profile.memberSince': 'Member since {{date}}',
   'profile.deleteAccount.confirm': 'Are you sure you want to delete your account? This action cannot be undone.',
   'profile.deleteAccount.success': 'Your account has been deleted.',
-  
+
   // Common
   'common.buttons.save': 'Save',
   'common.buttons.cancel': 'Cancel',
@@ -1031,17 +1031,17 @@ const loadedNamespaces = new Set();
 async function loadNamespace(locale, namespace) {
   const key = `${locale}:${namespace}`;
   if (loadedNamespaces.has(key)) return;
-  
+
   try {
     const translations = await import(
       `./locales/${locale}/${namespace}.json`
     );
-    
+
     i18n.addResourceBundle(locale, namespace, translations.default, true, true);
     loadedNamespaces.add(key);
   } catch (error) {
     console.error(`Failed to load translation: ${key}`, error);
-    
+
     // Fallback to base locale
     if (locale !== 'en') {
       await loadNamespace('en', namespace);
@@ -1054,11 +1054,11 @@ async function loadNamespace(locale, namespace) {
  */
 function useTranslation(namespace) {
   const { i18n, t, ready } = useTranslation(namespace);
-  
+
   useEffect(() => {
     loadNamespace(i18n.language, namespace);
   }, [i18n.language, namespace]);
-  
+
   return { t, ready };
 }
 
@@ -1082,22 +1082,22 @@ import { useEffect, useState } from 'react';
 
 function RTLProvider({ locale, children }) {
   const [direction, setDirection] = useState('ltr');
-  
+
   useEffect(() => {
     const rtlLocales = ['ar', 'fa', 'he', 'ur', 'ps', 'sd', 'yi'];
     const lang = locale.split('-')[0];
     const newDir = rtlLocales.includes(lang) ? 'rtl' : 'ltr';
-    
+
     setDirection(newDir);
     document.documentElement.setAttribute('dir', newDir);
     document.documentElement.setAttribute('lang', locale);
-    
+
     // Cleanup
     return () => {
       document.documentElement.removeAttribute('dir');
     };
   }, [locale]);
-  
+
   return (
     <div dir={direction} lang={locale}>
       {children}
@@ -1110,7 +1110,7 @@ function RTLProvider({ locale, children }) {
  */
 function useLayoutDirection() {
   const dir = document.documentElement.getAttribute('dir') || 'ltr';
-  
+
   return {
     marginStart: dir === 'rtl' ? 'marginRight' : 'marginLeft',
     marginEnd: dir === 'rtl' ? 'marginLeft' : 'marginRight',
