@@ -1,0 +1,23 @@
+name: Validate skill library
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Validate metadata and dependency graph
+        run: python3 scripts/validate_skills.py
+      - name: Check shell syntax
+        run: bash -n install.sh
+      - name: Check whitespace
+        run: git diff --check --exit-code
+      - name: Smoke-test help output
+        run: ./install.sh --help

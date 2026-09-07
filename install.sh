@@ -332,8 +332,9 @@ uninstall_claude() {
     echo -e "${RED}  🗑️  Uninstalling Claude Code...${NC}"
     
     if [ -d "$target/.claude" ]; then
-        rm -rf "$target/.claude"
-        print_success "Removed .claude directory"
+        rm -rf "$target/.claude/skills"
+        rmdir "$target/.claude" 2>/dev/null || true
+        print_success "Removed managed .claude/skills directory (project files preserved)"
     fi
     
     if [ -f "$target/CLAUDE.md" ]; then
@@ -350,8 +351,9 @@ uninstall_cursor() {
     echo -e "${RED}  🗑️  Uninstalling Cursor AI...${NC}"
     
     if [ -d "$target/.cursor" ]; then
-        rm -rf "$target/.cursor"
-        print_success "Removed .cursor directory"
+        rm -rf "$target/.cursor/skills"
+        rmdir "$target/.cursor" 2>/dev/null || true
+        print_success "Removed managed .cursor/skills directory (project files preserved)"
     fi
     
     if [ -f "$target/.cursorrules" ]; then
@@ -368,8 +370,9 @@ uninstall_windsurf() {
     echo -e "${RED}  🗑️  Uninstalling Windsurf...${NC}"
     
     if [ -d "$target/.windsurf" ]; then
-        rm -rf "$target/.windsurf"
-        print_success "Removed .windsurf directory"
+        rm -rf "$target/.windsurf/skills"
+        rmdir "$target/.windsurf" 2>/dev/null || true
+        print_success "Removed managed .windsurf/skills directory (project files preserved)"
     fi
     
     if [ -f "$target/.windsurfrules" ]; then
@@ -386,8 +389,9 @@ uninstall_aider() {
     echo -e "${RED}  🗑️  Uninstalling Aider...${NC}"
     
     if [ -d "$target/.aider" ]; then
-        rm -rf "$target/.aider"
-        print_success "Removed .aider directory"
+        rm -rf "$target/.aider/skills"
+        rmdir "$target/.aider" 2>/dev/null || true
+        print_success "Removed managed .aider/skills directory (project files preserved)"
     fi
     
     if [ -f "$target/.aider.conf.yml" ]; then
@@ -404,8 +408,9 @@ uninstall_continue() {
     echo -e "${RED}  🗑️  Uninstalling Continue.dev...${NC}"
     
     if [ -d "$target/.continue" ]; then
-        rm -rf "$target/.continue"
-        print_success "Removed .continue directory"
+        rm -rf "$target/.continue/skills"
+        rmdir "$target/.continue" 2>/dev/null || true
+        print_success "Removed managed .continue/skills directory (project files preserved)"
     fi
     
     print_success "Continue.dev uninstalled"
@@ -417,8 +422,9 @@ uninstall_hermes() {
     echo -e "${RED}  🗑️  Uninstalling Hermes Agent...${NC}"
     
     if [ -d "$target/.hermes" ]; then
-        rm -rf "$target/.hermes"
-        print_success "Removed .hermes directory"
+        rm -rf "$target/.hermes/skills"
+        rmdir "$target/.hermes" 2>/dev/null || true
+        print_success "Removed managed .hermes/skills directory (project files preserved)"
     fi
     
     print_success "Hermes Agent uninstalled"
